@@ -1,0 +1,915 @@
+{
+  "cfgVersion": "260720-14",
+  "renewDays": 30,
+  "trucks": [
+    {
+      "id": "EQ-01",
+      "plate": "615 CV",
+      "kind": "FrontLoader",
+      "status": "active",
+      "helperCanDrive": false,
+      "note": ""
+    },
+    {
+      "id": "EQ-02",
+      "plate": "658 CV",
+      "kind": "FrontLoader",
+      "status": "down",
+      "helperCanDrive": false,
+      "note": "Out of commission"
+    },
+    {
+      "id": "EQ-03",
+      "plate": "4741 CV",
+      "kind": "FrontLoader",
+      "status": "active",
+      "helperCanDrive": false,
+      "note": ""
+    },
+    {
+      "id": "EQ-04",
+      "plate": "4740 CV",
+      "kind": "Cardboard",
+      "status": "active",
+      "helperCanDrive": false,
+      "note": "Cardboard only (no trash routes)"
+    },
+    {
+      "id": "EQ-09",
+      "plate": "2824 CV",
+      "kind": "RollOff",
+      "status": "active",
+      "helperCanDrive": false,
+      "note": ""
+    },
+    {
+      "id": "EQ-10",
+      "plate": "1215 CV",
+      "kind": "RollOff",
+      "status": "active",
+      "helperCanDrive": false,
+      "note": ""
+    },
+    {
+      "id": "EQ-11",
+      "plate": "4440 CV",
+      "kind": "RollOff",
+      "status": "down",
+      "helperCanDrive": false,
+      "note": "Out of commission"
+    },
+    {
+      "id": "EQ-12",
+      "plate": "1712 CV",
+      "kind": "Fork",
+      "status": "active",
+      "helperCanDrive": false,
+      "note": ""
+    },
+    {
+      "id": "EQ-13",
+      "plate": "449 TBJ",
+      "kind": "Fork",
+      "status": "active",
+      "helperCanDrive": false,
+      "note": ""
+    },
+    {
+      "id": "EQ-15",
+      "plate": "4973 CV",
+      "kind": "FrontLoader",
+      "status": "active",
+      "helperCanDrive": false,
+      "note": "RHD; hill-capable"
+    },
+    {
+      "id": "EQ-16",
+      "plate": "829 CV",
+      "kind": "FrontLoader",
+      "status": "active",
+      "helperCanDrive": false,
+      "note": "RHD; hill-capable"
+    },
+    {
+      "id": "EQ-18",
+      "plate": "2327 CV",
+      "kind": "RollOff",
+      "status": "active",
+      "helperCanDrive": false,
+      "note": "Newest"
+    },
+    {
+      "id": "VE-02",
+      "plate": "ME 1170",
+      "kind": "Rail",
+      "status": "active",
+      "helperCanDrive": true,
+      "note": "Rail truck — helpers may drive it."
+    }
+  ],
+  "drivers": [
+    {
+      "name": "Abeth",
+      "kinds": [
+        "FrontLoader",
+        "Cardboard"
+      ],
+      "solo": true,
+      "trainee": false,
+      "outUntil": "",
+      "reason": "",
+      "ability": {
+        "EQ-15": "able",
+        "EQ-16": "able",
+        "EQ-09": "unable",
+        "EQ-10": "unable",
+        "EQ-11": "unable",
+        "EQ-18": "unable"
+      },
+      "canGuide": [],
+      "needsGuide": []
+    },
+    {
+      "name": "Allan",
+      "kinds": [
+        "RollOff",
+        "Fork"
+      ],
+      "solo": true,
+      "trainee": false,
+      "outUntil": "",
+      "reason": "",
+      "ability": {
+        "EQ-15": "unable",
+        "EQ-16": "unable",
+        "EQ-12": "able",
+        "EQ-13": "able",
+        "EQ-01": "able",
+        "EQ-02": "able",
+        "EQ-03": "able",
+        "EQ-04": "able",
+        "EQ-09": "able",
+        "EQ-10": "able",
+        "EQ-11": "able",
+        "EQ-18": "able",
+        "VE-02": "able"
+      },
+      "canGuide": [],
+      "needsGuide": []
+    },
+    {
+      "name": "Bong",
+      "kinds": [
+        "FrontLoader",
+        "Cardboard",
+        "Fork",
+        "RollOff"
+      ],
+      "solo": true,
+      "trainee": false,
+      "outUntil": "",
+      "reason": "",
+      "ability": {
+        "EQ-18": "unfamiliar",
+        "EQ-15": "unfamiliar",
+        "EQ-16": "unfamiliar"
+      },
+      "canGuide": [],
+      "needsGuide": []
+    },
+    {
+      "name": "Celso",
+      "kinds": [
+        "FrontLoader",
+        "Cardboard"
+      ],
+      "solo": true,
+      "trainee": false,
+      "outUntil": "",
+      "reason": "",
+      "ability": {
+        "EQ-15": "able",
+        "EQ-16": "able",
+        "EQ-09": "unable",
+        "EQ-10": "unable",
+        "EQ-11": "unable",
+        "EQ-18": "unable"
+      },
+      "canGuide": [],
+      "needsGuide": []
+    },
+    {
+      "name": "Graymar",
+      "kinds": [
+        "RollOff",
+        "Fork"
+      ],
+      "solo": true,
+      "trainee": false,
+      "outUntil": "",
+      "reason": "",
+      "ability": {
+        "EQ-15": "unable",
+        "EQ-16": "unable",
+        "EQ-12": "able",
+        "EQ-13": "able",
+        "EQ-01": "able",
+        "EQ-02": "able",
+        "EQ-03": "able",
+        "EQ-04": "able",
+        "EQ-09": "able",
+        "EQ-10": "able",
+        "EQ-11": "able",
+        "EQ-18": "unfamiliar",
+        "VE-02": "able"
+      },
+      "canGuide": [],
+      "needsGuide": []
+    },
+    {
+      "name": "Miarfy",
+      "kinds": [
+        "FrontLoader",
+        "Fork"
+      ],
+      "solo": true,
+      "trainee": false,
+      "outUntil": "",
+      "reason": "",
+      "ability": {
+        "EQ-15": "able",
+        "EQ-16": "able",
+        "EQ-12": "able",
+        "EQ-13": "able",
+        "EQ-09": "unable",
+        "EQ-10": "unable",
+        "EQ-11": "unable",
+        "EQ-18": "unable"
+      },
+      "canGuide": [],
+      "needsGuide": []
+    },
+    {
+      "name": "Racel",
+      "kinds": [
+        "FrontLoader",
+        "Cardboard"
+      ],
+      "solo": true,
+      "trainee": false,
+      "outUntil": "",
+      "reason": "",
+      "ability": {
+        "EQ-15": "unfamiliar",
+        "EQ-16": "unfamiliar",
+        "EQ-09": "unable",
+        "EQ-10": "unable",
+        "EQ-11": "unable",
+        "EQ-18": "unable"
+      },
+      "canGuide": [],
+      "needsGuide": []
+    },
+    {
+      "name": "Robert",
+      "kinds": [
+        "Fork"
+      ],
+      "solo": false,
+      "trainee": false,
+      "outUntil": "",
+      "reason": "",
+      "ability": {
+        "EQ-12": "able",
+        "EQ-13": "able",
+        "VE-02": "able",
+        "EQ-01": "unable",
+        "EQ-02": "unable",
+        "EQ-03": "unable",
+        "EQ-04": "unable",
+        "EQ-09": "unable",
+        "EQ-10": "unable",
+        "EQ-11": "unable",
+        "EQ-15": "unable",
+        "EQ-16": "unable",
+        "EQ-18": "unable"
+      },
+      "canGuide": [],
+      "needsGuide": []
+    }
+  ],
+  "helpers": [
+    {
+      "name": "Joseph",
+      "outUntil": "",
+      "reason": "",
+      "canDrive": [
+        "Rail"
+      ],
+      "knows": []
+    },
+    {
+      "name": "Ramdhel",
+      "outUntil": "",
+      "reason": "",
+      "canDrive": [],
+      "knows": []
+    },
+    {
+      "name": "Ron",
+      "outUntil": "",
+      "reason": "",
+      "canDrive": [
+        "Rail"
+      ],
+      "knows": []
+    },
+    {
+      "name": "Davis",
+      "outUntil": "",
+      "reason": "",
+      "canDrive": [],
+      "knows": []
+    }
+  ],
+  "basePasses": {
+    "Abeth": {
+      "CampBlaz": "260724",
+      "NBG": "260724",
+      "AAFB": "270417"
+    },
+    "Celso": {
+      "CampBlaz": "261214",
+      "NBG": "",
+      "AAFB": "260821"
+    },
+    "Graymar": {
+      "CampBlaz": "261214",
+      "NBG": "",
+      "AAFB": "270306"
+    },
+    "Racel": {
+      "CampBlaz": "261214",
+      "NBG": "261214",
+      "AAFB": "260814"
+    },
+    "Bong": {
+      "CampBlaz": "270411",
+      "NBG": "260609",
+      "AAFB": "260612"
+    },
+    "Allan": {
+      "CampBlaz": "261214",
+      "NBG": "261214",
+      "AAFB": "260814"
+    },
+    "Miarfy": {
+      "CampBlaz": "260129",
+      "NBG": "270126",
+      "AAFB": "270417"
+    },
+    "Robert": {
+      "CampBlaz": "",
+      "NBG": "",
+      "AAFB": ""
+    }
+  },
+  "routes": [
+    {
+      "name": "Northern",
+      "waLabel": "NORTHERN ROUTE",
+      "kinds": [
+        "FrontLoader"
+      ],
+      "noTruck": false,
+      "days": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+        "Sun"
+      ],
+      "startByDay": {
+        "Mon": "03:00",
+        "Tue": "03:00",
+        "Wed": "02:00",
+        "Thu": "02:00",
+        "Fri": "02:30",
+        "Sat": "03:00",
+        "Sun": "06:00"
+      },
+      "needsHelper": true,
+      "basePass": "byDay",
+      "dayBases": {
+        "Tue": [
+          "CampBlaz",
+          "AAFB"
+        ],
+        "Thu": [
+          "CampBlaz"
+        ],
+        "Fri": [
+          "CampBlaz"
+        ]
+      },
+      "bases": []
+    },
+    {
+      "name": "Central",
+      "waLabel": "CENTRAL ROUTE",
+      "kinds": [
+        "FrontLoader"
+      ],
+      "noTruck": false,
+      "days": [
+        "Tue"
+      ],
+      "startByDay": {
+        "Tue": "03:00"
+      },
+      "needsHelper": false,
+      "basePass": "never",
+      "dayBases": {},
+      "bases": []
+    },
+    {
+      "name": "Southern",
+      "waLabel": "SOUTHERN ROUTE",
+      "kinds": [
+        "FrontLoader"
+      ],
+      "noTruck": false,
+      "days": [
+        "Mon",
+        "Tue",
+        "Thu",
+        "Fri"
+      ],
+      "startByDay": {
+        "Mon": "03:00",
+        "Tue": "03:00",
+        "Thu": "02:00",
+        "Fri": "02:30"
+      },
+      "needsHelper": true,
+      "basePass": "byDay",
+      "dayBases": {
+        "Thu": [
+          "NBG"
+        ]
+      },
+      "bases": []
+    },
+    {
+      "name": "Cardboard",
+      "waLabel": "CARDBOARD",
+      "kinds": [
+        "Cardboard",
+        "FrontLoader"
+      ],
+      "noTruck": false,
+      "days": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri"
+      ],
+      "startByDay": {
+        "Mon": "06:00",
+        "Tue": "06:00",
+        "Wed": "06:00",
+        "Thu": "06:00",
+        "Fri": "06:00"
+      },
+      "needsHelper": true,
+      "basePass": "byDay",
+      "dayBases": {
+        "Wed": [
+          "AAFB",
+          "CampBlaz"
+        ],
+        "Thu": [
+          "NBG"
+        ]
+      },
+      "bases": []
+    },
+    {
+      "name": "Fork Service",
+      "waLabel": "FORK SERVICE",
+      "kinds": [
+        "Fork"
+      ],
+      "noTruck": false,
+      "days": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri"
+      ],
+      "startByDay": {
+        "Mon": "06:00",
+        "Tue": "06:00",
+        "Wed": "06:00",
+        "Thu": "06:00",
+        "Fri": "06:00"
+      },
+      "needsHelper": true,
+      "basePass": "byOrder",
+      "dayBases": {},
+      "bases": []
+    },
+    {
+      "name": "Roll-Off",
+      "waLabel": "ROLL-OFF",
+      "kinds": [
+        "RollOff"
+      ],
+      "noTruck": false,
+      "days": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri"
+      ],
+      "startByDay": {
+        "Mon": "06:00",
+        "Tue": "06:00",
+        "Wed": "06:00",
+        "Thu": "06:00",
+        "Fri": "06:00"
+      },
+      "needsHelper": false,
+      "basePass": "always",
+      "dayBases": {},
+      "bases": [
+        "AAFB",
+        "CampBlaz",
+        "NBG"
+      ]
+    },
+    {
+      "name": "Rail Truck",
+      "waLabel": "RAIL TRUCK",
+      "kinds": [
+        "Rail"
+      ],
+      "noTruck": false,
+      "days": [
+        "Tue",
+        "Wed",
+        "Thu"
+      ],
+      "startByDay": {
+        "Tue": "07:00",
+        "Wed": "07:00",
+        "Thu": "07:00"
+      },
+      "needsHelper": true,
+      "basePass": "never",
+      "dayBases": {},
+      "bases": []
+    },
+    {
+      "name": "Standby",
+      "waLabel": "STANDBY",
+      "kinds": [
+        "FrontLoader",
+        "Cardboard",
+        "Fork",
+        "RollOff",
+        "Rail"
+      ],
+      "noTruck": false,
+      "noDriver": false,
+      "standbyNote": true,
+      "days": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+        "Sun"
+      ],
+      "startByDay": {},
+      "needsHelper": false,
+      "basePass": "never",
+      "dayBases": {},
+      "bases": []
+    },
+    {
+      "name": "Yard",
+      "waLabel": "YARD",
+      "kinds": [],
+      "noTruck": true,
+      "noDriver": true,
+      "days": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+        "Sun"
+      ],
+      "startByDay": {
+        "Mon": "08:00",
+        "Tue": "08:00",
+        "Wed": "07:00",
+        "Thu": "07:00",
+        "Fri": "08:00",
+        "Sat": "08:00",
+        "Sun": "08:00"
+      },
+      "needsHelper": false,
+      "basePass": "never",
+      "dayBases": {},
+      "bases": []
+    }
+  ],
+  "fallbackStart": "06:00",
+  "usualRoutesByDay": {
+    "Mon": [
+      "Northern",
+      "Southern",
+      "Cardboard",
+      "Fork Service",
+      "Roll-Off",
+      "Yard"
+    ],
+    "Tue": [
+      "Northern",
+      "Central",
+      "Southern",
+      "Cardboard",
+      "Fork Service",
+      "Roll-Off",
+      "Yard"
+    ],
+    "Wed": [
+      "Northern",
+      "Cardboard",
+      "Fork Service",
+      "Roll-Off",
+      "Yard"
+    ],
+    "Thu": [
+      "Northern",
+      "Southern",
+      "Cardboard",
+      "Fork Service",
+      "Roll-Off",
+      "Yard"
+    ],
+    "Fri": [
+      "Northern",
+      "Southern",
+      "Cardboard",
+      "Fork Service",
+      "Roll-Off",
+      "Yard"
+    ],
+    "Sat": [
+      "Northern",
+      "Yard"
+    ],
+    "Sun": [
+      "Northern",
+      "Yard"
+    ]
+  },
+  "swSubjects": [
+    "PLEASE",
+    "DRIVER TO",
+    "HELPER TO",
+    ""
+  ],
+  "swActions": [
+    "SWITCH TO",
+    "DUMP"
+  ],
+  "swTimings": [
+    "AFTER ROUTE",
+    "AFTER DUMPING",
+    "BEFORE ROUTE",
+    ""
+  ],
+  "swTargets": [
+    "YARD"
+  ],
+  "vccVersions": [
+    {
+      "when": "Get pass at {base} VCC",
+      "wa": "PLEASE GET BASE PASS AT {base} VCC",
+      "kk": "to collect renewed {base} base pass"
+    },
+    {
+      "when": "Process {base} add-on",
+      "wa": "DRIVER PLEASE PROCESS THE {base} BASE PASS ADD-ON AT VCC",
+      "kk": "to process {base} base pass add-on at VCC"
+    },
+    {
+      "when": "{base} pickup — bring passport + GDOL ID",
+      "wa": "PLEASE BRING PASSPORT AND GDOL ID",
+      "kk": "to collect renewed {base} base pass"
+    },
+    {
+      "when": "{base} pickup — bring DBIDS + passport + GDOL ID",
+      "wa": "PLEASE BRING DBIDS, PASSPORT, AND GDOL ID",
+      "kk": "to collect renewed {base} base pass"
+    }
+  ],
+  "reasonOptions": [
+    "Truck down",
+    "Driver out / no-show",
+    "Route rolled over",
+    "Part-day shift (morning/afternoon only)",
+    "Customer request",
+    "Holiday schedule",
+    "Short-staffed",
+    "Weather / typhoon",
+    "Other"
+  ],
+  "breakOptions": [
+    "No break",
+    "3AM",
+    "4AM",
+    "5AM",
+    "6AM",
+    "7AM",
+    "8AM",
+    "9AM",
+    "10AM",
+    "11AM",
+    "12PM",
+    "1PM",
+    "2PM",
+    "3PM",
+    "4PM",
+    "5PM",
+    "6PM",
+    "Other"
+  ],
+  "waTitle": "*SCHEDULE REMINDER*",
+  "waAck": "*PLEASE ACKNOWLEDGE READING THE SCHEDULE BY REACTING WITH A 👍🏻 EMOJI TO THIS POST*",
+  "waReminders": [],
+  "kkOpen": "Good afternoon, {weekday} {date} schedule for your review sir:",
+  "kkOpenWe": "Saturday {satdate} & Sunday {sundate} schedules for your review sir:",
+  "kkPlates": true,
+  "checklistItems": [
+    "Every route that runs today is on the schedule (nothing skipped/rolled over without a make-up day).",
+    "Start times and break overrides are right for today.",
+    "Switch / VCC notes read correctly in BOTH WhatsApp and Kakao.",
+    "OFF list is complete; no-shows accounted for."
+  ],
+  "dynChecklist": {
+    "cardboard": "How full is the cardboard truck? (affects the cardboard route start time.)",
+    "weekend": "Weekend post covers BOTH Saturday and Sunday."
+  },
+  "dataSources": {
+    "basePassTracker": {
+      "link": "",
+      "format": "Excel/CSV: name, CampBlaz/NBG/AAFB expiry",
+      "note": "DBIDS & AAFB Pass Tracker — master (Import CSV when it changes)"
+    },
+    "driverPool": {
+      "link": "",
+      "format": "",
+      "note": ""
+    },
+    "helperPool": {
+      "link": "",
+      "format": "",
+      "note": ""
+    },
+    "equipment": {
+      "link": "",
+      "format": "",
+      "note": ""
+    },
+    "hoursToDate": {
+      "link": "",
+      "format": "Timesheet export",
+      "note": "Cost projection (future)"
+    }
+  },
+  "costs": {
+    "enabled": false,
+    "otAfterHrs": 40,
+    "otMultiplier": 1.5,
+    "regularShiftHrs": 8,
+    "defaultRate": 9.25,
+    "rates": {},
+    "note": "Future OT projection."
+  },
+  "disposalSites": [
+    {
+      "name": "Rubbishman transfer station",
+      "waste": [
+        "trash"
+      ],
+      "cutoff": "15:00",
+      "note": "MSW/general trash"
+    },
+    {
+      "name": "Guahan (cardboard recycling)",
+      "waste": [
+        "cardboard"
+      ],
+      "cutoff": "16:00",
+      "note": "Cardboard dump"
+    },
+    {
+      "name": "Layon landfill (GSWA)",
+      "waste": [
+        "trash"
+      ],
+      "cutoff": "15:00",
+      "note": "Landfill; mind GSWA breaks"
+    },
+    {
+      "name": "Pyramid / JY Recycling",
+      "waste": [
+        "ewaste",
+        "metal"
+      ],
+      "cutoff": "16:00",
+      "note": "E-waste / metal"
+    }
+  ],
+  "baseRequirements": {
+    "AAFB": [
+      "DBIDS",
+      "AAFB pass"
+    ],
+    "CampBlaz": [
+      "DBIDS",
+      "Camp Blaz pass"
+    ],
+    "NBG": [
+      "DBIDS",
+      "passport",
+      "GDOL ID"
+    ]
+  },
+  "dumpTime": {
+    "enabled": false,
+    "defaultSpeedMultiplier": 1,
+    "note": "Future: finish = route start + (actualHoursByRouteDay[route][day] x driverSpeedMultiplier[driver]); compare to disposalSites cutoff; flag 'won't reach tipping in time'. <1 faster, >1 slower.",
+    "actualHoursByRouteDay": {},
+    "driverSpeedMultiplier": {}
+  },
+  "_readme": {
+    "tool": "Lagu Schedule Generator (single-file HTML)",
+    "persistence": "Config persists in this browser. If the browser changes, settings are lost unless you Export the JSON. Source of truth = the settings JSON; if base data lives on SharePoint Excel, export to CSV and re-Import on change (no login/backend).",
+    "githubVsHtml": "HTML = the tool (the machine). GitHub = optional shelf/hosting + version history so everyone opens one URL. GitHub Pages fetching a JSON in the SAME public repo needs no login; a SharePoint file always needs sign-in, so it can't be auto-read without a backend.",
+    "soonParam": "'Expiring soon' = renewDays (default 30) on the Base Passes tab — centralized.",
+    "keyRules": [
+      "Every route shows ALL THREE base checkboxes (AAFB, Camp Blaz, NBG). Usual ones are pre-ticked per day; unticking/ticking away from the usual default requires a reason (logged).",
+      "Bring-pass line separated per base, order AAFB→Camp Blaz→NBG, singular/plural. Never generic 'DBIDS'.",
+      "Base matrix (verify): Northern Tue=CampBlaz+AAFB, Thu=CampBlaz, Fri=CampBlaz (start 2:30AM); Southern Thu=NBG; Cardboard Wed=AAFB+CampBlaz, Thu=NBG; Roll-Off always all three (default checked); Fork byOrder.",
+      "Ability: Allan & Graymar = all trucks EXCEPT EQ-15/16; both can drive EQ-12/13; Miarfy also EQ-12/13; Bong Unfamiliar on EQ-18 & EQ-15/16; Racel Unfamiliar EQ-15/16; Robert only EQ-12/13/VE-02; front-loader drivers can't drive roll-off trucks.",
+      "Switch/dump note = Subject + Action + Target(truck dropdown hides Unable, ⚠️ Unfamiliar; or Yard) + Timing. Kakao drops PLEASE/DRIVER→'to', keeps caps (EQ-##, NBG, AAFB, VCC, Camp Blaz).",
+      "VCC note has {base} variable (dropdown) so 'collect renewed NBG' vs 'AAFB' isn't hardcoded.",
+      "Yard: no driver by default (noDriver). Drivers rarely on Yard.",
+      "Start time = quarter-hour dropdown only (no free minutes). Prefilled per route per day; Friday 2:30AM.",
+      "Expired/none REQUIRED base pass: assignment row LOCKS (only override+reason editable) until resolved; a popup warns if you try other fields; that pass's reminder is dropped for that driver.",
+      "Duplicate route or double-booked worker flagged immediately on the row (yellow) + in review; not blocked.",
+      "Review popup: 3 sections — Resolve (errors), Review (warnings), Common items (dynamic: cardboard-fullness only if a cardboard route; weekend item only on weekends; base-pass renewals list actual names). Close-without-posting allowed; Done requires all ticked.",
+      "Kakao omits worker bring-pass reminders; opener 'Good afternoon, {Weekday} MM/DD schedule for your review sir:' / weekend 'Saturday MM/DD & Sunday MM/DD schedules for your review sir:', no closer.",
+      "Roster 260720: drivers Abeth/Allan/Bong/Celso/Graymar/Miarfy/Racel/Robert; helpers Joseph/Ramdhel/Ron/Davis."
+    ],
+    "openQuestions": [
+      "Confirm Northern Tue=CampBlaz+AAFB and Southern has no Tue pass.",
+      "Confirm ability edits (Allan/Graymar all-but-15/16; Miarfy fork)."
+    ],
+    "versionLog": [
+      {
+        "v": "260720-14",
+        "note": "v10.1 PATCH: Dump option label 'Dump only (no route)' + truck dropdown fixed (was empty); Hand Service add-route option (trucks VE-02/EQ-12/EQ-13, driver list adds rail-capable helpers); Standby now has a truck dropdown; double-book/duplicate flags unified ALL-CAPS with subject prefix (ROUTE/EQ/DRIVER/HELPER DOUBLE-BOOKED) + consistent red-bubble style (removed yellow bg); README added as its own in-app TAB (renders _readme incl GitHub step-by-step); base-pass expiring wording 'confirm renewed <base> pass is ready (expires YYMMDD)'; VCC {base} variable everywhere (add-on + pickups no longer hardcode Camp Blaz/NBG), de-duplicated versions, 'Base for {base}' label -> 'Base'; switch-note no longer collapses on subject/action change (a._noteOpen persists <details>); 'HELPER TO' subject only offered when a helper is assigned; VE-02 in switch target only for rail-capable helpers; helper+DUMP -> VE-02 only, no Yard; PER-ROW lock restored (expired/missing required ticked pass locks only THAT row's non-override fields, popup on attempt; other routes stay editable); Generate shows 'cannot finalize until Resolve fixed' and checklist Done stays blocked until all ticked; START TIME now hour + minute(00/15/30/45) + AM/PM dials (stored HH:MM; no free-minute entry); one-off notes guideline corrected (Cardboard/Hand Service belong in Add-a-route, not notes). DEFERRED: GitHub fetch-settings-on-load + 'Load latest' button (needs repo hosted; steps documented in Readme tab)."
+      },
+      {
+        "v": "260720-13",
+        "note": "v9.1 PATCH: row-LOCK removed (expired/missing pass flags in Review only, never disables other fields, no popup); switch/dump target logic — VE-02 shown for all drivers (Please/Driver), Helper subject shows VE-02 only for rail-capable helpers (Ron/Joseph, editable via helper.canDrive), Yard hidden when subject Driver/Please or action DUMP, Helper+DUMP => VE-02 only; VCC 'Bring {base} pass' removed (checkbox job), {base} variable throughout, base dropdown default BLANK; Dump-truck route option (no + prefix, empty truck, base-pass block hidden); Standby route added to add-route list; break options full 3AM-6PM range + custom field only shows when Other; Sat/Sun need no helper (H03 suppressed weekends); EQUIPMENT double-booking flagged on row (bold red) like workers; double-booked pill made bold/red; base-pass 'expiring' wording => 'Confirm if X's <base> renewed pass is ready (expires YYMMDD)'; checklist sorted most->least substantive within Resolve/Review, scheduled start-times listed under Review (anti-autopilot), rollover/redistribution timing question added under Routine, base-pass renewal items dynamic; disposalSites + baseRequirements + dumpTime spec added; suggest-OFF fixed (sandbox-safe, no confirm(); inline confirm note). REQUIREMENTS ALWAYS ENFORCED: ALL checkboxes 16px uniform (CSS input[type=checkbox]); capitalization preserved for EQ-##/NBG/AAFB/VCC/Camp Blaz/GDOL/DBIDS in Kakao (smartLower). DEFERRED (need dedicated turns): (1) start time as separate hour+minute(quarter)+AM/PM dials; (2) GitHub Pages fetch lagu_settings.json on load + version stamp + 'Load latest' button. ANSWERS: autoload-vs-button => keep BUTTON (autoload silently wipes rows on date change); allow Generate with unresolved Resolve item => NO (Done stays blocked until every item ticked; Resolve = hard errors)."
+      },
+      {
+        "v": "260720-10",
+        "note": "v7.0: per-base bring-pass, Kakao opener, ability, dup-flag, custom routes."
+      },
+      {
+        "v": "260720-12",
+        "note": "v8.1 PATCH: lightweight spell/format checks (double/trailing space, unmatched *, common typos) flag custom inputs; ALL checkboxes forced 16px consistent (CSS input[type=checkbox]); capitalization preserved for EQ-##/NBG/AAFB/VCC/Camp Blaz/GDOL/DBIDS in Kakao via smartLower; checklist codes replaced with plain-language tags + legend, override reasons shown, ‘Common checks’→‘Routine checks’, Done blocks with popup if unticked; Graymar EQ-18 Unfamiliar; Yard shows ‘— none —’ driver; base-change-without-reason moved to RESOLVE (error); Dump-truck route option added; double-booked worker flagged instantly on row (red) + in review. FINDING: one-off operational notes historically went in a SEPARATE ‘Reminders – please:’ companion post (247×), essentially never inline in the schedule reminder (1×) — so the one-off field is for the rare inline case; routine one-offs belong in a separate reminders post. Checklist is dynamic (drops cardboard item with no cardboard route; weekend item only on weekends; base-pass renewal list only names with expiring/expired). Worker pool linked: renewal banner + OFF suggest use current-driver set. Prefill start pros: matches near-identical week pattern, fewer keystrokes/typos, consistency; cons: cruise-control risk (mitigated by editable dropdown + cardboard-fullness review item)."
+      },
+      {
+        "v": "260720-11",
+        "note": "v8.0: all-3-base checkboxes w/ default+reason-on-change, horizontal; uniform checkbox size; ability (Allan/Graymar all-but-15/16, Miarfy fork, Bong unfamiliar 18); Yard no-driver default; Kakao EQ- caps; VCC {base} variable; composable switch builder (subject/action/target/timing) hiding Unable+flagging Unfamiliar, Yard target; suggest-OFF working w/ confirm; quarter-hour dropdown; lock row on expired required pass; immediate dup/double-book flag; checklist 3 sections + close-without-posting; Friday 2:30; renewDays centralized; wording inventory."
+      }
+    ]
+  }
+}

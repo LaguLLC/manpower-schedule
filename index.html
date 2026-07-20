@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Lagu Schedule Generator</title>
+<style>
+  :root{--bg:#f4f6f8;--card:#fff;--ink:#1f2d3d;--muted:#6b7a8d;--line:#dfe4ea;
+        --brand:#0b6b3a;--brand2:#0e7c46;--warn:#b8860b;--err:#c0392b;--ok:#1e7d34;--down:#a23b2c;}
+  *{box-sizing:border-box;font-family:Segoe UI,Roboto,Arial,sans-serif;}
+  body{margin:0;background:var(--bg);color:var(--ink);}
+  header{background:var(--brand);color:#fff;padding:12px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  header h1{font-size:17px;margin:0;font-weight:600;} header .ver{font-size:12px;opacity:.85;}
+  nav{display:flex;gap:3px;margin-left:auto;flex-wrap:wrap;}
+  nav button{background:rgba(255,255,255,.15);color:#fff;border:0;padding:7px 11px;border-radius:6px 6px 0 0;cursor:pointer;font-size:13px;}
+  nav button.active{background:var(--card);color:var(--brand);font-weight:600;}
+  main{padding:16px 18px 60px;max-width:1180px;margin:0 auto;}
+  .tab{display:none;} .tab.active{display:block;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:15px 17px;margin-bottom:15px;box-shadow:0 1px 2px rgba(0,0,0,.03);}
+  .card h2{margin:0 0 4px;font-size:15px;} .card p.hint{margin:0 0 11px;color:var(--muted);font-size:13px;}
+  label{font-size:12px;color:var(--muted);display:block;margin-bottom:3px;}
+  input,select,textarea{font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);}
+  /* uniform checkboxes everywhere */
+  input[type=checkbox]{width:16px;height:16px;min-width:16px;margin:0;vertical-align:middle;cursor:pointer;}
+  button.act{background:var(--brand2);color:#fff;border:0;padding:9px 15px;border-radius:7px;cursor:pointer;font-size:14px;}
+  button.act:hover{background:var(--brand);}
+  button.ghost{background:#eef2f5;color:var(--ink);border:1px solid var(--line);padding:7px 11px;border-radius:7px;cursor:pointer;font-size:13px;}
+  button.mini{padding:3px 8px;font-size:12px;border-radius:5px;border:1px solid var(--line);background:#fff;cursor:pointer;}
+  table{border-collapse:collapse;width:100%;font-size:13px;}
+  th,td{border:1px solid var(--line);padding:5px 6px;text-align:left;vertical-align:middle;}
+  th{background:#f0f3f6;font-weight:600;} td input,td select{width:100%;min-width:60px;}
+  td input[type=checkbox]{width:16px;}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;}
+  .out{white-space:pre-wrap;background:#0f1b12;color:#d7ffe4;font-family:Consolas,monospace;font-size:13px;padding:13px;border-radius:8px;min-height:70px;}
+  .panel{border-left:4px solid var(--line);padding:7px 11px;margin:5px 0;border-radius:4px;background:#fafbfc;font-size:13px;}
+  .panel.err{border-color:var(--err);background:#fdf0ee;} .panel.warn{border-color:var(--warn);background:#fdf8ec;}
+  .panel.info{border-color:#2a7ade;background:#eef4fd;} .panel.ok{border-color:var(--ok);background:#eef9f0;}
+  .pill{display:inline-block;font-size:11px;padding:1px 7px;border-radius:10px;background:#eef2f5;color:var(--muted);margin-left:5px;}
+  .pill.down{background:#f7c9c0;color:#7a1d10;font-weight:700;border:1px solid #d9866f;} .pill.warn{background:#fbf0d6;color:var(--warn);} .pill.ok{background:#e7f4ea;color:var(--ok);}
+  .flex2{display:grid;grid-template-columns:1fr 1fr;gap:15px;} @media(max-width:820px){.flex2{grid-template-columns:1fr;}}
+  .tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:9px;align-items:center;}
+  code{background:#eef2f5;padding:1px 5px;border-radius:4px;font-size:12px;}
+  .small{font-size:12px;color:var(--muted);}
+  .savebar{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);padding:7px 12px;font-size:12px;color:var(--muted);}
+  .asgrow{border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-bottom:9px;background:#fbfcfd;}
+  .asgrow.dup{border-color:#d9866f;}
+  .asgrow.locked{border-color:var(--err);background:#fdf0ee;}
+  .asgtop{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
+  .fld{display:flex;flex-direction:column;}
+  .baseblk{margin-top:7px;padding:6px 9px;border-radius:6px;background:#f4f7f5;border:1px solid var(--line);font-size:12px;}
+  .baserow{display:flex;flex-wrap:wrap;gap:16px;align-items:center;}
+  .baseitem{display:flex;align-items:center;gap:6px;}
+  details.note>summary{font-size:12px;color:var(--brand);cursor:pointer;padding:2px 0;}
+  h4{margin:14px 0 4px;font-size:13px;color:var(--brand);}
+  .warnicon{color:#e6a700;}
+  .banner{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;}
+  .banner .bi{font-size:12px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:2px 8px;}
+  .modalbg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50;}
+  .modalbg.show{display:flex;}
+  .modal{background:#fff;border-radius:12px;max-width:720px;width:92%;max-height:86vh;overflow:auto;padding:20px 22px;box-shadow:0 10px 40px rgba(0,0,0,.3);}
+  .modal h3{margin:0 0 8px;color:var(--brand);}
+  .chk{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #f0f3f6;font-size:13px;}
+  .sec-resolve{color:var(--err);} .sec-review{color:var(--warn);} .sec-common{color:var(--brand);}
+</style>
+</head>
+<body>
+<header>
+  <h1>🗑️ Lagu Schedule Generator</h1><span class="ver" id="verLabel"></span>
+  <nav>
+    <button data-tab="make" class="active">Generate</button>
+    <button data-tab="equip">Equipment</button>
+    <button data-tab="drivers">Drivers</button>
+    <button data-tab="helpers">Helpers</button>
+    <button data-tab="routes">Routes &amp; Days</button>
+    <button data-tab="passes">Base Passes</button>
+    <button data-tab="wording">Wording &amp; Notes</button>
+    <button data-tab="backup">Backup</button>
+    <button data-tab="readme">Readme</button>
+    <button data-tab="help">Help</button>
+  </nav>
+</header>
+<main>
+<section class="tab active" id="tab-make">
+  <div class="card">
+    <h2>1 · Service date</h2>
+    <p class="hint">Pick the day the schedule is FOR. A <b>Saturday</b> makes the combined <b>Sat + Sun</b> weekend format.</p>
+    <div class="row">
+      <div class="fld"><label>Service date</label><input type="date" id="svcDate"></div>
+      <div class="fld"><label>Mode</label><span id="modeLbl" class="pill">—</span></div>
+      <div style="margin-left:auto" class="fld"><label>&nbsp;</label>
+        <span><button class="act" id="btnLoadUsual">↧ Load usual routes</button>
+        <button class="ghost" id="btnReset">Reset day</button></span></div>
+    </div>
+    <div id="loadUsualNote" class="small" style="margin-top:6px"></div>
+    <div id="renewalBanner"></div>
+  </div>
+  <div id="dayBlocks"></div>
+  <div class="card" id="offCard">
+    <h2>Who’s OFF <span class="pill" id="offNote"></span></h2>
+    <div class="tools"><button class="ghost" id="btnSuggestOff">Auto-suggest OFF (everyone not scheduled)</button></div>
+    <input id="offList" style="width:100%" placeholder="Comma-separated names">
+    <label style="margin-top:8px">One-off WhatsApp notes (optional, one per line)</label>
+    <div class="small" style="margin:-2px 0 4px">Rare inline notes that belong on the schedule post itself (most one-offs historically went in a SEPARATE “Reminders – please:” companion post, 247× in chat). Actual service changes like a Cardboard route or a Hand Service run are NOT notes — add them with “+ Add route row”. Use this box only for short day-specific lines, e.g. “swap out Crowne Plaza today”, “no service at Faith Presbyterian”. Routine standing instructions belong in the separate reminders post.</div>
+    <textarea id="dayNotes" rows="2" style="width:100%"></textarea>
+  </div>
+  <div class="card">
+    <div class="tools"><button class="act" id="btnGen">Generate ▶</button>
+      <span class="small">Checks run automatically; the review popup opens on Generate.</span></div>
+    <div id="valPanel"></div>
+    <div class="flex2" style="margin-top:11px">
+      <div><div class="tools"><b>WhatsApp post</b> <span class="pill">to workers</span><button class="ghost" data-copy="outWA">Copy</button></div><div class="out" id="outWA"></div></div>
+      <div><div class="tools"><b>Kakao copy</b> <span class="pill">to equipment office</span><button class="ghost" data-copy="outKK">Copy</button></div><div class="out" id="outKK"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="tab" id="tab-equip"><div class="card"><h2>Equipment list</h2>
+  <table id="equipTbl"><thead><tr><th style="width:70px">EQ #</th><th style="width:90px">Plate</th><th style="width:110px">Kind</th><th style="width:80px">Status</th><th style="width:70px">Helper may drive</th><th>Note</th><th style="width:40px"></th></tr></thead><tbody></tbody></table>
+  <div style="margin-top:8px"><button class="mini" id="btnAddEquip">+ Add equipment</button> <span class="small">Kinds: FrontLoader, Cardboard, Fork, RollOff, Rail</span></div></div></section>
+
+<section class="tab" id="tab-drivers"><div class="card"><h2>Driver pool</h2>
+  <table id="driverTbl"><thead><tr><th style="width:90px">Name</th><th style="width:45px">Solo</th><th style="width:55px">Trainee</th><th style="width:90px">Out until</th><th>Reason</th><th style="width:40px"></th></tr></thead><tbody></tbody></table>
+  <div style="margin-top:8px"><button class="mini" id="btnAddDriver">+ Add driver</button></div><div id="driverAbility"></div></div></section>
+
+<section class="tab" id="tab-helpers"><div class="card"><h2>Helper pool</h2>
+  <table id="helperTbl"><thead><tr><th style="width:120px">Name</th><th style="width:100px">Out until</th><th>Reason</th><th style="width:130px">Can drive (kinds)</th><th style="width:150px">Knows routes</th><th style="width:40px"></th></tr></thead><tbody></tbody></table>
+  <div style="margin-top:8px"><button class="mini" id="btnAddHelper">+ Add helper</button></div></div></section>
+
+<section class="tab" id="tab-routes">
+  <div class="card"><h2>Routes &amp; days</h2>
+    <p class="hint"><b>Day→bases</b> = usual bases per byDay day, e.g. <code>Tue:CampBlaz+AAFB; Thu:CampBlaz</code>. All three bases always appear as checkboxes on the assignment; these are the ones ticked by default.</p>
+    <table id="routeTbl"><thead><tr><th style="width:90px">Route</th><th style="width:95px">WA label</th><th style="width:75px">Kinds</th><th style="width:45px">No truck</th><th style="width:105px">Days</th><th style="width:70px">Base pass</th><th style="width:220px">Day→bases / bases</th><th style="width:50px">Helper</th><th style="width:40px"></th></tr></thead><tbody></tbody></table>
+    <div style="margin-top:8px"><button class="mini" id="btnAddRoute">+ Add route</button></div>
+    <div id="startGrid"></div>
+  </div>
+  <div class="card"><h2>Usual routes to preload per weekday</h2><table id="usualTbl"><thead><tr><th style="width:90px">Day</th><th>Routes</th></tr></thead><tbody></tbody></table></div>
+  <div class="card"><h2 class="warnicon">⚠️ Base-pass matrix (inline) — verify</h2><div id="baseMatrix"></div></div>
+</section>
+
+<section class="tab" id="tab-passes"><div class="card"><h2>Base-pass tracker</h2>
+  <p class="hint">Per-current-driver expiry (yymmdd). Internal only — never printed. <b>“Expiring soon” window</b> and all thresholds are set here (centralized).</p>
+  <div class="row" style="margin-bottom:8px"><div class="fld"><label>“Expiring soon” window (days before expiry)</label><input id="renewDays" type="number" style="width:90px"></div></div>
+  <table id="passTbl"><thead><tr><th style="width:120px">Driver</th><th>Camp Blaz</th><th>NBG</th><th>AAFB</th><th style="width:210px">Status (today)</th></tr></thead><tbody></tbody></table></div></section>
+
+<section class="tab" id="tab-wording">
+  <div class="card"><h2>Switch / dump note builder</h2>
+    <p class="hint">Composable: Subject + Action + Target + Timing. Edit the option lists here; on an assignment you pick from these dropdowns (Target = truck dropdown that hides Unable trucks / flags ⚠️ Unfamiliar, plus Yard).</p>
+    <div class="flex2">
+      <div><label>Subjects</label><input id="swSubjects" style="width:100%"></div>
+      <div><label>Actions</label><input id="swActions" style="width:100%"></div>
+      <div><label>Timings</label><input id="swTimings" style="width:100%"></div>
+      <div><label>Non-truck targets (e.g. Yard)</label><input id="swTargets" style="width:100%"></div>
+    </div>
+  </div>
+  <div class="card"><h2>VCC / renewed-pass reminder builder</h2>
+    <p class="hint">Composable with a <code>{base}</code> variable (like {truck}). Kakao auto-phrases as “to collect renewed {base} base pass”. Add presets for one-offs (passport/GDOL ID).</p>
+    <table id="vccTbl"><thead><tr><th style="width:170px">When</th><th>WhatsApp ({base} allowed)</th><th>Kakao ({base} allowed)</th><th style="width:40px"></th></tr></thead><tbody></tbody></table>
+    <div style="margin-top:8px"><button class="mini" id="btnAddVcc">+ Add version</button></div>
+  </div>
+  <div class="card"><h2>Reason &amp; break option lists</h2>
+    <label>Override reasons</label><input id="reasonOpts" style="width:100%">
+    <label style="margin-top:6px">Break values (include “No break”)</label><input id="breakOpts" style="width:100%"></div>
+  <div class="card"><h2>Message wording</h2>
+    <div class="flex2">
+      <div><label>WhatsApp title</label><input id="waTitle" style="width:100%">
+        <label style="margin-top:6px">WhatsApp ack line</label><input id="waAck" style="width:100%">
+        <label style="margin-top:6px">Standing reminders (WhatsApp; keep empty to omit wash-type notes)</label><textarea id="waReminders" rows="2" style="width:100%"></textarea></div>
+      <div><label>Kakao weekday opener {weekday} {date}</label><input id="kkOpen" style="width:100%">
+        <label style="margin-top:6px">Kakao weekend opener {satdate} {sundate}</label><input id="kkOpenWe" style="width:100%">
+        <label style="margin-top:6px"><input type="checkbox" id="kkPlates"> Show plates on Kakao</label>
+        <label style="margin-top:10px">Common review items (one per line)</label><textarea id="checklistItems" rows="4" style="width:100%"></textarea></div>
+    </div></div>
+</section>
+
+<section class="tab" id="tab-backup">
+  <div class="card"><h2>Save / share all settings</h2>
+    <p class="hint">Saved in this browser week to week. Export = one <code>.json</code> = portable single source of truth. If source data lives on a SharePoint Excel, export it to CSV and re-Import here when it changes (no login/backend needed).</p>
+    <div class="tools"><button class="act" id="btnExport">⬇ Export settings (.json)</button><button class="ghost" id="btnImport">⬆ Import settings (.json)</button>
+      <input type="file" id="cfgFile" accept=".json" style="display:none"><button class="ghost" id="btnDefaults">Restore built-in defaults</button>
+      <span class="small">Settings version <input id="cfgVer" style="width:120px"></span></div></div>
+  <div class="card"><h2>Data source links</h2><table id="dsTbl"><thead><tr><th style="width:130px">Pool</th><th>Link</th><th style="width:180px">Format</th><th>Note</th></tr></thead><tbody></tbody></table></div>
+  <div class="card"><h2>History</h2><div class="tools"><button class="ghost" id="btnExportLog">Export log (.csv)</button><button class="ghost" id="btnClearLog">Clear</button></div><div id="runLog" class="small"></div></div>
+</section>
+
+<section class="tab" id="tab-readme"><div class="card" id="readmeBody"></div></section>
+<section class="tab" id="tab-help"><div class="card" id="helpBody"></div></section>
+</main>
+
+<div class="modalbg" id="checklistModal"><div class="modal">
+  <h3>Before posting</h3>
+  <div id="checklistBody"></div>
+  <div style="margin-top:14px;text-align:right">
+    <button class="ghost" id="btnChkCancel">Close without posting</button>
+    <button class="act" id="btnChkDone">Done</button></div>
+</div></div>
+
+<div class="savebar" id="saveState">Ready.</div>
+
+<script>
+"use strict";
+const APP_VERSION="10.1";
+const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const DOWfull=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const KINDS=["FrontLoader","Cardboard","Fork","RollOff","Rail"];
+const BASES=["AAFB","CampBlaz","NBG"];
+const BASE_LABEL={CampBlaz:"Camp Blaz",NBG:"NBG",AAFB:"AAFB"};
+const BASE_CAPS={CampBlaz:"CAMP BLAZ",NBG:"NBG",AAFB:"AAFB"};
+const ABILITY_LABEL={able:"Able to operate",unfamiliar:"Unfamiliar with operation",unable:"Unable to operate"};
+
+function defaultConfig(){
+ // ability helper: front-loader drivers can't do roll-off trucks
+ const noRO={"EQ-09":"unable","EQ-10":"unable","EQ-11":"unable","EQ-18":"unable"};
+ return {
+ cfgVersion:"260720-14", renewDays:30,
+ trucks:[
+  {id:"EQ-01",plate:"615 CV",kind:"FrontLoader",status:"active",helperCanDrive:false,note:""},
+  {id:"EQ-02",plate:"658 CV",kind:"FrontLoader",status:"down",helperCanDrive:false,note:"Out of commission"},
+  {id:"EQ-03",plate:"4741 CV",kind:"FrontLoader",status:"active",helperCanDrive:false,note:""},
+  {id:"EQ-04",plate:"4740 CV",kind:"Cardboard",status:"active",helperCanDrive:false,note:"Cardboard only (no trash routes)"},
+  {id:"EQ-09",plate:"2824 CV",kind:"RollOff",status:"active",helperCanDrive:false,note:""},
+  {id:"EQ-10",plate:"1215 CV",kind:"RollOff",status:"active",helperCanDrive:false,note:""},
+  {id:"EQ-11",plate:"4440 CV",kind:"RollOff",status:"down",helperCanDrive:false,note:"Out of commission"},
+  {id:"EQ-12",plate:"1712 CV",kind:"Fork",status:"active",helperCanDrive:false,note:""},
+  {id:"EQ-13",plate:"449 TBJ",kind:"Fork",status:"active",helperCanDrive:false,note:""},
+  {id:"EQ-15",plate:"4973 CV",kind:"FrontLoader",status:"active",helperCanDrive:false,note:"RHD; hill-capable"},
+  {id:"EQ-16",plate:"829 CV",kind:"FrontLoader",status:"active",helperCanDrive:false,note:"RHD; hill-capable"},
+  {id:"EQ-18",plate:"2327 CV",kind:"RollOff",status:"active",helperCanDrive:false,note:"Newest"},
+  {id:"VE-02",plate:"ME 1170",kind:"Rail",status:"active",helperCanDrive:true,note:"Rail truck — helpers may drive it."}
+ ],
+ drivers:[
+  {name:"Abeth",kinds:["FrontLoader","Cardboard"],solo:true,trainee:false,outUntil:"",reason:"",ability:Object.assign({"EQ-15":"able","EQ-16":"able"},noRO),canGuide:[],needsGuide:[]},
+  {name:"Allan",kinds:["RollOff","Fork"],solo:true,trainee:false,outUntil:"",reason:"",ability:{"EQ-15":"unable","EQ-16":"unable","EQ-12":"able","EQ-13":"able","EQ-01":"able","EQ-02":"able","EQ-03":"able","EQ-04":"able","EQ-09":"able","EQ-10":"able","EQ-11":"able","EQ-18":"able","VE-02":"able"},canGuide:[],needsGuide:[]},
+  {name:"Bong",kinds:["FrontLoader","Cardboard","Fork","RollOff"],solo:true,trainee:false,outUntil:"",reason:"",ability:{"EQ-18":"unfamiliar","EQ-15":"unfamiliar","EQ-16":"unfamiliar"},canGuide:[],needsGuide:[]},
+  {name:"Celso",kinds:["FrontLoader","Cardboard"],solo:true,trainee:false,outUntil:"",reason:"",ability:Object.assign({"EQ-15":"able","EQ-16":"able"},noRO),canGuide:[],needsGuide:[]},
+  {name:"Graymar",kinds:["RollOff","Fork"],solo:true,trainee:false,outUntil:"",reason:"",ability:{"EQ-15":"unable","EQ-16":"unable","EQ-12":"able","EQ-13":"able","EQ-01":"able","EQ-02":"able","EQ-03":"able","EQ-04":"able","EQ-09":"able","EQ-10":"able","EQ-11":"able","EQ-18":"unfamiliar","VE-02":"able"},canGuide:[],needsGuide:[]},
+  {name:"Miarfy",kinds:["FrontLoader","Fork"],solo:true,trainee:false,outUntil:"",reason:"",ability:Object.assign({"EQ-15":"able","EQ-16":"able","EQ-12":"able","EQ-13":"able"},noRO),canGuide:[],needsGuide:[]},
+  {name:"Racel",kinds:["FrontLoader","Cardboard"],solo:true,trainee:false,outUntil:"",reason:"",ability:Object.assign({"EQ-15":"unfamiliar","EQ-16":"unfamiliar"},noRO),canGuide:[],needsGuide:[]},
+  {name:"Robert",kinds:["Fork"],solo:false,trainee:false,outUntil:"",reason:"",ability:{"EQ-12":"able","EQ-13":"able","VE-02":"able","EQ-01":"unable","EQ-02":"unable","EQ-03":"unable","EQ-04":"unable","EQ-09":"unable","EQ-10":"unable","EQ-11":"unable","EQ-15":"unable","EQ-16":"unable","EQ-18":"unable"},canGuide:[],needsGuide:[]}
+ ],
+ helpers:[
+  {name:"Joseph",outUntil:"",reason:"",canDrive:["Rail"],knows:[]},
+  {name:"Ramdhel",outUntil:"",reason:"",canDrive:[],knows:[]},
+  {name:"Ron",outUntil:"",reason:"",canDrive:["Rail"],knows:[]},
+  {name:"Davis",outUntil:"",reason:"",canDrive:[],knows:[]}
+ ],
+ basePasses:{
+  Abeth:{CampBlaz:"260724",NBG:"260724",AAFB:"270417"},
+  Celso:{CampBlaz:"261214",NBG:"",AAFB:"260821"},
+  Graymar:{CampBlaz:"261214",NBG:"",AAFB:"270306"},
+  Racel:{CampBlaz:"261214",NBG:"261214",AAFB:"260814"},
+  Bong:{CampBlaz:"270411",NBG:"260609",AAFB:"260612"},
+  Allan:{CampBlaz:"261214",NBG:"261214",AAFB:"260814"},
+  Miarfy:{CampBlaz:"260129",NBG:"270126",AAFB:"270417"},
+  Robert:{CampBlaz:"",NBG:"",AAFB:""}
+ },
+ routes:[
+  {name:"Northern",waLabel:"NORTHERN ROUTE",kinds:["FrontLoader"],noTruck:false,days:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+    startByDay:{Mon:"03:00",Tue:"03:00",Wed:"02:00",Thu:"02:00",Fri:"02:30",Sat:"03:00",Sun:"06:00"},needsHelper:true,
+    basePass:"byDay",dayBases:{Tue:["CampBlaz","AAFB"],Thu:["CampBlaz"],Fri:["CampBlaz"]},bases:[]},
+  {name:"Central",waLabel:"CENTRAL ROUTE",kinds:["FrontLoader"],noTruck:false,days:["Tue"],startByDay:{Tue:"03:00"},needsHelper:false,basePass:"never",dayBases:{},bases:[]},
+  {name:"Southern",waLabel:"SOUTHERN ROUTE",kinds:["FrontLoader"],noTruck:false,days:["Mon","Tue","Thu","Fri"],startByDay:{Mon:"03:00",Tue:"03:00",Thu:"02:00",Fri:"02:30"},needsHelper:true,basePass:"byDay",dayBases:{Thu:["NBG"]},bases:[]},
+  {name:"Cardboard",waLabel:"CARDBOARD",kinds:["Cardboard","FrontLoader"],noTruck:false,days:["Mon","Tue","Wed","Thu","Fri"],startByDay:{Mon:"06:00",Tue:"06:00",Wed:"06:00",Thu:"06:00",Fri:"06:00"},needsHelper:true,basePass:"byDay",dayBases:{Wed:["AAFB","CampBlaz"],Thu:["NBG"]},bases:[]},
+  {name:"Fork Service",waLabel:"FORK SERVICE",kinds:["Fork"],noTruck:false,days:["Mon","Tue","Wed","Thu","Fri"],startByDay:{Mon:"06:00",Tue:"06:00",Wed:"06:00",Thu:"06:00",Fri:"06:00"},needsHelper:true,basePass:"byOrder",dayBases:{},bases:[]},
+  {name:"Roll-Off",waLabel:"ROLL-OFF",kinds:["RollOff"],noTruck:false,days:["Mon","Tue","Wed","Thu","Fri"],startByDay:{Mon:"06:00",Tue:"06:00",Wed:"06:00",Thu:"06:00",Fri:"06:00"},needsHelper:false,basePass:"always",dayBases:{},bases:["AAFB","CampBlaz","NBG"]},
+  {name:"Rail Truck",waLabel:"RAIL TRUCK",kinds:["Rail"],noTruck:false,days:["Tue","Wed","Thu"],startByDay:{Tue:"07:00",Wed:"07:00",Thu:"07:00"},needsHelper:true,basePass:"never",dayBases:{},bases:[]},
+  {name:"Standby",waLabel:"STANDBY",kinds:["FrontLoader","Cardboard","Fork","RollOff","Rail"],noTruck:false,noDriver:false,standbyNote:true,days:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],startByDay:{},needsHelper:false,basePass:"never",dayBases:{},bases:[]},
+  {name:"Yard",waLabel:"YARD",kinds:[],noTruck:true,noDriver:true,days:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],startByDay:{Mon:"08:00",Tue:"08:00",Wed:"07:00",Thu:"07:00",Fri:"08:00",Sat:"08:00",Sun:"08:00"},needsHelper:false,basePass:"never",dayBases:{},bases:[]}
+ ],
+ fallbackStart:"06:00",
+ usualRoutesByDay:{
+   Mon:["Northern","Southern","Cardboard","Fork Service","Roll-Off","Yard"],
+   Tue:["Northern","Central","Southern","Cardboard","Fork Service","Roll-Off","Yard"],
+   Wed:["Northern","Cardboard","Fork Service","Roll-Off","Yard"],
+   Thu:["Northern","Southern","Cardboard","Fork Service","Roll-Off","Yard"],
+   Fri:["Northern","Southern","Cardboard","Fork Service","Roll-Off","Yard"],
+   Sat:["Northern","Yard"], Sun:["Northern","Yard"]
+ },
+ swSubjects:["PLEASE","DRIVER TO","HELPER TO",""],
+ swActions:["SWITCH TO","DUMP"],
+ swTimings:["AFTER ROUTE","AFTER DUMPING","BEFORE ROUTE",""],
+ swTargets:["YARD"],
+ vccVersions:[
+   {when:"Get pass at {base} VCC",wa:"PLEASE GET BASE PASS AT {base} VCC",kk:"to collect renewed {base} base pass"},
+   {when:"Process {base} add-on",wa:"DRIVER PLEASE PROCESS THE {base} BASE PASS ADD-ON AT VCC",kk:"to process {base} base pass add-on at VCC"},
+   {when:"{base} pickup — bring passport + GDOL ID",wa:"PLEASE BRING PASSPORT AND GDOL ID",kk:"to collect renewed {base} base pass"},
+   {when:"{base} pickup — bring DBIDS + passport + GDOL ID",wa:"PLEASE BRING DBIDS, PASSPORT, AND GDOL ID",kk:"to collect renewed {base} base pass"}
+ ],
+ reasonOptions:["Truck down","Driver out / no-show","Route rolled over","Part-day shift (morning/afternoon only)","Customer request","Holiday schedule","Short-staffed","Weather / typhoon","Other"],
+ breakOptions:["No break","3AM","4AM","5AM","6AM","7AM","8AM","9AM","10AM","11AM","12PM","1PM","2PM","3PM","4PM","5PM","6PM","Other"],
+ waTitle:"*SCHEDULE REMINDER*",
+ waAck:"*PLEASE ACKNOWLEDGE READING THE SCHEDULE BY REACTING WITH A 👍🏻 EMOJI TO THIS POST*",
+ waReminders:[],
+ kkOpen:"Good afternoon, {weekday} {date} schedule for your review sir:",
+ kkOpenWe:"Saturday {satdate} & Sunday {sundate} schedules for your review sir:",
+ kkPlates:true,
+ checklistItems:[
+   "Every route that runs today is on the schedule (nothing skipped/rolled over without a make-up day).",
+   "Start times and break overrides are right for today.",
+   "Switch / VCC notes read correctly in BOTH WhatsApp and Kakao.",
+   "OFF list is complete; no-shows accounted for."
+ ],
+ dynChecklist:{cardboard:"How full is the cardboard truck? (affects the cardboard route start time.)",weekend:"Weekend post covers BOTH Saturday and Sunday."},
+ dataSources:{basePassTracker:{link:"",format:"Excel/CSV: name, CampBlaz/NBG/AAFB expiry",note:"DBIDS & AAFB Pass Tracker — master (Import CSV when it changes)"},driverPool:{link:"",format:"",note:""},helperPool:{link:"",format:"",note:""},equipment:{link:"",format:"",note:""},hoursToDate:{link:"",format:"Timesheet export",note:"Cost projection (future)"}},
+ costs:{enabled:false,otAfterHrs:40,otMultiplier:1.5,regularShiftHrs:8,defaultRate:9.25,rates:{},note:"Future OT projection."},
+ disposalSites:[
+   {name:"Rubbishman transfer station",waste:["trash"],cutoff:"15:00",note:"MSW/general trash"},
+   {name:"Guahan (cardboard recycling)",waste:["cardboard"],cutoff:"16:00",note:"Cardboard dump"},
+   {name:"Layon landfill (GSWA)",waste:["trash"],cutoff:"15:00",note:"Landfill; mind GSWA breaks"},
+   {name:"Pyramid / JY Recycling",waste:["ewaste","metal"],cutoff:"16:00",note:"E-waste / metal"}
+ ],
+ baseRequirements:{ AAFB:["DBIDS","AAFB pass"], CampBlaz:["DBIDS","Camp Blaz pass"], NBG:["DBIDS","passport","GDOL ID"] },
+ dumpTime:{ enabled:false, defaultSpeedMultiplier:1.0,
+   note:"Future: finish = route start + (actualHoursByRouteDay[route][day] x driverSpeedMultiplier[driver]); compare to disposalSites cutoff; flag 'won't reach tipping in time'. <1 faster, >1 slower.",
+   actualHoursByRouteDay:{}, driverSpeedMultiplier:{} },
+ _readme:{
+   tool:"Lagu Schedule Generator (single-file HTML)",
+   persistence:"Config persists in this browser. If the browser changes, settings are lost unless you Export the JSON. Source of truth = the settings JSON; if base data lives on SharePoint Excel, export to CSV and re-Import on change (no login/backend).",
+   githubVsHtml:"HTML = the tool (the machine). GitHub = optional shelf/hosting + version history so everyone opens one URL. GitHub Pages fetching a JSON in the SAME public repo needs no login; a SharePoint file always needs sign-in, so it can't be auto-read without a backend.",
+   soonParam:"'Expiring soon' = renewDays (default 30) on the Base Passes tab — centralized.",
+   keyRules:[
+     "Every route shows ALL THREE base checkboxes (AAFB, Camp Blaz, NBG). Usual ones are pre-ticked per day; unticking/ticking away from the usual default requires a reason (logged).",
+     "Bring-pass line separated per base, order AAFB→Camp Blaz→NBG, singular/plural. Never generic 'DBIDS'.",
+     "Base matrix (verify): Northern Tue=CampBlaz+AAFB, Thu=CampBlaz, Fri=CampBlaz (start 2:30AM); Southern Thu=NBG; Cardboard Wed=AAFB+CampBlaz, Thu=NBG; Roll-Off always all three (default checked); Fork byOrder.",
+     "Ability: Allan & Graymar = all trucks EXCEPT EQ-15/16; both can drive EQ-12/13; Miarfy also EQ-12/13; Bong Unfamiliar on EQ-18 & EQ-15/16; Racel Unfamiliar EQ-15/16; Robert only EQ-12/13/VE-02; front-loader drivers can't drive roll-off trucks.",
+     "Switch/dump note = Subject + Action + Target(truck dropdown hides Unable, ⚠️ Unfamiliar; or Yard) + Timing. Kakao drops PLEASE/DRIVER→'to', keeps caps (EQ-##, NBG, AAFB, VCC, Camp Blaz).",
+     "VCC note has {base} variable (dropdown) so 'collect renewed NBG' vs 'AAFB' isn't hardcoded.",
+     "Yard: no driver by default (noDriver). Drivers rarely on Yard.",
+     "Start time = quarter-hour dropdown only (no free minutes). Prefilled per route per day; Friday 2:30AM.",
+     "Expired/none REQUIRED base pass: assignment row LOCKS (only override+reason editable) until resolved; a popup warns if you try other fields; that pass's reminder is dropped for that driver.",
+     "Duplicate route or double-booked worker flagged immediately on the row (yellow) + in review; not blocked.",
+     "Review popup: 3 sections — Resolve (errors), Review (warnings), Common items (dynamic: cardboard-fullness only if a cardboard route; weekend item only on weekends; base-pass renewals list actual names). Close-without-posting allowed; Done requires all ticked.",
+     "Kakao omits worker bring-pass reminders; opener 'Good afternoon, {Weekday} MM/DD schedule for your review sir:' / weekend 'Saturday MM/DD & Sunday MM/DD schedules for your review sir:', no closer.",
+     "Roster 260720: drivers Abeth/Allan/Bong/Celso/Graymar/Miarfy/Racel/Robert; helpers Joseph/Ramdhel/Ron/Davis."
+   ],
+   openQuestions:["Confirm Northern Tue=CampBlaz+AAFB and Southern has no Tue pass.","Confirm ability edits (Allan/Graymar all-but-15/16; Miarfy fork)."],
+   versionLog:[
+     {v:"260720-14",note:"v10.1 PATCH: Dump option label 'Dump only (no route)' + truck dropdown fixed (was empty); Hand Service add-route option (trucks VE-02/EQ-12/EQ-13, driver list adds rail-capable helpers); Standby now has a truck dropdown; double-book/duplicate flags unified ALL-CAPS with subject prefix (ROUTE/EQ/DRIVER/HELPER DOUBLE-BOOKED) + consistent red-bubble style (removed yellow bg); README added as its own in-app TAB (renders _readme incl GitHub step-by-step); base-pass expiring wording 'confirm renewed <base> pass is ready (expires YYMMDD)'; VCC {base} variable everywhere (add-on + pickups no longer hardcode Camp Blaz/NBG), de-duplicated versions, 'Base for {base}' label -> 'Base'; switch-note no longer collapses on subject/action change (a._noteOpen persists <details>); 'HELPER TO' subject only offered when a helper is assigned; VE-02 in switch target only for rail-capable helpers; helper+DUMP -> VE-02 only, no Yard; PER-ROW lock restored (expired/missing required ticked pass locks only THAT row's non-override fields, popup on attempt; other routes stay editable); Generate shows 'cannot finalize until Resolve fixed' and checklist Done stays blocked until all ticked; START TIME now hour + minute(00/15/30/45) + AM/PM dials (stored HH:MM; no free-minute entry); one-off notes guideline corrected (Cardboard/Hand Service belong in Add-a-route, not notes). DEFERRED: GitHub fetch-settings-on-load + 'Load latest' button (needs repo hosted; steps documented in Readme tab)."},
+     {v:"260720-13",note:"v9.1 PATCH: row-LOCK removed (expired/missing pass flags in Review only, never disables other fields, no popup); switch/dump target logic — VE-02 shown for all drivers (Please/Driver), Helper subject shows VE-02 only for rail-capable helpers (Ron/Joseph, editable via helper.canDrive), Yard hidden when subject Driver/Please or action DUMP, Helper+DUMP => VE-02 only; VCC 'Bring {base} pass' removed (checkbox job), {base} variable throughout, base dropdown default BLANK; Dump-truck route option (no + prefix, empty truck, base-pass block hidden); Standby route added to add-route list; break options full 3AM-6PM range + custom field only shows when Other; Sat/Sun need no helper (H03 suppressed weekends); EQUIPMENT double-booking flagged on row (bold red) like workers; double-booked pill made bold/red; base-pass 'expiring' wording => 'Confirm if X's <base> renewed pass is ready (expires YYMMDD)'; checklist sorted most->least substantive within Resolve/Review, scheduled start-times listed under Review (anti-autopilot), rollover/redistribution timing question added under Routine, base-pass renewal items dynamic; disposalSites + baseRequirements + dumpTime spec added; suggest-OFF fixed (sandbox-safe, no confirm(); inline confirm note). REQUIREMENTS ALWAYS ENFORCED: ALL checkboxes 16px uniform (CSS input[type=checkbox]); capitalization preserved for EQ-##/NBG/AAFB/VCC/Camp Blaz/GDOL/DBIDS in Kakao (smartLower). DEFERRED (need dedicated turns): (1) start time as separate hour+minute(quarter)+AM/PM dials; (2) GitHub Pages fetch lagu_settings.json on load + version stamp + 'Load latest' button. ANSWERS: autoload-vs-button => keep BUTTON (autoload silently wipes rows on date change); allow Generate with unresolved Resolve item => NO (Done stays blocked until every item ticked; Resolve = hard errors)."},
+     {v:"260720-10",note:"v7.0: per-base bring-pass, Kakao opener, ability, dup-flag, custom routes."},
+     {v:"260720-12",note:"v8.1 PATCH: lightweight spell/format checks (double/trailing space, unmatched *, common typos) flag custom inputs; ALL checkboxes forced 16px consistent (CSS input[type=checkbox]); capitalization preserved for EQ-##/NBG/AAFB/VCC/Camp Blaz/GDOL/DBIDS in Kakao via smartLower; checklist codes replaced with plain-language tags + legend, override reasons shown, ‘Common checks’→‘Routine checks’, Done blocks with popup if unticked; Graymar EQ-18 Unfamiliar; Yard shows ‘— none —’ driver; base-change-without-reason moved to RESOLVE (error); Dump-truck route option added; double-booked worker flagged instantly on row (red) + in review. FINDING: one-off operational notes historically went in a SEPARATE ‘Reminders – please:’ companion post (247×), essentially never inline in the schedule reminder (1×) — so the one-off field is for the rare inline case; routine one-offs belong in a separate reminders post. Checklist is dynamic (drops cardboard item with no cardboard route; weekend item only on weekends; base-pass renewal list only names with expiring/expired). Worker pool linked: renewal banner + OFF suggest use current-driver set. Prefill start pros: matches near-identical week pattern, fewer keystrokes/typos, consistency; cons: cruise-control risk (mitigated by editable dropdown + cardboard-fullness review item)."},
+     {v:"260720-11",note:"v8.0: all-3-base checkboxes w/ default+reason-on-change, horizontal; uniform checkbox size; ability (Allan/Graymar all-but-15/16, Miarfy fork, Bong unfamiliar 18); Yard no-driver default; Kakao EQ- caps; VCC {base} variable; composable switch builder (subject/action/target/timing) hiding Unable+flagging Unfamiliar, Yard target; suggest-OFF working w/ confirm; quarter-hour dropdown; lock row on expired required pass; immediate dup/double-book flag; checklist 3 sections + close-without-posting; Friday 2:30; renewDays centralized; wording inventory."}
+   ]
+ }
+};}
+
+/* ---------- STATE ---------- */
+let CFG, DAY, LOG;
+function load(k,f){try{const v=JSON.parse(localStorage.getItem(k));return v??f;}catch(e){return f;}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}flash("Saved.");}
+function persist(){save("lg_cfg",CFG);} function saveDay(){save("lg_day",DAY);}
+function flash(m){const s=el("saveState");if(s)s.textContent=m+"  ("+new Date().toLocaleTimeString()+")";}
+function el(id){return document.getElementById(id);}
+function csv(s){return (s||"").split(",").map(x=>x.trim()).filter(Boolean);}
+function opt(v,sel,label){return `<option value="${(v+'').replace(/"/g,'&quot;')}"${v===sel?" selected":""}>${label??v}</option>`;}
+function esc(s){return (s||'').replace(/"/g,'&quot;');}
+function pad(n){return String(n).padStart(2,"0");}
+function isoParts(iso){const d=new Date(iso+"T00:00:00");return {dow:d.getDay(),yymmdd:pad(d.getFullYear()%100)+pad(d.getMonth()+1)+pad(d.getDate()),full:DOWfull[d.getDay()],dow3:DOW[d.getDay()],long:`${DOWfull[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`,slashed:pad(d.getMonth()+1)+"/"+pad(d.getDate())};}
+function addDaysISO(iso,n){const d=new Date(iso+"T00:00:00");d.setDate(d.getDate()+n);return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;}
+function timeToLabel(t){if(!t||!/^\d{1,2}:\d{2}$/.test(t))return t||"";let [h,m]=t.split(":").map(Number);const p=h<12?"AM":"PM";let h12=h%12||12;return m===0?`${h12}${p}`:`${h12}:${pad(m)}${p}`;}
+function plus5Label(t){if(!/^\d{1,2}:\d{2}$/.test(t))return "";let [h,m]=t.split(":").map(Number);h=(h+5)%24;return timeToLabel(pad(h)+":"+pad(m));}
+function todayYYMMDD(){const d=new Date();return pad(d.getFullYear()%100)+pad(d.getMonth()+1)+pad(d.getDate());}
+function quarterOptions(){const out=[];for(let h=0;h<24;h++)for(const m of[0,15,30,45])out.push(pad(h)+":"+pad(m));return out;}
+function splitTime(t){if(!/^\d{1,2}:\d{2}$/.test(t||""))t="06:00";let[h,m]=t.split(":").map(Number);const ap=h<12?"AM":"PM";let h12=h%12||12;return{h12,m,ap};}
+function joinTime(h12,m,ap){h12=+h12;let h=h12%12;if(ap==="PM")h+=12;return pad(h)+":"+pad(+m);}
+function startPicker(a){const{h12,m,ap}=splitTime(a.start);const hrs=[];for(let i=1;i<=12;i++)hrs.push(i);
+  return `<div style="display:flex;gap:3px">`+
+    `<select class="sth">${hrs.map(x=>opt(x,h12,x)).join("")}</select>`+
+    `<select class="stm">${[0,15,30,45].map(x=>opt(x,m,pad(x))).join("")}</select>`+
+    `<select class="stap">${["AM","PM"].map(x=>opt(x,ap)).join("")}</select></div>`;}
+
+function truckById(id){return CFG.trucks.find(t=>t.id===id);}
+function driverByName(n){return CFG.drivers.find(d=>d.name===n);}
+function helperByName(n){return CFG.helpers.find(h=>h.name===n);}
+function routeByName(n){return CFG.routes.find(r=>r.name===n);}
+function isOut(o,y){return o&&String(o).length===6&&y<=String(o);}
+function availDrivers(y){return CFG.drivers.filter(d=>!isOut(d.outUntil,y));}
+function availHelpers(y){return CFG.helpers.filter(h=>!isOut(h.outUntil,y));}
+function activeTrucks(){return CFG.trucks.filter(t=>t.status==="active");}
+function trucksForRoute(route){const r=routeByName(route);if(!r||r.noTruck)return [];return activeTrucks().filter(t=>r.kinds.includes(t.kind));}
+function abilityFor(driver,truck){const d=driverByName(driver),t=truckById(truck);if(!d||!t)return "unable";const ex=(d.ability||{})[truck];if(ex)return ex;return (d.kinds||[]).includes(t.kind)?"able":"unable";}
+function passStatus(driver,base,y){const bp=(CFG.basePasses||{})[driver]||{};const exp=bp[base];if(!exp)return {s:"none",exp:""};if(y>String(exp))return {s:"expired",exp};const toD=s=>new Date(2000+ +s.slice(0,2),(+s.slice(2,4))-1,+s.slice(4,6));const diff=(toD(exp)-toD(y))/86400000;return {s:diff<=(CFG.renewDays||30)?"expiring":"ok",exp};}
+function startFor(r,dow3){return (r.startByDay&&r.startByDay[dow3])||CFG.fallbackStart||"06:00";}
+function usualBases(r,dow3){if(!r)return[];if(r.basePass==="always")return (r.bases||[]).slice();if(r.basePass==="byDay")return ((r.dayBases&&r.dayBases[dow3])||[]).slice();return [];}
+function orderBases(arr){return BASES.filter(b=>arr.includes(b));}
+function smartLower(s){let x=(s||"").toLowerCase();
+  x=x.replace(/eq-\s?(\d+|__)/g,(m,n)=>"EQ-"+n);
+  x=x.replace(/\bnbg\b/g,"NBG").replace(/\baafb\b/g,"AAFB").replace(/\bvcc\b/g,"VCC").replace(/\bgdol\b/g,"GDOL").replace(/\bdbids\b/g,"DBIDS");
+  x=x.replace(/camp blaz/g,"Camp Blaz").replace(/\byard\b/g,"Yard");
+  x=x.replace(/\b(cv|tbj|tbg)\b/g,m=>m.toUpperCase());
+  return x;}
+function fillTruck(tpl,truckId){const t=truckById(truckId);const tk=t?`${t.id} ${t.plate}`:(truckId==="YARD"?"YARD":(truckId||"EQ-__"));return (tpl||"").replace(/\{truck\}/g,tk);}
+function fillBase(tpl,base){return (tpl||"").replace(/\{base\}/g,BASE_CAPS[base]||base||"{base}");}
+
+/* switch note from structured parts */
+function switchText(a){if(!a.sw||!a.sw.action)return "";const s=a.sw;const tgt=s.target==="YARD"?"YARD":(s.target?fillTruck("{truck}",s.target):"");
+  let parts=[s.subject,s.action,tgt,s.timing].filter(Boolean);return parts.join(" ").replace(/\s+/g," ").trim();}
+function switchWA(a){const t=switchText(a);return t?("*"+t.toUpperCase()+"*"):"";}
+function switchKK(a){let t=switchText(a);if(!t)return "";t=smartLower(t);t=t.replace(/\bplease\s+/g,"");t=t.replace(/^driver\s+to\s+/,"to ");
+  if(!/^(to |helper )/.test(t)&&/^(switch|dump)\b/.test(t))t="to "+t;return "["+t+"]";}
+function vccWA(a){if(a.vccIdx===""||a.vccIdx==null)return "";if(a.vccIdx==="other")return a.vccWaOther?("*"+a.vccWaOther.toUpperCase()+"*"):"";const v=CFG.vccVersions[a.vccIdx];return v?("*"+fillBase(v.wa,a.vccBase).toUpperCase()+"*"):"";}
+function vccKK(a){if(a.vccIdx===""||a.vccIdx==null)return "";if(a.vccIdx==="other")return a.vccKkOther?("["+smartLower(a.vccKkOther)+"]"):"";const v=CFG.vccVersions[a.vccIdx];return v&&v.kk?("["+smartLower(fillBase(v.kk,a.vccBase))+"]"):"";}
+
+function bringPassNote(bases){const sel=orderBases(bases);if(!sel.length)return "";const caps=sel.map(b=>BASE_CAPS[b]);
+  if(caps.length===1)return `*DRIVER PLEASE BRING ${caps[0]} PASS*`;
+  if(caps.length===2)return `*PLEASE BRING ${caps[0]} AND ${caps[1]} PASSES*`;
+  return `*PLEASE BRING ${caps.slice(0,-1).join(", ")}, AND ${caps[caps.length-1]} PASSES*`;}
+
+function newAssignment(bl,routeName){const r=routeByName(routeName)||CFG.routes[0];const usual=usualBases(r,bl.dow3);
+  const checks={},over={};BASES.forEach(b=>{checks[b]=usual.includes(b);over[b]={override:false,reason:"",rother:""};});
+  return {route:r.name,customName:"",start:startFor(r,bl.dow3),truck:"",driver:"",helper:"",
+    baseChecks:checks,baseUsual:usual.slice(),baseOver:over,
+    sw:{subject:"",action:"",target:"",timing:""},vccIdx:"",vccBase:"",vccWaOther:"",vccKkOther:""};}
+function buildDay(iso){const p=isoParts(iso),isSat=p.dow===6,isSun=p.dow===0,weekend=isSat||isSun;
+  function mk(bIso){const bp=isoParts(bIso);return {iso:bIso,dow3:bp.dow3,long:bp.long,yymmdd:bp.yymmdd,slashed:bp.slashed,full:bp.full,assignments:[],breakOver:{}};}
+  let blocks=isSat?[mk(iso),mk(addDaysISO(iso,1))]:[mk(iso)];
+  return {iso,weekend,mode:weekend?"WEEKEND":"WEEKDAY",blocks,off:[],dayNotes:[]};}
+function ensureDay(){const iso=el("svcDate").value;if(!iso)return null;if(!DAY||DAY.iso!==iso){DAY=buildDay(iso);saveDay();}return DAY;}
+function routeLabelOf(a){if(a.route==="__handservice")return "Hand Service";if(a.route==="__custom")return (a.customName||"Custom");if(a.route==="__dump"){const t=truckById(a.truck);return t?("Dump "+t.id):"Dump truck";}return a.route;}
+function routeSpecOf(a){if(a.route==="__handservice")return {noTruck:false,kinds:["Rail","Fork"],waLabel:"HAND SERVICE",needsHelper:true,basePass:"never",days:DOW,startByDay:{},dayBases:{},bases:[]};if(a.route==="__custom")return {noTruck:false,kinds:KINDS,waLabel:(a.customName||"CUSTOM").toUpperCase(),needsHelper:false,basePass:"never",days:DOW,startByDay:{},dayBases:{},bases:[]};if(a.route==="__dump"){const t=truckById(a.truck);return {noTruck:false,kinds:KINDS,waLabel:t?("DUMP "+t.id+" "+t.plate):"DUMP",needsHelper:false,basePass:"never",days:DOW,startByDay:{},dayBases:{},bases:[]};}return routeByName(a.route);}
+function uniqueStarts(bl){return [...new Set(bl.assignments.map(a=>a.start))].sort();}
+function breakFor(bl,start){const ov=(bl.breakOver||{})[start];if(ov&&ov.value){return ov.value==="Other"?(ov.other||""):ov.value;}return plus5Label(start);}
+/* which checked bases the driver actually holds (drop expired/none from the printed reminder) */
+function effectiveChecked(a,bl){const out=[];BASES.forEach(b=>{if(!a.baseChecks[b])return;const ps=a.driver?passStatus(a.driver,b,bl.yymmdd):{s:"ok"};if(ps.s==="expired"||ps.s==="none")return;out.push(b);});return out;}
+/* is this row locked (required base missing/expired, not yet overridden)? */
+function rowLocked(a,bl){if(!a.driver)return false;let lock=false;BASES.forEach(b=>{if(!a.baseChecks[b])return;const ps=passStatus(a.driver,b,bl.yymmdd);const ov=(a.baseOver||{})[b]||{};if((ps.s==="none"||ps.s==="expired")&&!(ov.override&&(ov.reason==="Other"?ov.rother:ov.reason)))lock=true;});return lock;}
+
+/* ================= VALIDATION ================= */
+
+function lightChecks(){const out=[];const add=(l,c,m,w)=>out.push({l,c,m,w});
+  const typos={"teh":"the","recieve":"receive","adress":"address","occured":"occurred","seperate":"separate","tommorow":"tomorrow","untill":"until","alot":"a lot","thier":"their","wich":"which","enclosur":"enclosure"};
+  function scan(text,where){if(!text)return;
+    if(/  /.test(text)) add("WARN","SP1",`Double space in "${text.slice(0,40)}"`,where);
+    if(/[ \t]$/.test(text)) add("WARN","SP2",`Trailing space in "${text.slice(0,40)}"`,where);
+    const stars=(text.match(/\*/g)||[]).length; if(stars%2!==0) add("WARN","SP3",`Unmatched * (bold) in "${text.slice(0,40)}"`,where);
+    Object.keys(typos).forEach(t=>{if(new RegExp("\\b"+t+"\\b","i").test(text)) add("WARN","SP4",`Possible typo "${t}" → "${typos[t]}" in ${where}`,where);});
+  }
+  DAY.blocks.forEach(bl=>{bl.assignments.forEach((a,i)=>{const w=`${bl.dow3} row ${i+1}`;
+    if(a.route==="__custom")scan(a.customName,w+" (custom name)");
+    if(a.switchWa)scan(a.switchWa,w+" (switch note)");
+    if(a.vccIdx==="other"){scan(a.vccWaOther,w+" (VCC WA)");scan(a.vccKkOther,w+" (VCC Kakao)");}
+  });});
+  (DAY.dayNotes||[]).forEach((n,i)=>scan(n,`one-off note ${i+1}`));
+  return out;}
+
+function validate(){const I=[];const add=(l,c,m,w)=>I.push({l,c,m,w});
+  DAY.blocks.forEach(bl=>{const seenT={},seenD={},seenH={},seenRoute={};
+    bl.assignments.forEach((a,i)=>{const w=`${bl.dow3} row ${i+1}`;const r=routeSpecOf(a);const rl=routeLabelOf(a);
+      if(!r){add("ERROR","R01",`Unknown route "${rl}".`,w);return;}
+      if(seenRoute[rl]) add("WARN","R03",`${rl} appears more than once on ${bl.dow3} — allowed, confirm intentional.`,w); else seenRoute[rl]=w;
+      const usualList=(CFG.usualRoutesByDay||{})[bl.dow3]||[];
+      if(a.route!=="__custom"&&usualList.length&&!usualList.includes(a.route)) add("WARN","R02",`${rl} isn’t usually run on ${bl.dow3} — confirm rollover.`,w);
+      if(!r.noTruck){const t=truckById(a.truck);
+        if(!a.truck) add("ERROR","T00",`No truck chosen for ${rl}.`,w);
+        else if(!t) add("ERROR","T01",`Unknown truck "${a.truck}".`,w);
+        else{if(t.status==="down") add("ERROR","T02",`${t.id} is DOWN.`,w);
+          if((r.kinds||[]).length&&!r.kinds.includes(t.kind)) add("ERROR","T04",`${t.id} is ${t.kind}; ${rl} needs ${r.kinds.join("/")}.`,w);
+          if(a.driver){const ab=abilityFor(a.driver,t.id);const hd=t.helperCanDrive&&CFG.helpers.some(h=>h.name===a.driver);
+            if(ab==="unable"&&!hd) add("ERROR","T05",`${a.driver} is ${ABILITY_LABEL.unable} ${t.id}.`,w);
+            else if(ab==="unfamiliar") add("WARN","T05w",`⚠️ ${a.driver} is ${ABILITY_LABEL.unfamiliar} of ${t.id}.`,w);}
+          if(seenT[t.id]) add("ERROR","T06",`${t.id} double-booked (also ${seenT[t.id]}).`,w); else seenT[t.id]=w;}}
+      if(a.driver){const d=driverByName(a.driver);const hd=(()=>{const t=truckById(a.truck);return t&&t.helperCanDrive&&CFG.helpers.some(h=>h.name===a.driver);})();
+        if(!d&&!hd) add("ERROR","D01",`Unknown driver "${a.driver}".`,w);
+        else if(d){if(isOut(d.outUntil,bl.yymmdd)) add("ERROR","D06",`${d.name} is OUT until ${d.outUntil}.`,w);
+          if(d.trainee) add("WARN","D07",`${d.name} is a trainee — renders after the hyphen; put a qualified lead in helper.`,w);}
+        if(seenD[a.driver]) add("ERROR","D05",`${a.driver} double-booked (also ${seenD[a.driver]}).`,w); else seenD[a.driver]=w;
+      } else if(!r.noTruck&&!r.noDriver) add("WARN","D00",`No driver chosen for ${rl}.`,w);
+      if(a.helper){const h=helperByName(a.helper);if(h&&isOut(h.outUntil,bl.yymmdd)) add("ERROR","H06",`Helper ${a.helper} is OUT until ${h.outUntil}.`,w);
+        if(seenH[a.helper]) add("ERROR","H02",`Helper ${a.helper} double-booked (also ${seenH[a.helper]}).`,w); else seenH[a.helper]=w;
+      } else if(r.needsHelper && !DAY.weekend) add("WARN","H03",`${rl} usually needs a helper — none assigned.`,w);
+      // switch target ability
+      if(a.sw&&a.sw.target&&a.sw.target!=="YARD"&&a.driver){const ab=abilityFor(a.driver,a.sw.target);
+        if(ab==="unable") add("ERROR","SW1",`${a.driver} is ${ABILITY_LABEL.unable} the switch truck ${a.sw.target}.`,w);
+        else if(ab==="unfamiliar") add("WARN","SW2",`⚠️ ${a.driver} is ${ABILITY_LABEL.unfamiliar} of switch truck ${a.sw.target}.`,w);}
+      // base checkbox changed from usual -> reason required
+      if(!r.noTruck){BASES.forEach(b=>{const usual=(a.baseUsual||[]).includes(b);const now=!!a.baseChecks[b];
+        if(usual!==now){const ov=(a.baseOver||{})[b]||{};const rs=ov.reason==="Other"?(ov.rother||""):(ov.reason||"");
+          if(!rs) add("ERROR","BX1",`${BASE_LABEL[b]} on ${rl} was changed from the usual default — a reason is required.`,w);}});}
+      // base pass check per ticked base
+      if(a.driver&&!r.noTruck){BASES.forEach(base=>{if(!a.baseChecks[base])return;const ps=passStatus(a.driver,base,bl.yymmdd);const ov=(a.baseOver||{})[base]||{};const rs=ov.reason==="Other"?(ov.rother||""):(ov.reason||"");
+        if(ps.s==="none"){if(ov.override)add("INFO","B01o",`Override: ${a.driver} has no ${BASE_LABEL[base]} pass for ${rl} — ${rs||"(no reason!)"}`,w);else add("ERROR","B01",`${a.driver} has NO ${BASE_LABEL[base]} pass but ${rl} needs it. Override + reason on the row.`,w);}
+        else if(ps.s==="expired"){if(ov.override)add("INFO","B02o",`Override: ${a.driver}'s ${BASE_LABEL[base]} pass expired (${ps.exp}) — ${rs||"(no reason!)"}`,w);else add("ERROR","B02",`${a.driver}'s ${BASE_LABEL[base]} pass EXPIRED (${ps.exp}). Override + reason.`,w);}
+        else if(ps.s==="expiring") add("WARN","B03",`Confirm ${a.driver}'s renewed ${BASE_LABEL[base]} pass is ready (expires ${ps.exp}).`,w);
+        if(ov.override&&!rs) add("WARN","B05",`Override for ${BASE_LABEL[base]} on ${rl} needs a reason.`,w);});}
+    });});
+  DAY.blocks.forEach(bl=>{Object.entries(bl.breakOver||{}).forEach(([st,ov])=>{if(ov.value){const rs=ov.reason==="Other"?(ov.rother||""):(ov.reason||"");if(!rs)add("WARN","BK1",`Break override at ${timeToLabel(st)} (${bl.dow3}) needs a reason.`,"breaks");}});});
+  if(!DAY.weekend){const off=new Set(DAY.off);const assigned=new Set();
+    DAY.blocks.forEach(bl=>bl.assignments.forEach(a=>{if(a.driver)assigned.add(a.driver);if(a.helper)assigned.add(a.helper);}));
+    [...off].filter(p=>assigned.has(p)).forEach(p=>add("ERROR","P01",`${p} is OFF but also assigned.`,"roster"));
+    const y=DAY.blocks[0].yymmdd;const pool=[...availDrivers(y).map(d=>d.name),...availHelpers(y).map(h=>h.name)];
+    const missing=pool.filter(n=>!assigned.has(n)&&!off.has(n));
+    if(missing.length) add("WARN","P02",`Not scheduled and not OFF (allowed, confirm): ${missing.join(", ")}.`,"roster");
+    const usual=(CFG.usualRoutesByDay||{})[DAY.blocks[0].dow3]||[];const planned=new Set(DAY.blocks[0].assignments.map(a=>a.route));
+    usual.filter(rn=>!planned.has(rn)).forEach(rn=>add("WARN","RS1",`${rn} usually runs on ${DAY.blocks[0].dow3} but isn’t scheduled — skipped/rolled over?`,"routes"));
+  }
+  lightChecks().forEach(x=>I.push(x));
+  return I;}
+
+/* ================= RENDER ================= */
+function crew(a){let lead=a.driver||"",second=a.helper||"";const d=driverByName(a.driver);if(d&&d.trainee){lead=a.helper||"";second=a.driver||"";}let s=lead;if(second)s+=(lead?" - ":"")+second;return s;}
+function renderWA(){const L=[];L.push(CFG.waTitle);
+  DAY.blocks.forEach(bl=>{L.push(`*${bl.long}*`);L.push("");
+    uniqueStarts(bl).forEach(start=>{const slots=bl.assignments.filter(a=>a.start===start);if(!slots.length)return;
+      const lbl=timeToLabel(start);const br=breakFor(bl,start);const noTruckShift=slots.every(s=>routeSpecOf(s).noTruck);
+      const noBreak=(!br||/^no break$/i.test(br))||noTruckShift;
+      L.push(noBreak?`*${lbl}*`:`*${lbl} TAKE 1 HOUR BREAK AT ${br}*`);L.push("");
+      slots.forEach(a=>{const r=routeSpecOf(a);
+        if(r.noTruck){L.push(`*${r.waLabel}*`);L.push(a.driver||a.helper||"");}
+        else{const t=truckById(a.truck);L.push(`*${r.waLabel}* ${a.truck} ${t?t.plate:""}`.trim());L.push(crew(a));
+          const note=bringPassNote(effectiveChecked(a,bl));if(note)L.push(note);
+          const sw=switchWA(a);if(sw)L.push(sw);const vc=vccWA(a);if(vc)L.push(vc);}
+        L.push("");});
+      L.push("—————");L.push("");});});
+  if(!DAY.weekend){const off=[...DAY.off].sort((a,b)=>a.localeCompare(b));
+    if(off.length){L.push("*OFF*");L.push(off.join(", "));L.push("");L.push("—————");L.push("");}
+    (DAY.dayNotes||[]).forEach(n=>L.push(n));
+    if((CFG.waReminders||[]).length){(CFG.waReminders).forEach(r=>L.push("- "+r));L.push("");L.push("—————");L.push("");}}
+  L.push(CFG.waAck);
+  return L.join("\n").replace(/\n{3,}/g,"\n\n").trim()+"\n";}
+function renderKK(){const L=[];const showP=!!CFG.kkPlates;
+  if(DAY.weekend){const sat=DAY.blocks[0],sun=DAY.blocks[1];L.push(CFG.kkOpenWe.replace("{satdate}",sat.slashed).replace("{sundate}",sun?sun.slashed:""));L.push("");}
+  DAY.blocks.forEach(bl=>{if(DAY.weekend)L.push(`${bl.long}:`);else L.push(CFG.kkOpen.replace("{weekday}",bl.full).replace("{date}",bl.slashed));L.push("");
+    uniqueStarts(bl).forEach(start=>{const slots=bl.assignments.filter(a=>a.start===start);if(!slots.length)return;L.push(timeToLabel(start));
+      slots.forEach(a=>{const r=routeSpecOf(a);
+        if(r.noTruck)L.push(`${routeLabelOf(a)}: ${a.driver||a.helper||""}`);
+        else{const t=truckById(a.truck);const tt=showP?`${a.truck} ${t?t.plate:""}`.trim():a.truck;let ln=`${routeLabelOf(a)}: ${a.driver||""} (${tt})`;if(a.helper)ln+=` - ${a.helper}`;L.push(ln);}
+        const sw=switchKK(a);if(sw)L.push(sw);const vc=vccKK(a);if(vc)L.push(vc);});
+      L.push("");});});
+  if(!DAY.weekend){const off=[...DAY.off].sort((a,b)=>a.localeCompare(b));if(off.length){L.push("OFF");L.push(off.join(", "));L.push("");}}
+  return L.join("\n").replace(/\n{3,}/g,"\n\n").trim()+"\n";}
+
+/* ================= TABS ================= */
+function wireTabs(){document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");el("tab-"+b.dataset.tab).classList.add("active");
+  ({equip:renderEquip,drivers:renderDrivers,helpers:renderHelpers,routes:renderRoutes,passes:renderPasses,wording:renderWording,backup:renderBackup,help:renderHelp,readme:renderReadme,make:renderMake}[b.dataset.tab]||(()=>{}))();
+}));}
+
+/* ================= GENERATE UI ================= */
+function renderMake(){
+  if(!el("svcDate").value){const t=new Date();el("svcDate").value=`${t.getFullYear()}-${pad(t.getMonth()+1)}-${pad(t.getDate())}`;}
+  ensureDay();
+  el("modeLbl").textContent=DAY.mode+" · "+(DAY.weekend?DAY.blocks.map(b=>b.full).join(" + "):DAY.blocks[0].full);
+  el("offCard").style.display=DAY.weekend?"none":"block";
+  el("offList").value=(DAY.off||[]).join(", ");el("dayNotes").value=(DAY.dayNotes||[]).join("\n");
+  renderRenewalBanner();renderDayBlocks();}
+function renderRenewalBanner(){const host=el("renewalBanner");host.innerHTML="";const ty=todayYYMMDD();const items=[];const current=new Set(CFG.drivers.map(d=>d.name));
+  Object.keys(CFG.basePasses||{}).filter(n=>current.has(n)).forEach(name=>{const parts=[];BASES.forEach(base=>{const ps=passStatus(name,base,ty);if(ps.s==="expired")parts.push(`${BASE_LABEL[base]} ${ps.exp} (expired)`);else if(ps.s==="expiring")parts.push(`confirm renewed ${BASE_LABEL[base]} pass is ready (expires ${ps.exp})`);});if(parts.length)items.push(`<span class="bi"><b>${name}</b>: ${parts.join("; ")}</span>`);});
+  if(items.length){const d=document.createElement("div");d.className="panel warn";d.innerHTML=`<div class="banner"><b>Renewals (internal):</b>${items.join("")}</div>`;host.appendChild(d);}}
+function renderDayBlocks(){const host=el("dayBlocks");host.innerHTML="";
+  DAY.blocks.forEach(bl=>{const card=document.createElement("div");card.className="card";card.innerHTML=`<h2>${bl.long} <span class="pill">${bl.dow3}</span></h2>`;
+    const routeCount={},personCount={},truckCount={};bl.assignments.forEach(a=>{const rl=routeLabelOf(a);routeCount[rl]=(routeCount[rl]||0)+1;if(a.driver)personCount[a.driver]=(personCount[a.driver]||0)+1;if(a.helper)personCount[a.helper]=(personCount[a.helper]||0)+1;if(a.truck)truckCount[a.truck]=(truckCount[a.truck]||0)+1;});
+    const wrap=document.createElement("div");bl.assignments.forEach((a,ai)=>wrap.appendChild(assignmentRow(bl,a,ai,routeCount,personCount,truckCount)));card.appendChild(wrap);
+    const addA=document.createElement("button");addA.className="mini";addA.textContent="+ Add route row";
+    addA.addEventListener("click",()=>{bl.assignments.push(newAssignment(bl,CFG.routes[0].name));saveDay();renderDayBlocks();});card.appendChild(addA);
+    const bov=document.createElement("div");bov.className="baseblk";bov.style.marginTop="10px";bov.innerHTML=`<b>Break overrides</b> <span class="small">(default = start + 5h; “No break” hides the break line; “Other” = custom — reason required)</span>`;
+    const bt=document.createElement("table");bt.style.marginTop="5px";bt.innerHTML=`<thead><tr><th style="width:80px">Start</th><th style="width:90px">Auto</th><th style="width:120px">Override</th><th style="width:120px">Custom</th><th style="width:160px">Reason</th></tr></thead><tbody></tbody>`;
+    const btb=bt.querySelector("tbody");
+    uniqueStarts(bl).forEach(start=>{if(!bl.breakOver)bl.breakOver={};const ov=bl.breakOver[start]||{value:"",other:"",reason:"",rother:""};bl.breakOver[start]=ov;
+      const tr=document.createElement("tr");tr.innerHTML=`<td>${timeToLabel(start)}</td><td class="small">${plus5Label(start)}</td><td><select class="bv"><option value="">(auto)</option>${(CFG.breakOptions||[]).map(o=>opt(o,ov.value)).join("")}</select></td><td>${ov.value==="Other"?`<input class="bo2" placeholder="e.g. 8:30AM" value="${esc(ov.other)}">`:`<span class="small">—</span>`}</td><td>${reasonSelect(ov)}</td>`;
+      const bv=tr.querySelector("select.bv"),bo2=tr.querySelector("input.bo2");bv.addEventListener("change",()=>{ov.value=bv.value;saveDay();renderDayBlocks();});if(bo2)bo2.addEventListener("change",()=>{ov.other=bo2.value;saveDay();});wireReason(tr,ov);btb.appendChild(tr);});
+    bov.appendChild(bt);card.appendChild(bov);host.appendChild(card);});}
+function reasonSelect(ov){const cur=ov.reason||"";return `<select class="rs"><option value=""></option>${(CFG.reasonOptions||[]).map(o=>opt(o,cur)).join("")}</select><input class="ro" placeholder="reason" value="${esc(ov.rother)}" style="margin-top:3px;${cur==="Other"?"":"display:none"}">`;}
+function wireReason(scope,ov){const sel=scope.querySelector("select.rs"),inp=scope.querySelector("input.ro");if(sel)sel.addEventListener("change",()=>{ov.reason=sel.value;if(inp)inp.style.display=sel.value==="Other"?"block":"none";saveDay();});if(inp)inp.addEventListener("change",()=>{ov.rother=inp.value;saveDay();});}
+function switchTargetOptions(a){
+  const subj=a.sw.subject||"", act=a.sw.action||"", isHelper=(subj==="HELPER TO");
+  let html="";
+  activeTrucks().forEach(x=>{
+    if(x.id==="VE-02"){
+      if(isHelper){ const h=helperByName(a.helper); if(h&&(h.canDrive||[]).includes("Rail")) html+=opt(x.id,a.sw.target,x.id+" "+x.plate); }
+      else { html+=opt(x.id,a.sw.target,x.id+" "+x.plate); } // Please/Driver: VE-02 always
+      return;
+    }
+    if(isHelper&&act==="DUMP") return;            // helper+dump: only VE-02
+    if(a.driver&&abilityFor(a.driver,x.id)==="unable") return; // hide Unable
+    const ab=a.driver?abilityFor(a.driver,x.id):"";
+    html+=opt(x.id,a.sw.target,x.id+" "+x.plate+(ab==="unfamiliar"?" ⚠️":""));
+  });
+  // Yard: only for HELPER TO and action != DUMP
+  if(isHelper&&act!=="DUMP") (CFG.swTargets||[]).forEach(x=>{html+=opt(x,a.sw.target);});
+  return html;
+}
+function assignmentRow(bl,a,ai,routeCount,personCount,truckCount){personCount=personCount||{};truckCount=truckCount||{};
+  const r=routeSpecOf(a);const wrap=document.createElement("div");wrap.className="asgrow";
+  const locked=rowLocked(a,bl);if(locked)wrap.classList.add("locked");
+  if(routeCount[routeLabelOf(a)]>1)wrap.classList.add("dup");
+  let legalTrucks=r&&!r.noTruck?((a.route==="__custom"||a.route==="__dump")?activeTrucks():trucksForRoute(a.route)):[];
+  if(a.route==="__handservice")legalTrucks=activeTrucks().filter(t=>["VE-02","EQ-12","EQ-13"].includes(t.id));
+  const drv=availDrivers(bl.yymmdd),hlp=availHelpers(bl.yymmdd);const t=truckById(a.truck);
+  let dlist=drv.filter(d=>{if(!t||r.noTruck)return true;return abilityFor(d.name,t.id)!=="unable";}).map(d=>({name:d.name,label:d.name+(d.trainee?" (trainee)":"")+(t&&abilityFor(d.name,t.id)==="unfamiliar"?" ⚠️":"")}));
+  if(t&&t.helperCanDrive)hlp.forEach(h=>{if((h.canDrive||[]).includes("Rail")&&!dlist.find(x=>x.name===h.name))dlist.push({name:h.name,label:h.name+" (helper-driver)"});});
+  const routeOpts=CFG.routes.map(x=>opt(x.name,a.route)).join("")+opt("__dump",a.route,"Dump only (no route)")+opt("__handservice",a.route,"Hand service")+opt("__custom",a.route,"➕ Custom…");
+  const dupTag=routeCount[routeLabelOf(a)]>1?`<span class="pill down">⚠️ ROUTE DOUBLE-BOOKED</span>`:"";
+  const lockTag=locked?`<span class="pill down">🔒 base pass expired/missing — override + reason to unlock</span>`:"";
+  const dis=locked?"disabled":"";
+  const top=document.createElement("div");top.className="asgtop";
+  top.innerHTML=`
+    <div class="fld" style="flex:0 0 130px"><label>Route ${dupTag}</label><select class="r" ${dis}>${routeOpts}</select>${a.route==="__custom"?`<input class="cn" placeholder="Custom name" value="${esc(a.customName)}" style="margin-top:3px" ${dis}>`:""}</div>
+    <div class="fld" style="flex:0 0 150px"><label>Start</label>${startPicker(a)}</div>
+    <div class="fld" style="flex:0 0 150px"><label>Truck ${a.truck&&truckCount[a.truck]>1?'<span class="pill down">⚠️ EQ DOUBLE-BOOKED</span>':''}</label>${r&&r.noTruck?'<span class="small">— none —</span>':`<select class="t" ${dis}><option value=""></option>${legalTrucks.map(x=>opt(x.id,a.truck,x.id+" "+x.plate)).join("")}</select>`}</div>
+    <div class="fld" style="flex:0 0 140px"><label>Driver ${a.driver&&personCount[a.driver]>1?'<span class="pill down">⚠️ DRIVER DOUBLE-BOOKED</span>':''}</label>${r&&r.noDriver?'<span class="small">— none —</span>':`<select class="d" data-db="${a.driver&&personCount[a.driver]>1?1:0}"><option value=""></option>${dlist.map(d=>opt(d.name,a.driver,d.label)).join("")}</select>`}</div>
+    <div class="fld" style="flex:0 0 120px"><label>Helper ${a.helper&&personCount[a.helper]>1?'<span class="pill down">⚠️ HELPER DOUBLE-BOOKED</span>':''}</label><select class="h" ${dis}><option value=""></option>${hlp.map(h=>opt(h.name,a.helper)).join("")}</select></div>
+    <div class="fld" style="flex:0 0 40px"><label>&nbsp;</label><button class="mini rm">✕</button></div>`;
+  wrap.appendChild(top);
+  if(lockTag){const lt=document.createElement("div");lt.style.margin="4px 0";lt.innerHTML=lockTag;wrap.appendChild(lt);}
+  // base pass — all three, horizontal
+  if(r&&!r.noTruck&&a.route!=="__dump"){const bb=document.createElement("div");bb.className="baseblk";
+    bb.innerHTML=`<b>Base pass</b> <span class="small">(usual pre-ticked; changing from usual needs a reason)</span>`;
+    const rowdiv=document.createElement("div");rowdiv.className="baserow";rowdiv.style.marginTop="4px";
+    BASES.forEach(base=>{if(!a.baseChecks)a.baseChecks={};if(!(base in a.baseChecks))a.baseChecks[base]=false;if(!a.baseOver)a.baseOver={};if(!a.baseOver[base])a.baseOver[base]={override:false,reason:"",rother:""};
+      const ov=a.baseOver[base];const ps=a.driver?passStatus(a.driver,base,bl.yymmdd):{s:"",exp:""};
+      const badge=a.driver&&a.baseChecks[base]?(ps.s==="ok"?`<span class="pill ok">ok</span>`:ps.s==="expiring"?`<span class="pill warn">${ps.exp} (soon)</span>`:ps.s==="expired"?`<span class="pill down">${ps.exp} (expired)</span>`:`<span class="pill down">none</span>`):"";
+      const need=a.driver&&a.baseChecks[base]&&(ps.s==="none"||ps.s==="expired");
+      const changed=(a.baseUsual||[]).includes(base)!==!!a.baseChecks[base];
+      const item=document.createElement("div");item.className="baseitem";item.dataset.base=base;
+      item.innerHTML=`<input type="checkbox" class="bc" ${a.baseChecks[base]?"checked":""}> ${BASE_LABEL[base]} ${badge}`+
+        (changed?` <span class="ovwrap">${reasonSelect(ov)}</span>`:(need?` <label style="display:inline-flex;gap:4px"><input type="checkbox" class="ov" ${ov.override?"checked":""}>ovr</label><span class="ovwrap" style="${ov.override?"":"display:none"}">${reasonSelect(ov)}</span>`:``));
+      rowdiv.appendChild(item);});
+    bb.appendChild(rowdiv);wrap.appendChild(bb);}
+  // notes
+  const nd=document.createElement("details");nd.className="note";const hasNote=(a.sw&&a.sw.action)||(a.vccIdx!==""&&a.vccIdx!=null)||a._noteOpen;if(hasNote)nd.open=true;
+  nd.addEventListener("toggle",()=>{a._noteOpen=nd.open;});
+  nd.innerHTML=`<summary>➕ Switch / dump / VCC note ${hasNote?"(set)":""}</summary>`;
+  const nb=document.createElement("div");nb.style.marginTop="7px";
+  
+  nb.innerHTML=`<div class="row" style="gap:8px">
+      <div class="fld" style="flex:0 0 130px"><label>Subject</label><select class="swsub"><option value=""></option>${(CFG.swSubjects||[]).filter(x=>x&&!(x==="HELPER TO"&&!a.helper)).map(x=>opt(x,a.sw.subject)).join("")}</select></div>
+      <div class="fld" style="flex:0 0 130px"><label>Action</label><select class="swact"><option value="">— none —</option>${(CFG.swActions||[]).map(x=>opt(x,a.sw.action)).join("")}</select></div>
+      <div class="fld" style="flex:0 0 160px"><label>Target</label><select class="swtgt"><option value=""></option>${switchTargetOptions(a)}</select></div>
+      <div class="fld" style="flex:0 0 130px"><label>Timing</label><select class="swtim"><option value=""></option>${(CFG.swTimings||[]).filter(x=>x).map(x=>opt(x,a.sw.timing)).join("")}</select></div>
+    </div>
+    <div class="row" style="gap:8px;margin-top:6px">
+      <div class="fld" style="flex:0 0 260px"><label>VCC / renewed-pass</label><select class="vcc"><option value="">— none —</option>${CFG.vccVersions.map((v,ix)=>opt(ix,(a.vccIdx===ix?ix:""),v.when)).join("")}<option value="other"${a.vccIdx==="other"?" selected":""}>Other (custom)</option></select></div>
+      <div class="fld" style="flex:0 0 130px"><label>Base</label><select class="vbase"><option value=""></option>${BASES.map(b=>opt(b,a.vccBase,BASE_LABEL[b])).join("")}</select></div>
+    </div>
+    ${a.vccIdx==="other"?`<div class="row" style="gap:8px;margin-top:4px"><div class="fld" style="flex:1"><label>VCC WhatsApp</label><input class="vwo" value="${esc(a.vccWaOther)}"></div><div class="fld" style="flex:1"><label>VCC Kakao</label><input class="vko" value="${esc(a.vccKkOther)}"></div></div>`:""}
+    <div class="small" style="margin-top:4px" id="notePrev"></div>`;
+  nd.appendChild(nb);wrap.appendChild(nd);
+  const q=s=>wrap.querySelector(s);
+  function tryEdit(fn){if(locked){alert("This row is locked: the driver’s required base pass is expired/missing.\nTick the base’s override + enter a reason, or change the driver. (Other routes stay editable.)");renderDayBlocks();return;}fn();}
+  q("select.r").addEventListener("change",e=>tryEdit(()=>{a.route=e.target.value;const nr=routeByName(a.route);if(nr)a.start=startFor(nr,bl.dow3);a.truck="";const usual=usualBases(routeByName(a.route)||{},bl.dow3);const c={},o={};BASES.forEach(b=>{c[b]=usual.includes(b);o[b]={override:false,reason:"",rother:""};});a.baseChecks=c;a.baseUsual=usual.slice();a.baseOver=o;saveDay();renderDayBlocks();}));
+  if(q("input.cn"))q("input.cn").addEventListener("change",e=>{a.customName=e.target.value;saveDay();renderDayBlocks();});
+  function commitStart(){const H=wrap.querySelector("select.sth"),M=wrap.querySelector("select.stm"),AP=wrap.querySelector("select.stap");if(H&&M&&AP)tryEdit(()=>{a.start=joinTime(H.value,M.value,AP.value);saveDay();renderDayBlocks();});}
+  ["select.sth","select.stm","select.stap"].forEach(sel=>{const e2=wrap.querySelector(sel);if(e2)e2.addEventListener("change",commitStart);});
+  if(q("select.t"))q("select.t").addEventListener("change",e=>tryEdit(()=>{a.truck=e.target.value;saveDay();renderDayBlocks();}));
+  if(q("select.d"))q("select.d").addEventListener("change",e=>{a.driver=e.target.value;saveDay();renderDayBlocks();}); // driver always editable (to fix lock)
+  q("select.h").addEventListener("change",e=>tryEdit(()=>{a.helper=e.target.value;saveDay();}));
+  wrap.querySelectorAll(".baseitem").forEach(item=>{const base=item.dataset.base;const ov=a.baseOver[base];
+    const bc=item.querySelector("input.bc");if(bc)bc.addEventListener("change",()=>{a.baseChecks[base]=bc.checked;saveDay();renderDayBlocks();});
+    const cb=item.querySelector("input.ov");if(cb)cb.addEventListener("change",()=>{ov.override=cb.checked;saveDay();renderDayBlocks();});
+    wireReason(item,ov);});
+  if(q("select.swsub"))q("select.swsub").addEventListener("change",e=>{a.sw.subject=e.target.value;a.sw.target="";a._noteOpen=true;saveDay();renderDayBlocks();});
+  if(q("select.swact"))q("select.swact").addEventListener("change",e=>{a.sw.action=e.target.value;a.sw.target="";a._noteOpen=true;saveDay();renderDayBlocks();});
+  if(q("select.swtgt"))q("select.swtgt").addEventListener("change",e=>{a.sw.target=e.target.value;saveDay();renderDayBlocks();});
+  if(q("select.swtim"))q("select.swtim").addEventListener("change",e=>{a.sw.timing=e.target.value;saveDay();updateNotePrev(wrap,a);});
+  if(q("select.vcc"))q("select.vcc").addEventListener("change",e=>{a.vccIdx=e.target.value===""?"":(e.target.value==="other"?"other":+e.target.value);a._noteOpen=true;saveDay();renderDayBlocks();});
+  if(q("select.vbase"))q("select.vbase").addEventListener("change",e=>{a.vccBase=e.target.value;saveDay();updateNotePrev(wrap,a);});
+  if(q("input.vwo"))q("input.vwo").addEventListener("change",e=>{a.vccWaOther=e.target.value;saveDay();updateNotePrev(wrap,a);});
+  if(q("input.vko"))q("input.vko").addEventListener("change",e=>{a.vccKkOther=e.target.value;saveDay();updateNotePrev(wrap,a);});
+  q("button.rm").addEventListener("click",()=>{bl.assignments.splice(ai,1);saveDay();renderDayBlocks();});
+  updateNotePrev(wrap,a);return wrap;}
+function updateNotePrev(wrap,a){const p=wrap.querySelector("#notePrev");if(!p)return;const bits=[];const sw=switchWA(a);if(sw)bits.push("WA: "+sw+"  /  Kakao: "+switchKK(a));const vw=vccWA(a);if(vw)bits.push("WA: "+vw+"  /  Kakao: "+(vccKK(a)||"(omitted)"));p.innerHTML=bits.map(b=>"<div>"+b+"</div>").join("");}
+function doLoadUsual(){try{const d=ensureDay();if(!d){el("loadUsualNote").textContent="Pick a service date first.";return;}
+  let added=0;DAY.blocks.forEach(bl=>{const map=(CFG.usualRoutesByDay||{})[bl.dow3];const names=(map&&map.length)?map:CFG.routes.filter(r=>(r.days||[]).includes(bl.dow3)).map(r=>r.name);
+    names.forEach(rn=>{if(!routeByName(rn))return;if(bl.assignments.some(a=>a.route===rn))return;bl.assignments.push(newAssignment(bl,rn));added++;});});
+  saveDay();renderDayBlocks();el("loadUsualNote").textContent=added?`✓ Added ${added} usual route row(s). Fill in drivers/helpers.`:"Usual routes already present.";
+  }catch(err){el("loadUsualNote").textContent="Error: "+err.message;}}
+function suggestOff(){const d=ensureDay();if(!d){el("offNote").textContent="Pick a date first.";return;}
+  const y=DAY.blocks[0].yymmdd;const assigned=new Set();DAY.blocks.forEach(bl=>bl.assignments.forEach(a=>{if(a.driver)assigned.add(a.driver);if(a.helper)assigned.add(a.helper);}));
+  const pool=[...availDrivers(y).map(d=>d.name),...availHelpers(y).map(h=>h.name)];const notSched=pool.filter(n=>!assigned.has(n));
+  DAY.off=notSched;saveDay();el("offList").value=notSched.join(", ");
+  el("offNote").textContent="Auto-filled "+notSched.length+" not-scheduled — CONFIRM none were intentionally omitted.";}
+
+/* ================= SETTINGS RENDERERS ================= */
+function fillTbl(id,arr,rowHtml,wire){const tb=el(id).querySelector("tbody");tb.innerHTML="";arr.forEach((item,i)=>{const tr=document.createElement("tr");tr.innerHTML=rowHtml(item,i);wire(tr,item,i);tb.appendChild(tr);});}
+function renderEquip(){fillTbl("equipTbl",CFG.trucks,(t)=>`<td><input value="${t.id}"></td><td><input value="${t.plate}"></td><td><select>${KINDS.map(k=>opt(k,t.kind)).join("")}</select></td><td><select>${["active","down"].map(s=>opt(s,t.status)).join("")}</select></td><td style="text-align:center"><input type="checkbox" ${t.helperCanDrive?"checked":""}></td><td><input value="${esc(t.note)}"></td><td><button class="mini">✕</button></td>`,
+  (tr,t,i)=>{const ins=tr.querySelectorAll("input"),sel=tr.querySelectorAll("select");ins[0].addEventListener("change",()=>{t.id=ins[0].value;persist();});ins[1].addEventListener("change",()=>{t.plate=ins[1].value;persist();});sel[0].addEventListener("change",()=>{t.kind=sel[0].value;persist();});sel[1].addEventListener("change",()=>{t.status=sel[1].value;persist();renderEquip();});ins[2].addEventListener("change",()=>{t.helperCanDrive=ins[2].checked;persist();});ins[3].addEventListener("change",()=>{t.note=ins[3].value;persist();});if(t.status==="down")tr.querySelectorAll("td")[3].innerHTML+='<span class="pill down">DOWN</span>';tr.querySelector("button").addEventListener("click",()=>{CFG.trucks.splice(i,1);persist();renderEquip();});});}
+function renderDrivers(){fillTbl("driverTbl",CFG.drivers,(d)=>`<td><input value="${d.name}"></td><td style="text-align:center"><input type="checkbox" ${d.solo?"checked":""}></td><td style="text-align:center"><input type="checkbox" ${d.trainee?"checked":""}></td><td><input value="${esc(d.outUntil)}" placeholder="yymmdd"></td><td><input value="${esc(d.reason)}"></td><td><button class="mini">✕</button></td>`,
+  (tr,d,i)=>{const ins=tr.querySelectorAll("input");ins[0].addEventListener("change",()=>{d.name=ins[0].value;persist();});ins[1].addEventListener("change",()=>{d.solo=ins[1].checked;persist();});ins[2].addEventListener("change",()=>{d.trainee=ins[2].checked;persist();});ins[3].addEventListener("change",()=>{d.outUntil=ins[3].value.trim();persist();renderDrivers();});ins[4].addEventListener("change",()=>{d.reason=ins[4].value;persist();});if(d.outUntil)tr.querySelectorAll("td")[3].innerHTML+='<span class="pill warn">OUT</span>';tr.querySelector("button").addEventListener("click",()=>{CFG.drivers.splice(i,1);persist();renderDrivers();});});
+  const host=el("driverAbility");host.innerHTML="<h4>Per-driver truck ability</h4><p class='small'>Able / Unfamiliar (⚠️) / Unable (hidden). Blank = fall back to kind.</p>";
+  const tbl=document.createElement("table");tbl.innerHTML=`<thead><tr><th>Driver</th>${CFG.trucks.map(t=>`<th style="font-size:11px">${t.id}</th>`).join("")}</tr></thead><tbody></tbody>`;const tb=tbl.querySelector("tbody");
+  CFG.drivers.forEach(d=>{const tr=document.createElement("tr");tr.innerHTML=`<td>${d.name}</td>`+CFG.trucks.map(t=>{const cur=(d.ability||{})[t.id]||"";return `<td><select data-d="${d.name}" data-t="${t.id}" style="min-width:78px"><option value=""${cur===""?" selected":""}>(kind)</option><option value="able"${cur==="able"?" selected":""}>Able</option><option value="unfamiliar"${cur==="unfamiliar"?" selected":""}>Unfam.</option><option value="unable"${cur==="unable"?" selected":""}>Unable</option></select></td>`;}).join("");tb.appendChild(tr);});
+  host.appendChild(tbl);tbl.querySelectorAll("select").forEach(s=>s.addEventListener("change",()=>{const d=driverByName(s.dataset.d);if(!d.ability)d.ability={};if(s.value)d.ability[s.dataset.t]=s.value;else delete d.ability[s.dataset.t];persist();}));}
+function renderHelpers(){fillTbl("helperTbl",CFG.helpers,(h)=>`<td><input value="${h.name}"></td><td><input value="${esc(h.outUntil)}" placeholder="yymmdd"></td><td><input value="${esc(h.reason)}"></td><td><input value="${(h.canDrive||[]).join(', ')}" placeholder="e.g. Rail"></td><td><input value="${(h.knows||[]).join(', ')}"></td><td><button class="mini">✕</button></td>`,
+  (tr,h,i)=>{const ins=tr.querySelectorAll("input");ins[0].addEventListener("change",()=>{h.name=ins[0].value;persist();});ins[1].addEventListener("change",()=>{h.outUntil=ins[1].value.trim();persist();renderHelpers();});ins[2].addEventListener("change",()=>{h.reason=ins[2].value;persist();});ins[3].addEventListener("change",()=>{h.canDrive=csv(ins[3].value);persist();});ins[4].addEventListener("change",()=>{h.knows=csv(ins[4].value);persist();});if(h.outUntil)tr.querySelectorAll("td")[1].innerHTML+='<span class="pill warn">OUT</span>';tr.querySelector("button").addEventListener("click",()=>{CFG.helpers.splice(i,1);persist();renderHelpers();});});}
+function dayBasesToStr(r){if(r.basePass==="byDay")return Object.entries(r.dayBases||{}).map(([d,arr])=>d+":"+arr.join("+")).join("; ");return (r.bases||[]).join(", ");}
+function strToDayBases(r,str){if(r.basePass==="byDay"){const map={};str.split(";").forEach(part=>{const [d,b]=part.split(":");if(d&&b)map[d.trim()]=b.split(/[+,]/).map(x=>x.trim()).filter(Boolean);});r.dayBases=map;}else{r.bases=csv(str);}}
+function renderRoutes(){fillTbl("routeTbl",CFG.routes,(r)=>`<td><input value="${r.name}"></td><td><input value="${esc(r.waLabel)}"></td><td><input value="${(r.kinds||[]).join(', ')}"></td><td style="text-align:center"><input type="checkbox" ${r.noTruck?"checked":""}></td><td><input value="${(r.days||[]).join(', ')}"></td><td><select>${["always","never","byDay","byOrder"].map(x=>opt(x,r.basePass)).join("")}</select></td><td><input value="${esc(dayBasesToStr(r))}" placeholder="Tue:CampBlaz+AAFB; Thu:NBG"></td><td style="text-align:center"><input type="checkbox" ${r.needsHelper?"checked":""}></td><td><button class="mini">✕</button></td>`,
+  (tr,r,i)=>{const ins=tr.querySelectorAll("input"),sel=tr.querySelector("select");ins[0].addEventListener("change",()=>{r.name=ins[0].value;persist();});ins[1].addEventListener("change",()=>{r.waLabel=ins[1].value;persist();});ins[2].addEventListener("change",()=>{r.kinds=csv(ins[2].value);persist();});ins[3].addEventListener("change",()=>{r.noTruck=ins[3].checked;persist();});ins[4].addEventListener("change",()=>{r.days=csv(ins[4].value);persist();renderRoutes();});sel.addEventListener("change",()=>{r.basePass=sel.value;persist();renderRoutes();});ins[5].addEventListener("change",()=>{strToDayBases(r,ins[5].value);persist();renderRoutes();});ins[6].addEventListener("change",()=>{r.needsHelper=ins[6].checked;persist();});tr.querySelector("button").addEventListener("click",()=>{CFG.routes.splice(i,1);persist();renderRoutes();});});
+  const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];const sg=el("startGrid");sg.innerHTML="<h4>Usual start time per route per day</h4><p class='small'>Quarter-hour dropdowns. Blank = fallback ("+(CFG.fallbackStart||"06:00")+").</p>";
+  const st=document.createElement("table");st.innerHTML=`<thead><tr><th>Route</th>${days.map(d=>`<th>${d}</th>`).join("")}</tr></thead><tbody></tbody>`;const stb=st.querySelector("tbody");
+  CFG.routes.forEach(r=>{const tr=document.createElement("tr");tr.innerHTML=`<td>${r.name}</td>`+days.map(d=>`<td><select data-r="${r.name}" data-d="${d}"><option value="">—</option>${quarterOptions().map(qv=>opt(qv,(r.startByDay&&r.startByDay[d])||"",timeToLabel(qv))).join("")}</select></td>`).join("");stb.appendChild(tr);});
+  sg.appendChild(st);st.querySelectorAll("select").forEach(inp=>inp.addEventListener("change",()=>{const r=routeByName(inp.dataset.r);if(!r.startByDay)r.startByDay={};if(inp.value)r.startByDay[inp.dataset.d]=inp.value;else delete r.startByDay[inp.dataset.d];persist();}));
+  const tb=el("usualTbl").querySelector("tbody");tb.innerHTML="";if(!CFG.usualRoutesByDay)CFG.usualRoutesByDay={};days.forEach(dd=>{const tr=document.createElement("tr");tr.innerHTML=`<td><b>${dd}</b></td><td><input value="${(CFG.usualRoutesByDay[dd]||[]).join(', ')}"></td>`;tr.querySelector("input").addEventListener("change",e=>{CFG.usualRoutesByDay[dd]=csv(e.target.value);persist();});tb.appendChild(tr);});
+  renderBaseMatrix();}
+function renderBaseMatrix(){const host=el("baseMatrix");if(!host)return;const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];const t=document.createElement("table");t.innerHTML=`<thead><tr><th>Route</th>${days.map(d=>`<th>${d}</th>`).join("")}<th>Mode</th></tr></thead><tbody>`+CFG.routes.filter(r=>!r.noTruck&&r.basePass!=="never").map(r=>`<tr><td>${r.name}</td>`+days.map(d=>{const b=orderBases(usualBases(r,d));return `<td>${b.length?b.map(x=>BASE_LABEL[x]).join("+"):"—"}</td>`;}).join("")+`<td>${r.basePass}</td></tr>`).join("")+`</tbody>`;host.innerHTML="";host.appendChild(t);}
+function renderPasses(){el("renewDays").value=CFG.renewDays||30;el("renewDays").addEventListener("change",()=>{CFG.renewDays=+el("renewDays").value||30;persist();renderPasses();});
+  if(!CFG.basePasses)CFG.basePasses={};CFG.drivers.forEach(d=>{if(!CFG.basePasses[d.name])CFG.basePasses[d.name]={CampBlaz:"",NBG:"",AAFB:""};});
+  const current=new Set(CFG.drivers.map(d=>d.name));const ty=todayYYMMDD();const tb=el("passTbl").querySelector("tbody");tb.innerHTML="";
+  Object.keys(CFG.basePasses).filter(n=>current.has(n)).forEach(name=>{const bp=CFG.basePasses[name];const tr=document.createElement("tr");const badge=b=>{const ps=passStatus(name,b,ty);return ps.s==="expired"?`<span class="pill down">${ps.exp} (expired)</span>`:ps.s==="expiring"?`<span class="pill warn">${ps.exp} (soon)</span>`:ps.s==="none"?'':'<span class="pill ok">ok</span>';};tr.innerHTML=`<td>${name}</td><td><input value="${esc(bp.CampBlaz)}" placeholder="yymmdd"> ${badge("CampBlaz")}</td><td><input value="${esc(bp.NBG)}" placeholder="yymmdd"> ${badge("NBG")}</td><td><input value="${esc(bp.AAFB)}" placeholder="yymmdd"> ${badge("AAFB")}</td><td class="small">${BASES.map(b=>{const ps=passStatus(name,b,ty);return BASE_LABEL[b]+":"+(ps.s==="none"?"—":ps.s+(ps.exp?" "+ps.exp:""));}).join(" · ")}</td>`;const ins=tr.querySelectorAll("input");ins[0].addEventListener("change",()=>{bp.CampBlaz=ins[0].value.trim();persist();renderPasses();});ins[1].addEventListener("change",()=>{bp.NBG=ins[1].value.trim();persist();renderPasses();});ins[2].addEventListener("change",()=>{bp.AAFB=ins[2].value.trim();persist();renderPasses();});tb.appendChild(tr);});}
+function renderWording(){
+  el("swSubjects").value=(CFG.swSubjects||[]).join(", ");el("swActions").value=(CFG.swActions||[]).join(", ");el("swTimings").value=(CFG.swTimings||[]).join(", ");el("swTargets").value=(CFG.swTargets||[]).join(", ");
+  el("swSubjects").addEventListener("change",()=>{CFG.swSubjects=csv(el("swSubjects").value).concat([""]);persist();});
+  el("swActions").addEventListener("change",()=>{CFG.swActions=csv(el("swActions").value);persist();});
+  el("swTimings").addEventListener("change",()=>{CFG.swTimings=csv(el("swTimings").value).concat([""]);persist();});
+  el("swTargets").addEventListener("change",()=>{CFG.swTargets=csv(el("swTargets").value);persist();});
+  fillTbl("vccTbl",CFG.vccVersions,(v)=>`<td><input value="${esc(v.when)}"></td><td><input value="${esc(v.wa)}"></td><td><input value="${esc(v.kk)}"></td><td><button class="mini">✕</button></td>`,
+    (tr,v,i)=>{const ins=tr.querySelectorAll("input");ins[0].addEventListener("change",()=>{v.when=ins[0].value;persist();});ins[1].addEventListener("change",()=>{v.wa=ins[1].value;persist();});ins[2].addEventListener("change",()=>{v.kk=ins[2].value;persist();});tr.querySelector("button").addEventListener("click",()=>{CFG.vccVersions.splice(i,1);persist();renderWording();});});
+  el("reasonOpts").value=(CFG.reasonOptions||[]).join(", ");el("reasonOpts").addEventListener("change",()=>{CFG.reasonOptions=csv(el("reasonOpts").value);persist();});
+  el("breakOpts").value=(CFG.breakOptions||[]).join(", ");el("breakOpts").addEventListener("change",()=>{CFG.breakOptions=csv(el("breakOpts").value);persist();});
+  el("waTitle").value=CFG.waTitle;el("waAck").value=CFG.waAck;el("waReminders").value=(CFG.waReminders||[]).join("\n");el("kkOpen").value=CFG.kkOpen;el("kkOpenWe").value=CFG.kkOpenWe;el("kkPlates").checked=!!CFG.kkPlates;el("checklistItems").value=(CFG.checklistItems||[]).join("\n");
+  ["waTitle","waAck","kkOpen","kkOpenWe"].forEach(id=>el(id).addEventListener("change",()=>{CFG[id]=el(id).value;persist();}));
+  el("waReminders").addEventListener("change",()=>{CFG.waReminders=el("waReminders").value.split("\n").map(x=>x.trim()).filter(Boolean);persist();});
+  el("kkPlates").addEventListener("change",()=>{CFG.kkPlates=el("kkPlates").checked;persist();});
+  el("checklistItems").addEventListener("change",()=>{CFG.checklistItems=el("checklistItems").value.split("\n").map(x=>x.trim()).filter(Boolean);persist();});}
+function renderBackup(){el("cfgVer").value=CFG.cfgVersion;el("cfgVer").addEventListener("change",()=>{CFG.cfgVersion=el("cfgVer").value;persist();});
+  if(!CFG.dataSources)CFG.dataSources={};const dtb=el("dsTbl").querySelector("tbody");dtb.innerHTML="";Object.keys(CFG.dataSources).forEach(k=>{const ds=CFG.dataSources[k];const tr=document.createElement("tr");tr.innerHTML=`<td><b>${k}</b></td><td><input value="${esc(ds.link)}" placeholder="paste URL"></td><td><input value="${esc(ds.format)}"></td><td><input value="${esc(ds.note)}"></td>`;const ins=tr.querySelectorAll("input");ins[0].addEventListener("change",()=>{ds.link=ins[0].value;persist();});ins[1].addEventListener("change",()=>{ds.format=ins[1].value;persist();});ins[2].addEventListener("change",()=>{ds.note=ins[2].value;persist();});dtb.appendChild(tr);});
+  const d=el("runLog");if(!LOG.length){d.innerHTML="<i>No runs yet.</i>";}else{d.innerHTML="<table><thead><tr><th>When</th><th>Day(s)</th><th>Mode</th><th>Ver</th><th>Err</th><th>Warn</th><th>Overrides</th></tr></thead><tbody>"+LOG.map(r=>`<tr><td>${new Date(r.ts).toLocaleString()}</td><td>${r.day}</td><td>${r.mode}</td><td>${r.cfg}</td><td>${r.errors}</td><td>${r.warns}</td><td>${r.overrides||''}</td></tr>`).join("")+"</tbody></table>";}}
+function download(name,text){const b=new Blob([text],{type:"text/plain"});const u=URL.createObjectURL(b);const a=document.createElement("a");a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
+
+/* ================= CHECKLIST (3 sections) ================= */
+const CODE_TAG={T00:"No truck",T01:"Unknown truck",T02:"Truck down",T04:"Wrong truck kind",T05:"Driver can’t operate truck",T05w:"Unfamiliar with truck",T06:"Truck double-booked",D00:"No driver",D01:"Unknown driver",D05:"Driver double-booked",D06:"Driver out",D07:"Trainee placement",H02:"Helper double-booked",H03:"Needs a helper",H06:"Helper out",B01:"Missing base pass",B02:"Expired base pass",B03:"Base pass expiring",B05:"Override needs reason",B01o:"Override (no pass)",B02o:"Override (expired)",BX1:"Base changed from usual",BK1:"Break override needs reason",R01:"Unknown route",R02:"Unusual day",R03:"Duplicate route",SW1:"Switch truck not allowed",SW2:"Switch truck unfamiliar",P01:"OFF but assigned",P02:"Not scheduled / not OFF",RS1:"Usual route missing",SP1:"Double space",SP2:"Trailing space",SP3:"Unmatched *",SP4:"Possible typo"};
+function tagOf(c){return CODE_TAG[c]||c;}
+const CODE_RANK={B02:100,B01:99,T05:95,T06:94,D05:93,T02:92,T04:90,T00:85,D01:84,H02:83,H06:82,D06:81,P01:80,BX1:75,SW1:70,R01:60,D00:40,H03:38,R03:36,R02:34,B03:30,SW2:28,D07:26,P02:20,RS1:18,B05:16,BK1:14,SP3:8,SP4:6,SP1:4,SP2:2};
+function rankOf(c){return CODE_RANK[c]||1;}
+function openChecklist(iss){const body=el("checklistBody");let html="";
+  html+=`<p class="small">Tags are plain-language; hover shows nothing cryptic. Tick each to confirm you reviewed it.</p>`;
+  const errs=iss.filter(i=>i.l==="ERROR").sort((x,y)=>rankOf(y.c)-rankOf(x.c)),warns=iss.filter(i=>i.l==="WARN").sort((x,y)=>rankOf(y.c)-rankOf(x.c));
+  html+=`<h4 class="sec-resolve">① Resolve (must fix before posting) — ${errs.length}</h4>`;
+  html+=errs.length?errs.map(it=>`<label class="chk"><input type="checkbox"> <span><b>${tagOf(it.c)}</b> [${it.w}] — ${it.m}</span></label>`).join(""):`<div class="small">None 🎉</div>`;
+  html+=`<h4 class="sec-review">② Review (warnings) — ${warns.length}</h4>`;
+  const infos=iss.filter(i=>i.l==="INFO");
+  html+=warns.map(it=>`<label class="chk"><input type="checkbox"> <span><b>${tagOf(it.c)}</b> [${it.w}] — ${it.m}</span></label>`).join("");
+  html+=infos.filter(i=>/Override/.test(i.m)).map(it=>`<label class="chk"><input type="checkbox"> <span><b>Override applied</b> [${it.w}] — ${it.m}</span></label>`).join("");
+  if(!warns.length&&!infos.length)html+=`<div class="small">None</div>`;
+  // Anti-autopilot: list scheduled start times per route (review, not a checkbox to tick blindly)
+  const startLines=[];DAY.blocks.forEach(bl=>bl.assignments.forEach(a=>{const rl=routeLabelOf(a);startLines.push(`${bl.dow3} ${rl}: ${timeToLabel(a.start)}`);}));
+  if(startLines.length)html+=`<label class="chk"><input type="checkbox"> <span><b>Confirm start times</b> — ${startLines.join(" · ")}</span></label>`;
+  // common items (dynamic)
+  const items=(CFG.checklistItems||[]).slice();
+  const hasCardboard=DAY.blocks.some(bl=>bl.assignments.some(a=>a.route==="Cardboard"));
+  if(hasCardboard&&CFG.dynChecklist&&CFG.dynChecklist.cardboard)items.unshift(CFG.dynChecklist.cardboard);
+  if(DAY.weekend&&CFG.dynChecklist&&CFG.dynChecklist.weekend)items.push(CFG.dynChecklist.weekend);
+  const ty=todayYYMMDD();const current=new Set(CFG.drivers.map(d=>d.name));const rn=[];
+  Object.keys(CFG.basePasses||{}).filter(n=>current.has(n)).forEach(name=>{BASES.forEach(base=>{const ps=passStatus(name,base,ty);if(ps.s==="expired"||ps.s==="expiring")rn.push(`${name} — ${BASE_LABEL[base]} ${ps.exp}`);});});
+  if(rn.length)items.push("Confirm renewal scheduled &amp; VCC reminder present for: "+rn.join("; "));
+  items.push("Any rollovers or redistributions today that would affect route timing / start times?");
+  html+=`<h4 class="sec-common">③ Routine checks — ${items.length}</h4>`+items.map(it=>`<label class="chk"><input type="checkbox"> <span>${it}</span></label>`).join("");
+  body.innerHTML=html;
+  const boxes=body.querySelectorAll("input[type=checkbox]");const done=el("btnChkDone");
+  function upd(){done.disabled=[...boxes].some(b=>!b.checked);}boxes.forEach(b=>b.addEventListener("change",upd));upd();
+  el("checklistModal").classList.add("show");}
+
+function renderReadme(){const r=CFG._readme||{};let h=`<h2>README — v${APP_VERSION} (cfg ${CFG.cfgVersion})</h2>`;
+  h+=`<p class="small">${r.tool||""}</p>`;
+  h+=`<h4>Persistence</h4><p class="small">${r.persistence||""}</p>`;
+  h+=`<h4>GitHub vs HTML</h4><p class="small">${r.githubVsHtml||""}</p>`;
+  h+=`<h4>Requirements always enforced</h4><ul class="small"><li>ALL checkboxes are a uniform 16px (CSS input[type=checkbox]).</li><li>Capitalization preserved for EQ-##, NBG, AAFB, VCC, Camp Blaz, GDOL, DBIDS in Kakao (smartLower).</li></ul>`;
+  if(r.keyRules){h+=`<h4>Key rules</h4><ul class="small">`+r.keyRules.map(x=>`<li>${x}</li>`).join("")+`</ul>`;}
+  if(r.openQuestions){h+=`<h4>Open questions</h4><ul class="small">`+r.openQuestions.map(x=>`<li>${x}</li>`).join("")+`</ul>`;}
+  if(r.versionLog){h+=`<h4>Version log</h4><ul class="small">`+r.versionLog.map(v=>`<li><b>${v.v}</b> — ${v.note}</li>`).join("")+`</ul>`;}
+  h+=`<h4>GitHub “latest for everyone” — step by step</h4><ol class="small">`+
+    `<li>Create a free GitHub account; click <b>New repository</b> → name it e.g. <code>lagu-schedule</code> → <b>Public</b> → Create.</li>`+
+    `<li><b>Add file → Upload files</b>: upload <code>index.html</code> (this tool renamed) and <code>lagu_settings.json</code> (your exported settings). Commit.</li>`+
+    `<li><b>Settings → Pages</b> → Source: <b>Deploy from a branch</b> → Branch <code>main</code> / <code>/root</code> → Save. Your URL appears (…github.io/lagu-schedule/).</li>`+
+    `<li>Share that ONE URL. Everyone opening it gets the latest app; the app fetches <code>lagu_settings.json</code> from the same repo so everyone gets the latest config. (Fetch-on-load + “Load latest” button is a DEFERRED build item.)</li>`+
+    `<li>To update data: edit the Excel master, Export → replace <code>lagu_settings.json</code> in the repo, Commit. Done.</li></ol>`;
+  el("readmeBody").innerHTML=h;}
+function renderHelp(){el("helpBody").innerHTML=`
+  <h2>Save week-to-week / GitHub</h2>
+  <p>Config persists in this browser; if the browser changes, Export the JSON first. <b>GitHub</b> = optional hosting/version-history (the shelf); the <b>HTML</b> is the tool (the machine). A public-repo JSON can be fetched with no login; a SharePoint file always needs sign-in, so keep source on SharePoint Excel and <b>Import a CSV</b> when it changes.</p>
+  <h2>Prefilled start times — pros &amp; cons</h2>
+  <ul><li><b>Pros:</b> matches the near-identical week-to-week pattern (Northern Wed/Thu 2AM, Fri 2:30AM…), fewer keystrokes, fewer typos, consistent across staff.</li>
+  <li><b>Cons:</b> risk of “cruise control” — staff may not re-examine whether today truly matches the usual (e.g. a fuller cardboard truck needs an earlier start). Mitigation: the review popup asks about cardboard-truck fullness, and every start is a visible editable dropdown.</li></ul>
+  <p class="small">App v${APP_VERSION}. Dates yymmdd. Times = this device’s clock (Guam/ChST).</p>`;}
+
+/* ================= BOOT ================= */
+function boot(){
+  CFG=load("lg_cfg",defaultConfig());DAY=load("lg_day",null);LOG=load("lg_log",[]);
+  el("verLabel").textContent="v"+APP_VERSION+" · cfg "+CFG.cfgVersion;wireTabs();
+  el("svcDate").addEventListener("change",renderMake);
+  el("btnReset").addEventListener("click",()=>{DAY=buildDay(el("svcDate").value);saveDay();renderMake();});
+  el("btnLoadUsual").addEventListener("click",doLoadUsual);
+  el("btnSuggestOff").addEventListener("click",suggestOff);
+  el("btnChkCancel").addEventListener("click",()=>el("checklistModal").classList.remove("show"));
+  el("btnChkDone").addEventListener("click",()=>{const boxes=el("checklistBody").querySelectorAll("input[type=checkbox]");if([...boxes].some(b=>!b.checked)){alert("Please tick every item first (or use “Close without posting”).");return;}el("checklistModal").classList.remove("show");});
+  el("offList").addEventListener("change",()=>{DAY.off=csv(el("offList").value);saveDay();});
+  el("dayNotes").addEventListener("change",()=>{DAY.dayNotes=(el("dayNotes").value||"").split("\n").map(x=>x.trim()).filter(Boolean);saveDay();});
+  el("btnGen").addEventListener("click",()=>{DAY.off=csv(el("offList").value);saveDay();
+    const iss=validate();const errs=iss.filter(i=>i.l==="ERROR").sort((x,y)=>rankOf(y.c)-rankOf(x.c)),warns=iss.filter(i=>i.l==="WARN").sort((x,y)=>rankOf(y.c)-rankOf(x.c));
+    const vp=el("valPanel");vp.innerHTML="";const head=document.createElement("div");head.className="panel "+(errs.length?"err":warns.length?"warn":"ok");
+    head.innerHTML=`<b>${errs.length?"✗ "+errs.length+" to resolve":"✓ Looks good"}</b> — ${errs.length} error, ${warns.length} warning. <span class="small">(Review popup opened.)</span>`;vp.appendChild(head);
+    el("outWA").textContent=renderWA();el("outKK").textContent=renderKK();
+    if(errs.length){head.innerHTML+=` <b style="color:var(--err)">— cannot finalize until Resolve items are fixed.</b>`;}
+    const ov=[];DAY.blocks.forEach(bl=>bl.assignments.forEach(a=>{Object.entries(a.baseOver||{}).forEach(([b,o])=>{if(o.override)ov.push(`${bl.dow3}/${routeLabelOf(a)}/${b}(${o.reason==="Other"?o.rother:o.reason||"no reason"})`);});}));
+    LOG.unshift({ts:new Date().toISOString(),day:DAY.blocks.map(b=>b.yymmdd).join("+"),mode:DAY.mode,cfg:CFG.cfgVersion,errors:errs.length,warns:warns.length,overrides:ov.join(" | ")});LOG=LOG.slice(0,300);save("lg_log",LOG);
+    openChecklist(iss);});
+  document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",()=>navigator.clipboard.writeText(el(b.dataset.copy).textContent).then(()=>flash("Copied."))));
+  el("btnAddEquip").addEventListener("click",()=>{CFG.trucks.push({id:"EQ-XX",plate:"",kind:"FrontLoader",status:"active",helperCanDrive:false,note:""});persist();renderEquip();});
+  el("btnAddDriver").addEventListener("click",()=>{CFG.drivers.push({name:"New",kinds:["FrontLoader"],solo:false,trainee:false,outUntil:"",reason:"",ability:{},canGuide:[],needsGuide:[]});persist();renderDrivers();});
+  el("btnAddHelper").addEventListener("click",()=>{CFG.helpers.push({name:"New",outUntil:"",reason:"",canDrive:[],knows:[]});persist();renderHelpers();});
+  el("btnAddRoute").addEventListener("click",()=>{CFG.routes.push({name:"New",waLabel:"NEW",kinds:["FrontLoader"],noTruck:false,days:["Mon","Tue","Wed","Thu","Fri"],startByDay:{},needsHelper:false,basePass:"never",dayBases:{},bases:[]});persist();renderRoutes();});
+  el("btnAddVcc").addEventListener("click",()=>{CFG.vccVersions.push({when:"New",wa:"PLEASE GET {base} PASS AT VCC",kk:"to collect renewed {base} base pass"});persist();renderWording();});
+  el("btnExport").addEventListener("click",()=>download(`lagu_settings_${CFG.cfgVersion}.json`,JSON.stringify(CFG,null,2)));
+  el("btnImport").addEventListener("click",()=>el("cfgFile").click());
+  el("cfgFile").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{CFG=JSON.parse(r.result);persist();renderBackup();flash("Imported.");}catch(err){alert("Bad file: "+err.message);}};r.readAsText(f);});
+  el("btnDefaults").addEventListener("click",()=>{if(confirm("Replace ALL settings with built-in defaults?")){CFG=defaultConfig();persist();renderBackup();}});
+  el("btnExportLog").addEventListener("click",()=>{const rows=[["when","days","mode","ver","errors","warns","overrides"],...LOG.map(r=>[r.ts,r.day,r.mode,r.cfg,r.errors,r.warns,(r.overrides||"").replace(/,/g,";")])];download("lagu_run_log.csv",rows.map(r=>r.join(",")).join("\n"));});
+  el("btnClearLog").addEventListener("click",()=>{if(confirm("Clear log?")){LOG=[];save("lg_log",LOG);renderBackup();}});
+  renderMake();flash("Ready.");}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
+</script>
+</body>
+</html>
