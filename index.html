@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Lagu Schedule Generator</title>
+<title>Lagu Manpower Schedule Generator</title>
 <style>
   :root{--bg:#f4f6f8;--card:#fff;--ink:#1f2d3d;--muted:#6b7a8d;--line:#dfe4ea;
         --brand:#0b6b3a;--brand2:#0e7c46;--warn:#b8860b;--err:#c0392b;--ok:#1e7d34;--down:#a23b2c;}
@@ -36,15 +36,15 @@
   .panel.err{border-color:var(--err);background:#fdf0ee;} .panel.warn{border-color:var(--warn);background:#fdf8ec;}
   .panel.info{border-color:#2a7ade;background:#eef4fd;} .panel.ok{border-color:var(--ok);background:#eef9f0;}
   .pill{display:inline-block;font-size:11px;padding:1px 7px;border-radius:10px;background:#eef2f5;color:var(--muted);margin-left:5px;}
-  .pill.down{background:#f7c9c0;color:#7a1d10;font-weight:700;border:1px solid #d9866f;} .pill.warn{background:#fbf0d6;color:var(--warn);} .pill.ok{background:#e7f4ea;color:var(--ok);}
+  .pill.down{background:#f7c9c0;color:#7a1d10;font-weight:700;border:1px solid #d9866f;} .pill.dbl{background:#fbf0d6;color:#7a5b00;font-weight:700;border:1px solid #d9b84e;} .pill.warn{background:#fbf0d6;color:var(--warn);} .pill.ok{background:#e7f4ea;color:var(--ok);}
   .flex2{display:grid;grid-template-columns:1fr 1fr;gap:15px;} @media(max-width:820px){.flex2{grid-template-columns:1fr;}}
   .tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:9px;align-items:center;}
   code{background:#eef2f5;padding:1px 5px;border-radius:4px;font-size:12px;}
   .small{font-size:12px;color:var(--muted);}
   .savebar{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);padding:7px 12px;font-size:12px;color:var(--muted);}
   .asgrow{border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-bottom:9px;background:#fbfcfd;}
-  .asgrow.dup{border-color:#d9866f;}
-  .asgrow.locked{border-color:var(--err);background:#fdf0ee;}
+  .asgrow.dup{border-color:#d9866f;} .asgrow.helperonly{background:#fdf8ec;border-color:#d9b84e;} .lockgrey{background:#eef0f2!important;color:#9aa5b1!important;cursor:not-allowed;}
+  .asgrow.disabledrow{opacity:.6;} .asgrow.locked{border-color:var(--err);background:#fdf0ee;}
   .asgtop{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
   .fld{display:flex;flex-direction:column;}
   .baseblk{margin-top:7px;padding:6px 9px;border-radius:6px;background:#f4f7f5;border:1px solid var(--line);font-size:12px;}
@@ -55,7 +55,7 @@
   .warnicon{color:#e6a700;}
   .banner{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;}
   .banner .bi{font-size:12px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:2px 8px;}
-  .modalbg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50;}
+  .modalbg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999;}
   .modalbg.show{display:flex;}
   .modal{background:#fff;border-radius:12px;max-width:720px;width:92%;max-height:86vh;overflow:auto;padding:20px 22px;box-shadow:0 10px 40px rgba(0,0,0,.3);}
   .modal h3{margin:0 0 8px;color:var(--brand);}
@@ -65,7 +65,7 @@
 </head>
 <body>
 <header>
-  <h1>🗑️ Lagu Schedule Generator</h1><span class="ver" id="verLabel"></span>
+  <h1>🗑️ Lagu Manpower Schedule Generator</h1><span class="ver" id="verLabel"></span> <button class="ghost" id="btnLoadLatest" style="padding:3px 8px;font-size:12px;margin-left:8px">⟳ Load latest config</button>
   <nav>
     <button data-tab="make" class="active">Generate</button>
     <button data-tab="equip">Equipment</button>
@@ -100,7 +100,7 @@
     <div class="tools"><button class="ghost" id="btnSuggestOff">Auto-suggest OFF (everyone not scheduled)</button></div>
     <input id="offList" style="width:100%" placeholder="Comma-separated names">
     <label style="margin-top:8px">One-off WhatsApp notes (optional, one per line)</label>
-    <div class="small" style="margin:-2px 0 4px">Rare inline notes that belong on the schedule post itself (most one-offs historically went in a SEPARATE “Reminders – please:” companion post, 247× in chat). Actual service changes like a Cardboard route or a Hand Service run are NOT notes — add them with “+ Add route row”. Use this box only for short day-specific lines, e.g. “swap out Crowne Plaza today”, “no service at Faith Presbyterian”. Routine standing instructions belong in the separate reminders post.</div>
+    <div class="small" style="margin:-2px 0 4px">Rare inline notes to be included in the schedule post itself — do not use this box to add routes or for routine standing instructions that belong in the separate reminders post.</div>
     <textarea id="dayNotes" rows="2" style="width:100%"></textarea>
   </div>
   <div class="card">
@@ -194,11 +194,19 @@
     <button class="act" id="btnChkDone">Done</button></div>
 </div></div>
 
+<div id="dlgBg" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100000;align-items:center;justify-content:center;">
+  <div style="background:#fff;max-width:470px;width:90%;border-radius:12px;padding:20px 22px;box-shadow:0 12px 40px rgba(0,0,0,.35);">
+    <div id="dlgMsg" style="font-size:14px;white-space:pre-wrap;line-height:1.5;color:#1f2d3d;"></div>
+    <div style="text-align:right;margin-top:16px;"><button id="dlgOk" class="act">OK</button></div>
+  </div>
+</div>
 <div class="savebar" id="saveState">Ready.</div>
 
 <script>
 "use strict";
-const APP_VERSION="10.1";
+function showDialog(msg){var bg=document.getElementById("dlgBg");if(!bg){try{window.showDialog(msg);}catch(e){}return;}document.getElementById("dlgMsg").textContent=msg;bg.style.display="flex";}
+function hideDialog(){var bg=document.getElementById("dlgBg");if(bg)bg.style.display="none";}
+const APP_VERSION="18.2";
 const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 const DOWfull=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -212,7 +220,7 @@ function defaultConfig(){
  // ability helper: front-loader drivers can't do roll-off trucks
  const noRO={"EQ-09":"unable","EQ-10":"unable","EQ-11":"unable","EQ-18":"unable"};
  return {
- cfgVersion:"260720-14", renewDays:30,
+ cfgVersion:"260720-23", renewDays:30,
  trucks:[
   {id:"EQ-01",plate:"615 CV",kind:"FrontLoader",status:"active",helperCanDrive:false,note:""},
   {id:"EQ-02",plate:"658 CV",kind:"FrontLoader",status:"down",helperCanDrive:false,note:"Out of commission"},
@@ -264,7 +272,7 @@ function defaultConfig(){
   {name:"Fork Service",waLabel:"FORK SERVICE",kinds:["Fork"],noTruck:false,days:["Mon","Tue","Wed","Thu","Fri"],startByDay:{Mon:"06:00",Tue:"06:00",Wed:"06:00",Thu:"06:00",Fri:"06:00"},needsHelper:true,basePass:"byOrder",dayBases:{},bases:[]},
   {name:"Roll-Off",waLabel:"ROLL-OFF",kinds:["RollOff"],noTruck:false,days:["Mon","Tue","Wed","Thu","Fri"],startByDay:{Mon:"06:00",Tue:"06:00",Wed:"06:00",Thu:"06:00",Fri:"06:00"},needsHelper:false,basePass:"always",dayBases:{},bases:["AAFB","CampBlaz","NBG"]},
   {name:"Rail Truck",waLabel:"RAIL TRUCK",kinds:["Rail"],noTruck:false,days:["Tue","Wed","Thu"],startByDay:{Tue:"07:00",Wed:"07:00",Thu:"07:00"},needsHelper:true,basePass:"never",dayBases:{},bases:[]},
-  {name:"Standby",waLabel:"STANDBY",kinds:["FrontLoader","Cardboard","Fork","RollOff","Rail"],noTruck:false,noDriver:false,standbyNote:true,days:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],startByDay:{},needsHelper:false,basePass:"never",dayBases:{},bases:[]},
+  {name:"Standby",waLabel:"STANDBY",kinds:["FrontLoader","Cardboard","Fork","RollOff","Rail"],noTruck:false,noDriver:false,allOptional:true,standbyNote:true,days:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],startByDay:{},needsHelper:false,basePass:"never",dayBases:{},bases:[]},
   {name:"Yard",waLabel:"YARD",kinds:[],noTruck:true,noDriver:true,days:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],startByDay:{Mon:"08:00",Tue:"08:00",Wed:"07:00",Thu:"07:00",Fri:"08:00",Sat:"08:00",Sun:"08:00"},needsHelper:false,basePass:"never",dayBases:{},bases:[]}
  ],
  fallbackStart:"06:00",
@@ -276,15 +284,15 @@ function defaultConfig(){
    Fri:["Northern","Southern","Cardboard","Fork Service","Roll-Off","Yard"],
    Sat:["Northern","Yard"], Sun:["Northern","Yard"]
  },
+ standbyReasons:["on-call","typhoon / weather","COR level","government announcement","mechanic / repair","no work","Other"],
  swSubjects:["PLEASE","DRIVER TO","HELPER TO",""],
  swActions:["SWITCH TO","DUMP"],
  swTimings:["AFTER ROUTE","AFTER DUMPING","BEFORE ROUTE",""],
  swTargets:["YARD"],
  vccVersions:[
-   {when:"Get pass at {base} VCC",wa:"PLEASE GET BASE PASS AT {base} VCC",kk:"to collect renewed {base} base pass"},
-   {when:"Process {base} add-on",wa:"DRIVER PLEASE PROCESS THE {base} BASE PASS ADD-ON AT VCC",kk:"to process {base} base pass add-on at VCC"},
-   {when:"{base} pickup — bring passport + GDOL ID",wa:"PLEASE BRING PASSPORT AND GDOL ID",kk:"to collect renewed {base} base pass"},
-   {when:"{base} pickup — bring DBIDS + passport + GDOL ID",wa:"PLEASE BRING DBIDS, PASSPORT, AND GDOL ID",kk:"to collect renewed {base} base pass"}
+   {when:"Get renewed pass at {base} VCC",wa:"PLEASE GET RENEWED BASE PASS AT {base} VCC",kk:"to collect renewed {base} base pass"},
+   {when:"Process {base} add-on at VCC",wa:"DRIVER PLEASE PROCESS THE {base} BASE PASS ADD-ON AT VCC",kk:"to process {base} base pass add-on at VCC"},
+   {when:"Bring {base} requirements to VCC",wa:"PLEASE BRING {req}",kk:"to collect renewed {base} base pass"}
  ],
  reasonOptions:["Truck down","Driver out / no-show","Route rolled over","Part-day shift (morning/afternoon only)","Customer request","Holiday schedule","Short-staffed","Weather / typhoon","Other"],
  breakOptions:["No break","3AM","4AM","5AM","6AM","7AM","8AM","9AM","10AM","11AM","12PM","1PM","2PM","3PM","4PM","5PM","6PM","Other"],
@@ -309,12 +317,12 @@ function defaultConfig(){
    {name:"Layon landfill (GSWA)",waste:["trash"],cutoff:"15:00",note:"Landfill; mind GSWA breaks"},
    {name:"Pyramid / JY Recycling",waste:["ewaste","metal"],cutoff:"16:00",note:"E-waste / metal"}
  ],
- baseRequirements:{ AAFB:["DBIDS","AAFB pass"], CampBlaz:["DBIDS","Camp Blaz pass"], NBG:["DBIDS","passport","GDOL ID"] },
+ baseRequirements:{ AAFB:["contract letter","pass for renewal","valid govt ID"], CampBlaz:["contract letter","pass for renewal","valid govt ID"], NBG:["contract letter","pass for renewal","valid govt ID"] },
  dumpTime:{ enabled:false, defaultSpeedMultiplier:1.0,
    note:"Future: finish = route start + (actualHoursByRouteDay[route][day] x driverSpeedMultiplier[driver]); compare to disposalSites cutoff; flag 'won't reach tipping in time'. <1 faster, >1 slower.",
    actualHoursByRouteDay:{}, driverSpeedMultiplier:{} },
  _readme:{
-   tool:"Lagu Schedule Generator (single-file HTML)",
+   tool:"Lagu Manpower Schedule Generator (single-file HTML)",
    persistence:"Config persists in this browser. If the browser changes, settings are lost unless you Export the JSON. Source of truth = the settings JSON; if base data lives on SharePoint Excel, export to CSV and re-Import on change (no login/backend).",
    githubVsHtml:"HTML = the tool (the machine). GitHub = optional shelf/hosting + version history so everyone opens one URL. GitHub Pages fetching a JSON in the SAME public repo needs no login; a SharePoint file always needs sign-in, so it can't be auto-read without a backend.",
    soonParam:"'Expiring soon' = renewDays (default 30) on the Base Passes tab — centralized.",
@@ -333,8 +341,17 @@ function defaultConfig(){
      "Kakao omits worker bring-pass reminders; opener 'Good afternoon, {Weekday} MM/DD schedule for your review sir:' / weekend 'Saturday MM/DD & Sunday MM/DD schedules for your review sir:', no closer.",
      "Roster 260720: drivers Abeth/Allan/Bong/Celso/Graymar/Miarfy/Racel/Robert; helpers Joseph/Ramdhel/Ron/Davis."
    ],
-   openQuestions:["Confirm Northern Tue=CampBlaz+AAFB and Southern has no Tue pass.","Confirm ability edits (Allan/Graymar all-but-15/16; Miarfy fork)."],
+   openQuestions:["DATA STILL NEEDED for build-ons (base-pass matrix & driver/truck ability are CONFIRMED): (a) which routes require a helper per day; (b) each worker's familiarity level per route per day; (c) speed multiplier per driver (fast/slow); (d) actual duration per route per day (for dump-time)."],
+   futureBuilds:["Dump-time estimator: route start + actualDurationByRouteDay x driverSpeedMultiplier vs disposal-site cutoff -> flag 'won't reach tipping in time'.","Familiarity-pairing check: warn if a driver who needs a guide is paired with a helper who doesn't know that route/day.","Cost projection: hours-to-date + projected planned hours; regular vs OT; per-worker + weekly totals; compare plans.","FOR EACH of the above: ALSO ship a non-coder settings UI (a tab) so staff can edit the values and Export to JSON for GitHub upload — never JSON-only."],
    versionLog:[
+     {v:"260720-23",note:"v18.2 ROOT-CAUSE FIX (confirmed from user console: 14x 'Ignored call to alert() — document is sandboxed, allow-modals not set'). The SharePoint/preview sandbox SILENTLY BLOCKS alert(), so the lock dialog and the Done popup fired but were suppressed — it was never a lock-logic bug. Replaced ALL 8 alert() calls with a custom in-page modal (showDialog/#dlgBg + OK button) the sandbox cannot block. Also carried the needed v18 fixes onto this build: removed the CSS 'pointer-events:none' on locked rows (which had also killed the click-guard AND the escape-hatch driver dropdown); override CHECKBOX ALONE now frees the form (reason still a WARN); flag bubbles (route/eq/driver/helper double-book + helper-no-driver) moved to ONE full-width horizontal strip above the row so two bubbles no longer stack and inflate row height. NOTE: all red console errors the user saw were SharePoint's own service worker (spserviceworker.js/odsp), not the tool."},
+     {v:"260720-21",note:"v17.1 PATCH: LOCK now reliable — replaced fragile per-element listeners with ONE global capture-phase mousedown guard (installLockGuard) that blocks any assignment-area control while anyLocked() and shows the FORM LOCKED dialog over everything; escape hatch = the flagged row's Driver + that base's Override/reason carry class 'escape' and stay live; changing the driver or ticking override frees the whole form. Helper-without-driver now shows a YELLOW bubble ('⚠️ HELPER, NO DRIVER') beside (not stacked on) any red double-book bubble, plus the yellow row background. STANDBY now truly optional — shows truck/driver/helper dropdowns but requires NONE (allOptional flag; exempt from T00 no-truck, D00 no-driver, D08 helper-only), so an all-crew-standby day is valid; a truck can still be attached (e.g. *STANDBY* Fork Service EQ-13). OFFICIAL-CHAT RESEARCH (2025+2026, 127,079 msgs): STANDBY variants = *STANDBY* section header (1/1/25, 7/11/25, 8/15/25, 8/20/25...), *STAND BY* (10/29/25), plus inline equipment/mechanic standby notes (EQ04/EQ03/EQ16 helper standby, EQ-03 breaks not working 4/4/25, mechanic standby 4/16/26); 'remain on standby' for typhoons (Sinlaku 4/14/26, Bavi 7/6/26). ON-CALL never used as a manpower assignment — only customer/billing ('invoice as on-call' 10/30/25, 'HOLD SERVICES to ON CALL' 10/31/25, 'oncall svc' 11/12/25, 'front loader on call log' 7/16/26) — so NOT added as a route; stays a Standby reason label. No route section headers exist beyond the current dropdown (all other all-caps tokens are crew names)."},
+     {v:"260720-20",note:"v16.1 PATCH: FIXED the lock dialog — previously locked fields used disabled+pointer-events:none, so mousedown never fired and NO popup appeared. Now locked fields are greyed via .lockgrey and intercept mousedown/click/keydown/focus (not disabled) so the explanatory dialog DOES appear over everything (modal z-index 9999). Escape hatch confirmed: the flagged route's Driver dropdown + that base's Override checkbox/reason stay live; changing the driver or ticking override frees the whole form. Helper-only route (non-Yard/Standby/VE-02) now shows BOTH the immediate yellow row background AND a '⚠️ HELPER WITHOUT DRIVER' bubble on the Helper label explaining why. Standby may be fully empty (no driver AND no helper) — for all-crew-standby days. CHAT FINDINGS (dated): STANDBY is used as a schedule SECTION header (e.g. 1/5/26 *STANDBY* holding Fork Service EQ-13/Bong) and verbally ('on standby' 12/4, 12/10, 12/12, 12/17/25, 1/9/26; 'remain on standby' for Typhoon Sinlaku 4/14/26 and Typhoon Bavi 7/6/26). ON-CALL is a CUSTOMER/BILLING remark, not a manpower assignment ('invoice as on-call' 10/30/25; 'HOLD SERVICES to ON CALL' 10/31/25; 'oncall svc' 11/12/25; 'front loader on call log' 7/16/26) — so it is NOT added as a separate add-a-route option; on-call remains a Standby reason label."},
+     {v:"260720-19",note:"v15.1 PATCH: removed 'invoice as on-call' from standbyReasons (not seen in chat); Standby may now be helper-only OR fully empty (exempt from D08); VCC {req} now renders as a COMMA + Oxford-AND list ('CONTRACT LETTER, PASS FOR RENEWAL, AND VALID GOVT ID') via joinList(); CHANGING THE DATE now KEEPS all rows/fields and only refreshes base-pass DEFAULTS for the new weekday (via migrateDay) — full wipe happens only on Reset day or Load usual routes; helper-only non-Yard/non-Standby/non-VE-02 route now shows an IMMEDIATE yellow row highlight (.helperonly) in addition to the Resolve D08 error; the draft black boxes now LIVE-UPDATE on every change (livePreview() at end of renderDayBlocks) — Generate is still what opens the review popup + logs. NOTE: standby wording/date mining was requested but the WhatsApp chat wasn't attached this turn — deferred; confirmed on-call stays a Standby REASON (not a separate route) per prior chat usage."},
+     {v:"260720-18",note:"v14.1 PATCH: renamed to 'Lagu Manpower Schedule Generator'; internal renewal BANNER RESTORED to v9 style with (soon)/(expired); Standby route now uses a REASON dropdown (on-call, invoice as on-call, typhoon/weather, COR level, government announcement, mechanic/repair, no work, Other) — chat-confirmed terms; VCC baseRequirements default = 'contract letter, pass for renewal, valid govt ID' (NBG same, editable); README openQuestions replaced — base-pass matrix & driver/truck ability are CONFIRMED; still-needed build-on DATA = (a) which routes need a helper per day, (b) familiarity level per worker per route per day, (c) driver speed multiplier, (d) actual duration per route per day; README futureBuilds section added (dump-time, familiarity-pairing, cost projection) with mandate that EACH ships a non-coder settings UI + JSON export for GitHub. FORM-WIDE LOCK refined: when a driver has an expired/missing REQUIRED pass, EVERY field in EVERY row is greyed + non-interactive (dropdowns can't open; details can't expand) EXCEPT the flagged route's Driver dropdown and that base's Override checkbox + reason; popup on any blocked interaction. Helper dropdown ALWAYS selectable (arrange helpers before drivers); helper-only non-Yard/non-VE-02 => immediate D08 in Resolve. Checklist Resolve items are NO LONGER checkboxes (a checkmark can't clear a hard error) — shown with ✗; Review items keep checkboxes. Done button popup: 'All items in the Resolve section must be fixed before you can generate the drafts.' Uniform 16px checkboxes audited. On-Call handled as a Standby reason (not a separate route) — matches chat usage."},
+     {v:"260720-17",note:"v13.1 PATCH: removed the internal renewal BANNER — expiring/expired pass follow-ups now appear ONLY in the checklist Review section, scoped to the drivers/routes/base passes actually ON the schedule; B03 wording => 'Follow up on <driver>'s <base> pass renewal. Add reminder to go to the VCC if ready (current expires YYMMDD).'; FORM-WIDE HARD LOCK — when any driver has an expired/missing REQUIRED pass, EVERY field in EVERY row is greyed + disabled (dropdowns can't open; mousedown shows a popup), except the flagged red row's Driver + that base's override/reason; helper-only rule now enforced at the CONTROL — Helper dropdown is disabled (with tooltip) unless a driver is set, for any non-Yard non-VE-02 truck; VCC baseRequirements default set to 'contract letter, pass being renewed, valid ID' (NBG adds passport + GDOL ID) — covers both expired and soon-to-expire; checkbox size uniform (16px) audited; Done button pops up if any Resolve error remains or any item unticked. BUILD-ON NOTE: when adding the dump-time, familiarity-pairing, and cost-projection features, ALSO add non-coder UI (a settings tab) so staff can edit those values and Export to JSON for GitHub upload — do not leave them JSON-only."},
+     {v:"260720-16",note:"v12.1 PATCH: helper double-book badge now updates IMMEDIATELY and CLEARS immediately (helper select re-renders like driver/truck); one-off notes guideline text simplified per request; VCC cleaned — removed 'pickup', consistent get/collect, {req} auto-fills bring-list from baseRequirements (now includes the current pass + base extras), stale vccIdx auto-migrates to blank (fixes phantom 'PLEASE BRING CAMP BLAZ PASS'); plain-language tags added for T06w/D05w/H02w/D08; FORM-WIDE lock — any row with an unresolved expired/missing REQUIRED pass locks EVERY field across the form except the flagged row's driver (popup on any other edit); switch Action shows DUMP for a HELPER subject only if that helper is rail-capable; Standby route now shows an on-call note field (default 'on-call', chat term confirmed); GitHub: header 'Load latest config' button + auto fetch of lagu_settings.json on load with version stamp + confirm-to-load (works on GitHub Pages URL https://lagullc.github.io/manpower-schedule/). CONFIG LOCATIONS: disposal sites = CFG.disposalSites; route needs-helper = Routes tab 'Helper' checkbox (r.needsHelper); per-worker route familiarity is NOT yet a field — driver↔truck ability lives in Drivers tab matrix; route/day familiarity is a documented build-on (dumpTime + a future familiarityByRouteDay map). Answers: route double-booked vs duplicated kept distinct (R03 duplicate route = same route twice; D05/T06/H02 = same resource two shifts)."},
+     {v:"260720-15",note:"v11.1 PATCH: TIME-AWARE double-booking — EQ/driver/helper booked at the SAME start time = RESOLVE/red bubble (ERROR T06/D05/H02); at DIFFERENT times = REVIEW/yellow bubble (WARN T06w/D05w/H02w). Helper flag now updates immediately via bookingConflicts() recompute each render (no stale badge). Row badge label unified 'DOUBLE-BOOKED (same time)' vs '2+ SHIFTS (diff time)'. VE-02 truck: driver dropdown now shows ALL drivers + rail-capable helpers (Ron/Joseph). switch-target: VE-02 shown for ALL helpers when action=SWITCH TO, only rail-capable helpers when action=DUMP. Helper-only route now ERROR (D08) unless Yard or VE-02 rail. Serious lock: locked-row fields route through tryEdit -> popup + revert (driver kept editable as the fix path). VCC wording uses 'get/collect' (no 'pick up'); {req} variable auto-fills bring-list from baseRequirements (minus DBIDS) so options aren't hardcoded per base. Standby truck dropdown adds Yard + Other(custom text); Hand Service truck adds Other(custom). Base-pass expiring wording: 'Confirm X's renewed <base> pass is ready — if not, remind them to go to the VCC (expires YYMMDD)'. Generate now POPS UP when Resolve errors exist; checklist Done button no longer silently disabled — it pops up if any Resolve ERROR remains (ticking cannot clear an error) or any review item unticked. DEFERRED: GitHub fetch-settings-on-load + Load-latest button (steps in Readme tab; needs repo hosted first)."},
      {v:"260720-14",note:"v10.1 PATCH: Dump option label 'Dump only (no route)' + truck dropdown fixed (was empty); Hand Service add-route option (trucks VE-02/EQ-12/EQ-13, driver list adds rail-capable helpers); Standby now has a truck dropdown; double-book/duplicate flags unified ALL-CAPS with subject prefix (ROUTE/EQ/DRIVER/HELPER DOUBLE-BOOKED) + consistent red-bubble style (removed yellow bg); README added as its own in-app TAB (renders _readme incl GitHub step-by-step); base-pass expiring wording 'confirm renewed <base> pass is ready (expires YYMMDD)'; VCC {base} variable everywhere (add-on + pickups no longer hardcode Camp Blaz/NBG), de-duplicated versions, 'Base for {base}' label -> 'Base'; switch-note no longer collapses on subject/action change (a._noteOpen persists <details>); 'HELPER TO' subject only offered when a helper is assigned; VE-02 in switch target only for rail-capable helpers; helper+DUMP -> VE-02 only, no Yard; PER-ROW lock restored (expired/missing required ticked pass locks only THAT row's non-override fields, popup on attempt; other routes stay editable); Generate shows 'cannot finalize until Resolve fixed' and checklist Done stays blocked until all ticked; START TIME now hour + minute(00/15/30/45) + AM/PM dials (stored HH:MM; no free-minute entry); one-off notes guideline corrected (Cardboard/Hand Service belong in Add-a-route, not notes). DEFERRED: GitHub fetch-settings-on-load + 'Load latest' button (needs repo hosted; steps documented in Readme tab)."},
      {v:"260720-13",note:"v9.1 PATCH: row-LOCK removed (expired/missing pass flags in Review only, never disables other fields, no popup); switch/dump target logic — VE-02 shown for all drivers (Please/Driver), Helper subject shows VE-02 only for rail-capable helpers (Ron/Joseph, editable via helper.canDrive), Yard hidden when subject Driver/Please or action DUMP, Helper+DUMP => VE-02 only; VCC 'Bring {base} pass' removed (checkbox job), {base} variable throughout, base dropdown default BLANK; Dump-truck route option (no + prefix, empty truck, base-pass block hidden); Standby route added to add-route list; break options full 3AM-6PM range + custom field only shows when Other; Sat/Sun need no helper (H03 suppressed weekends); EQUIPMENT double-booking flagged on row (bold red) like workers; double-booked pill made bold/red; base-pass 'expiring' wording => 'Confirm if X's <base> renewed pass is ready (expires YYMMDD)'; checklist sorted most->least substantive within Resolve/Review, scheduled start-times listed under Review (anti-autopilot), rollover/redistribution timing question added under Routine, base-pass renewal items dynamic; disposalSites + baseRequirements + dumpTime spec added; suggest-OFF fixed (sandbox-safe, no confirm(); inline confirm note). REQUIREMENTS ALWAYS ENFORCED: ALL checkboxes 16px uniform (CSS input[type=checkbox]); capitalization preserved for EQ-##/NBG/AAFB/VCC/Camp Blaz/GDOL/DBIDS in Kakao (smartLower). DEFERRED (need dedicated turns): (1) start time as separate hour+minute(quarter)+AM/PM dials; (2) GitHub Pages fetch lagu_settings.json on load + version stamp + 'Load latest' button. ANSWERS: autoload-vs-button => keep BUTTON (autoload silently wipes rows on date change); allow Generate with unresolved Resolve item => NO (Done stays blocked until every item ticked; Resolve = hard errors)."},
      {v:"260720-10",note:"v7.0: per-base bring-pass, Kakao opener, ability, dup-flag, custom routes."},
@@ -390,7 +407,8 @@ function smartLower(s){let x=(s||"").toLowerCase();
   x=x.replace(/\b(cv|tbj|tbg)\b/g,m=>m.toUpperCase());
   return x;}
 function fillTruck(tpl,truckId){const t=truckById(truckId);const tk=t?`${t.id} ${t.plate}`:(truckId==="YARD"?"YARD":(truckId||"EQ-__"));return (tpl||"").replace(/\{truck\}/g,tk);}
-function fillBase(tpl,base){return (tpl||"").replace(/\{base\}/g,BASE_CAPS[base]||base||"{base}");}
+function joinList(arr){arr=(arr||[]).filter(Boolean);if(!arr.length)return "REQUIREMENTS";if(arr.length===1)return arr[0];if(arr.length===2)return arr[0]+" AND "+arr[1];return arr.slice(0,-1).join(", ")+", AND "+arr[arr.length-1];}
+function fillBase(tpl,base){let req=joinList((CFG.baseRequirements||{})[base]);return (tpl||"").replace(/\{base\}/g,BASE_CAPS[base]||base||"{base}").replace(/\{req\}/g,req.toUpperCase());}
 
 /* switch note from structured parts */
 function switchText(a){if(!a.sw||!a.sw.action)return "";const s=a.sw;const tgt=s.target==="YARD"?"YARD":(s.target?fillTruck("{truck}",s.target):"");
@@ -398,8 +416,8 @@ function switchText(a){if(!a.sw||!a.sw.action)return "";const s=a.sw;const tgt=s
 function switchWA(a){const t=switchText(a);return t?("*"+t.toUpperCase()+"*"):"";}
 function switchKK(a){let t=switchText(a);if(!t)return "";t=smartLower(t);t=t.replace(/\bplease\s+/g,"");t=t.replace(/^driver\s+to\s+/,"to ");
   if(!/^(to |helper )/.test(t)&&/^(switch|dump)\b/.test(t))t="to "+t;return "["+t+"]";}
-function vccWA(a){if(a.vccIdx===""||a.vccIdx==null)return "";if(a.vccIdx==="other")return a.vccWaOther?("*"+a.vccWaOther.toUpperCase()+"*"):"";const v=CFG.vccVersions[a.vccIdx];return v?("*"+fillBase(v.wa,a.vccBase).toUpperCase()+"*"):"";}
-function vccKK(a){if(a.vccIdx===""||a.vccIdx==null)return "";if(a.vccIdx==="other")return a.vccKkOther?("["+smartLower(a.vccKkOther)+"]"):"";const v=CFG.vccVersions[a.vccIdx];return v&&v.kk?("["+smartLower(fillBase(v.kk,a.vccBase))+"]"):"";}
+function vccWA(a){if(typeof a.vccIdx==="number"&&a.vccIdx>=CFG.vccVersions.length)a.vccIdx="";if(a.vccIdx===""||a.vccIdx==null)return "";if(a.vccIdx==="other")return a.vccWaOther?("*"+a.vccWaOther.toUpperCase()+"*"):"";const v=CFG.vccVersions[a.vccIdx];return v?("*"+fillBase(v.wa,a.vccBase).toUpperCase()+"*"):"";}
+function vccKK(a){if(typeof a.vccIdx==="number"&&a.vccIdx>=CFG.vccVersions.length)a.vccIdx="";if(a.vccIdx===""||a.vccIdx==null)return "";if(a.vccIdx==="other")return a.vccKkOther?("["+smartLower(a.vccKkOther)+"]"):"";const v=CFG.vccVersions[a.vccIdx];return v&&v.kk?("["+smartLower(fillBase(v.kk,a.vccBase))+"]"):"";}
 
 function bringPassNote(bases){const sel=orderBases(bases);if(!sel.length)return "";const caps=sel.map(b=>BASE_CAPS[b]);
   if(caps.length===1)return `*DRIVER PLEASE BRING ${caps[0]} PASS*`;
@@ -415,7 +433,21 @@ function buildDay(iso){const p=isoParts(iso),isSat=p.dow===6,isSun=p.dow===0,wee
   function mk(bIso){const bp=isoParts(bIso);return {iso:bIso,dow3:bp.dow3,long:bp.long,yymmdd:bp.yymmdd,slashed:bp.slashed,full:bp.full,assignments:[],breakOver:{}};}
   let blocks=isSat?[mk(iso),mk(addDaysISO(iso,1))]:[mk(iso)];
   return {iso,weekend,mode:weekend?"WEEKEND":"WEEKDAY",blocks,off:[],dayNotes:[]};}
-function ensureDay(){const iso=el("svcDate").value;if(!iso)return null;if(!DAY||DAY.iso!==iso){DAY=buildDay(iso);saveDay();}return DAY;}
+function migrateDay(iso){const nd=buildDay(iso);
+  // carry over off + dayNotes
+  nd.off=(DAY&&DAY.off)||[];nd.dayNotes=(DAY&&DAY.dayNotes)||[];
+  if(DAY&&DAY.blocks&&DAY.blocks.length){
+    const src=DAY.blocks[0];
+    nd.blocks.forEach(b=>{ // copy assignments into each new block (weekday->1 block; weekend->Sat gets old rows, Sun blank)
+      if(b===nd.blocks[0]){ b.assignments=JSON.parse(JSON.stringify(src.assignments||[]));
+        // refresh base-pass DEFAULTS for the new day-of-week (keep everything else)
+        b.assignments.forEach(a=>{const usual=usualBases(routeByName(a.route)||{},b.dow3);const nc={},no={};BASES.forEach(x=>{nc[x]=usual.includes(x);no[x]=(a.baseOver&&a.baseOver[x])||{override:false,reason:"",rother:""};});a.baseChecks=nc;a.baseUsual=usual.slice();a.baseOver=no;});
+        b.breakOver=JSON.parse(JSON.stringify(src.breakOver||{}));
+      }
+    });
+  }
+  return nd;}
+function ensureDay(){const iso=el("svcDate").value;if(!iso)return null;if(!DAY||DAY.iso!==iso){DAY=(DAY&&DAY.blocks&&DAY.blocks.some(b=>b.assignments.length))?migrateDay(iso):buildDay(iso);saveDay();}return DAY;}
 function routeLabelOf(a){if(a.route==="__handservice")return "Hand Service";if(a.route==="__custom")return (a.customName||"Custom");if(a.route==="__dump"){const t=truckById(a.truck);return t?("Dump "+t.id):"Dump truck";}return a.route;}
 function routeSpecOf(a){if(a.route==="__handservice")return {noTruck:false,kinds:["Rail","Fork"],waLabel:"HAND SERVICE",needsHelper:true,basePass:"never",days:DOW,startByDay:{},dayBases:{},bases:[]};if(a.route==="__custom")return {noTruck:false,kinds:KINDS,waLabel:(a.customName||"CUSTOM").toUpperCase(),needsHelper:false,basePass:"never",days:DOW,startByDay:{},dayBases:{},bases:[]};if(a.route==="__dump"){const t=truckById(a.truck);return {noTruck:false,kinds:KINDS,waLabel:t?("DUMP "+t.id+" "+t.plate):"DUMP",needsHelper:false,basePass:"never",days:DOW,startByDay:{},dayBases:{},bases:[]};}return routeByName(a.route);}
 function uniqueStarts(bl){return [...new Set(bl.assignments.map(a=>a.start))].sort();}
@@ -423,8 +455,21 @@ function breakFor(bl,start){const ov=(bl.breakOver||{})[start];if(ov&&ov.value){
 /* which checked bases the driver actually holds (drop expired/none from the printed reminder) */
 function effectiveChecked(a,bl){const out=[];BASES.forEach(b=>{if(!a.baseChecks[b])return;const ps=a.driver?passStatus(a.driver,b,bl.yymmdd):{s:"ok"};if(ps.s==="expired"||ps.s==="none")return;out.push(b);});return out;}
 /* is this row locked (required base missing/expired, not yet overridden)? */
-function rowLocked(a,bl){if(!a.driver)return false;let lock=false;BASES.forEach(b=>{if(!a.baseChecks[b])return;const ps=passStatus(a.driver,b,bl.yymmdd);const ov=(a.baseOver||{})[b]||{};if((ps.s==="none"||ps.s==="expired")&&!(ov.override&&(ov.reason==="Other"?ov.rother:ov.reason)))lock=true;});return lock;}
+function rowLocked(a,bl){if(!a.driver)return false;let lock=false;BASES.forEach(b=>{if(!a.baseChecks[b])return;const ps=passStatus(a.driver,b,bl.yymmdd);const ov=(a.baseOver||{})[b]||{};if((ps.s==="none"||ps.s==="expired")&&!ov.override)lock=true;});return lock;}
+function anyLocked(){let hit=false;(DAY?DAY.blocks:[]).forEach(bl=>bl.assignments.forEach(a=>{if(rowLocked(a,bl))hit=true;}));return hit;}
 
+/* ================= CONFLICTS (time-aware) ================= */
+function bookingConflicts(bl){
+  const D={},H={},T={};
+  bl.assignments.forEach(a=>{const st=a.start||"";
+    if(a.driver){(D[a.driver]=D[a.driver]||[]).push(st);}
+    if(a.helper){(H[a.helper]=H[a.helper]||[]).push(st);}
+    if(a.truck){(T[a.truck]=T[a.truck]||[]).push(st);}
+  });
+  function classify(map){const out={};Object.keys(map).forEach(k=>{const arr=map[k];if(arr.length<2)return;
+    const same=arr.some((v,i)=>arr.indexOf(v)!==i); out[k]={count:arr.length,same};});return out;}
+  return {D:classify(D),H:classify(H),T:classify(T)};
+}
 /* ================= VALIDATION ================= */
 
 function lightChecks(){const out=[];const add=(l,c,m,w)=>out.push({l,c,m,w});
@@ -444,29 +489,29 @@ function lightChecks(){const out=[];const add=(l,c,m,w)=>out.push({l,c,m,w});
   return out;}
 
 function validate(){const I=[];const add=(l,c,m,w)=>I.push({l,c,m,w});
-  DAY.blocks.forEach(bl=>{const seenT={},seenD={},seenH={},seenRoute={};
+  DAY.blocks.forEach(bl=>{const seenRoute={};
     bl.assignments.forEach((a,i)=>{const w=`${bl.dow3} row ${i+1}`;const r=routeSpecOf(a);const rl=routeLabelOf(a);
       if(!r){add("ERROR","R01",`Unknown route "${rl}".`,w);return;}
       if(seenRoute[rl]) add("WARN","R03",`${rl} appears more than once on ${bl.dow3} — allowed, confirm intentional.`,w); else seenRoute[rl]=w;
       const usualList=(CFG.usualRoutesByDay||{})[bl.dow3]||[];
       if(a.route!=="__custom"&&usualList.length&&!usualList.includes(a.route)) add("WARN","R02",`${rl} isn’t usually run on ${bl.dow3} — confirm rollover.`,w);
-      if(!r.noTruck){const t=truckById(a.truck);
-        if(!a.truck) add("ERROR","T00",`No truck chosen for ${rl}.`,w);
+      if(!r.noTruck&&!(r.allOptional&&!a.truck)){const t=truckById(a.truck);
+        if(!a.truck&&!r.allOptional) add("ERROR","T00",`No truck chosen for ${rl}.`,w);
+        else if(!a.truck&&r.allOptional){/* standby: truck optional */}
         else if(!t) add("ERROR","T01",`Unknown truck "${a.truck}".`,w);
         else{if(t.status==="down") add("ERROR","T02",`${t.id} is DOWN.`,w);
           if((r.kinds||[]).length&&!r.kinds.includes(t.kind)) add("ERROR","T04",`${t.id} is ${t.kind}; ${rl} needs ${r.kinds.join("/")}.`,w);
           if(a.driver){const ab=abilityFor(a.driver,t.id);const hd=t.helperCanDrive&&CFG.helpers.some(h=>h.name===a.driver);
             if(ab==="unable"&&!hd) add("ERROR","T05",`${a.driver} is ${ABILITY_LABEL.unable} ${t.id}.`,w);
             else if(ab==="unfamiliar") add("WARN","T05w",`⚠️ ${a.driver} is ${ABILITY_LABEL.unfamiliar} of ${t.id}.`,w);}
-          if(seenT[t.id]) add("ERROR","T06",`${t.id} double-booked (also ${seenT[t.id]}).`,w); else seenT[t.id]=w;}}
+          }}
       if(a.driver){const d=driverByName(a.driver);const hd=(()=>{const t=truckById(a.truck);return t&&t.helperCanDrive&&CFG.helpers.some(h=>h.name===a.driver);})();
         if(!d&&!hd) add("ERROR","D01",`Unknown driver "${a.driver}".`,w);
         else if(d){if(isOut(d.outUntil,bl.yymmdd)) add("ERROR","D06",`${d.name} is OUT until ${d.outUntil}.`,w);
           if(d.trainee) add("WARN","D07",`${d.name} is a trainee — renders after the hyphen; put a qualified lead in helper.`,w);}
-        if(seenD[a.driver]) add("ERROR","D05",`${a.driver} double-booked (also ${seenD[a.driver]}).`,w); else seenD[a.driver]=w;
-      } else if(!r.noTruck&&!r.noDriver) add("WARN","D00",`No driver chosen for ${rl}.`,w);
+      } else if(!r.noTruck&&!r.noDriver&&!r.allOptional) add("WARN","D00",`No driver chosen for ${rl}.`,w);
+      if(!a.driver&&a.helper&&a.route!=="Yard"&&a.route!=="Standby"&&a.truck!=="VE-02"&&!r.noDriver) add("ERROR","D08",`${rl} has a helper but no driver — assign a driver (only Yard, Standby, or a VE-02 rail run may be helper-only).`,w);
       if(a.helper){const h=helperByName(a.helper);if(h&&isOut(h.outUntil,bl.yymmdd)) add("ERROR","H06",`Helper ${a.helper} is OUT until ${h.outUntil}.`,w);
-        if(seenH[a.helper]) add("ERROR","H02",`Helper ${a.helper} double-booked (also ${seenH[a.helper]}).`,w); else seenH[a.helper]=w;
       } else if(r.needsHelper && !DAY.weekend) add("WARN","H03",`${rl} usually needs a helper — none assigned.`,w);
       // switch target ability
       if(a.sw&&a.sw.target&&a.sw.target!=="YARD"&&a.driver){const ab=abilityFor(a.driver,a.sw.target);
@@ -480,9 +525,14 @@ function validate(){const I=[];const add=(l,c,m,w)=>I.push({l,c,m,w});
       if(a.driver&&!r.noTruck){BASES.forEach(base=>{if(!a.baseChecks[base])return;const ps=passStatus(a.driver,base,bl.yymmdd);const ov=(a.baseOver||{})[base]||{};const rs=ov.reason==="Other"?(ov.rother||""):(ov.reason||"");
         if(ps.s==="none"){if(ov.override)add("INFO","B01o",`Override: ${a.driver} has no ${BASE_LABEL[base]} pass for ${rl} — ${rs||"(no reason!)"}`,w);else add("ERROR","B01",`${a.driver} has NO ${BASE_LABEL[base]} pass but ${rl} needs it. Override + reason on the row.`,w);}
         else if(ps.s==="expired"){if(ov.override)add("INFO","B02o",`Override: ${a.driver}'s ${BASE_LABEL[base]} pass expired (${ps.exp}) — ${rs||"(no reason!)"}`,w);else add("ERROR","B02",`${a.driver}'s ${BASE_LABEL[base]} pass EXPIRED (${ps.exp}). Override + reason.`,w);}
-        else if(ps.s==="expiring") add("WARN","B03",`Confirm ${a.driver}'s renewed ${BASE_LABEL[base]} pass is ready (expires ${ps.exp}).`,w);
+        else if(ps.s==="expiring") add("WARN","B03",`Follow up on ${a.driver}'s ${BASE_LABEL[base]} pass renewal. Add reminder to go to the VCC if ready (current expires ${ps.exp}).`,w);
         if(ov.override&&!rs) add("WARN","B05",`Override for ${BASE_LABEL[base]} on ${rl} needs a reason.`,w);});}
     });});
+  DAY.blocks.forEach(bl=>{const CFL=bookingConflicts(bl);
+    Object.entries(CFL.T).forEach(([id,o])=>add(o.same?"ERROR":"WARN",o.same?"T06":"T06w",`${id} ${o.same?"double-booked at the SAME start time":"on "+o.count+" shifts at different times — allowed, confirm"}.`,bl.dow3));
+    Object.entries(CFL.D).forEach(([nm,o])=>add(o.same?"ERROR":"WARN",o.same?"D05":"D05w",`Driver ${nm} ${o.same?"double-booked at the SAME start time":"on "+o.count+" shifts at different times — allowed, confirm"}.`,bl.dow3));
+    Object.entries(CFL.H).forEach(([nm,o])=>add(o.same?"ERROR":"WARN",o.same?"H02":"H02w",`Helper ${nm} ${o.same?"double-booked at the SAME start time":"on "+o.count+" shifts at different times — allowed, confirm"}.`,bl.dow3));
+  });
   DAY.blocks.forEach(bl=>{Object.entries(bl.breakOver||{}).forEach(([st,ov])=>{if(ov.value){const rs=ov.reason==="Other"?(ov.rother||""):(ov.reason||"");if(!rs)add("WARN","BK1",`Break override at ${timeToLabel(st)} (${bl.dow3}) needs a reason.`,"breaks");}});});
   if(!DAY.weekend){const off=new Set(DAY.off);const assigned=new Set();
     DAY.blocks.forEach(bl=>bl.assignments.forEach(a=>{if(a.driver)assigned.add(a.driver);if(a.helper)assigned.add(a.helper);}));
@@ -545,12 +595,12 @@ function renderMake(){
   el("offList").value=(DAY.off||[]).join(", ");el("dayNotes").value=(DAY.dayNotes||[]).join("\n");
   renderRenewalBanner();renderDayBlocks();}
 function renderRenewalBanner(){const host=el("renewalBanner");host.innerHTML="";const ty=todayYYMMDD();const items=[];const current=new Set(CFG.drivers.map(d=>d.name));
-  Object.keys(CFG.basePasses||{}).filter(n=>current.has(n)).forEach(name=>{const parts=[];BASES.forEach(base=>{const ps=passStatus(name,base,ty);if(ps.s==="expired")parts.push(`${BASE_LABEL[base]} ${ps.exp} (expired)`);else if(ps.s==="expiring")parts.push(`confirm renewed ${BASE_LABEL[base]} pass is ready (expires ${ps.exp})`);});if(parts.length)items.push(`<span class="bi"><b>${name}</b>: ${parts.join("; ")}</span>`);});
+  Object.keys(CFG.basePasses||{}).filter(n=>current.has(n)).forEach(name=>{const parts=[];BASES.forEach(base=>{const ps=passStatus(name,base,ty);if(ps.s==="expired")parts.push(`${BASE_LABEL[base]} ${ps.exp} (expired)`);else if(ps.s==="expiring")parts.push(`${BASE_LABEL[base]} ${ps.exp} (soon)`);});if(parts.length)items.push(`<span class="bi"><b>${name}</b>: ${parts.join("; ")}</span>`);});
   if(items.length){const d=document.createElement("div");d.className="panel warn";d.innerHTML=`<div class="banner"><b>Renewals (internal):</b>${items.join("")}</div>`;host.appendChild(d);}}
 function renderDayBlocks(){const host=el("dayBlocks");host.innerHTML="";
   DAY.blocks.forEach(bl=>{const card=document.createElement("div");card.className="card";card.innerHTML=`<h2>${bl.long} <span class="pill">${bl.dow3}</span></h2>`;
-    const routeCount={},personCount={},truckCount={};bl.assignments.forEach(a=>{const rl=routeLabelOf(a);routeCount[rl]=(routeCount[rl]||0)+1;if(a.driver)personCount[a.driver]=(personCount[a.driver]||0)+1;if(a.helper)personCount[a.helper]=(personCount[a.helper]||0)+1;if(a.truck)truckCount[a.truck]=(truckCount[a.truck]||0)+1;});
-    const wrap=document.createElement("div");bl.assignments.forEach((a,ai)=>wrap.appendChild(assignmentRow(bl,a,ai,routeCount,personCount,truckCount)));card.appendChild(wrap);
+    const routeCount={};bl.assignments.forEach(a=>{const rl=routeLabelOf(a);routeCount[rl]=(routeCount[rl]||0)+1;});const CFL=bookingConflicts(bl);
+    const wrap=document.createElement("div");bl.assignments.forEach((a,ai)=>wrap.appendChild(assignmentRow(bl,a,ai,routeCount,CFL)));card.appendChild(wrap);
     const addA=document.createElement("button");addA.className="mini";addA.textContent="+ Add route row";
     addA.addEventListener("click",()=>{bl.assignments.push(newAssignment(bl,CFG.routes[0].name));saveDay();renderDayBlocks();});card.appendChild(addA);
     const bov=document.createElement("div");bov.className="baseblk";bov.style.marginTop="10px";bov.innerHTML=`<b>Break overrides</b> <span class="small">(default = start + 5h; “No break” hides the break line; “Other” = custom — reason required)</span>`;
@@ -559,7 +609,7 @@ function renderDayBlocks(){const host=el("dayBlocks");host.innerHTML="";
     uniqueStarts(bl).forEach(start=>{if(!bl.breakOver)bl.breakOver={};const ov=bl.breakOver[start]||{value:"",other:"",reason:"",rother:""};bl.breakOver[start]=ov;
       const tr=document.createElement("tr");tr.innerHTML=`<td>${timeToLabel(start)}</td><td class="small">${plus5Label(start)}</td><td><select class="bv"><option value="">(auto)</option>${(CFG.breakOptions||[]).map(o=>opt(o,ov.value)).join("")}</select></td><td>${ov.value==="Other"?`<input class="bo2" placeholder="e.g. 8:30AM" value="${esc(ov.other)}">`:`<span class="small">—</span>`}</td><td>${reasonSelect(ov)}</td>`;
       const bv=tr.querySelector("select.bv"),bo2=tr.querySelector("input.bo2");bv.addEventListener("change",()=>{ov.value=bv.value;saveDay();renderDayBlocks();});if(bo2)bo2.addEventListener("change",()=>{ov.other=bo2.value;saveDay();});wireReason(tr,ov);btb.appendChild(tr);});
-    bov.appendChild(bt);card.appendChild(bov);host.appendChild(card);});}
+    bov.appendChild(bt);card.appendChild(bov);host.appendChild(card);});livePreview();}
 function reasonSelect(ov){const cur=ov.reason||"";return `<select class="rs"><option value=""></option>${(CFG.reasonOptions||[]).map(o=>opt(o,cur)).join("")}</select><input class="ro" placeholder="reason" value="${esc(ov.rother)}" style="margin-top:3px;${cur==="Other"?"":"display:none"}">`;}
 function wireReason(scope,ov){const sel=scope.querySelector("select.rs"),inp=scope.querySelector("input.ro");if(sel)sel.addEventListener("change",()=>{ov.reason=sel.value;if(inp)inp.style.display=sel.value==="Other"?"block":"none";saveDay();});if(inp)inp.addEventListener("change",()=>{ov.rother=inp.value;saveDay();});}
 function switchTargetOptions(a){
@@ -567,8 +617,8 @@ function switchTargetOptions(a){
   let html="";
   activeTrucks().forEach(x=>{
     if(x.id==="VE-02"){
-      if(isHelper){ const h=helperByName(a.helper); if(h&&(h.canDrive||[]).includes("Rail")) html+=opt(x.id,a.sw.target,x.id+" "+x.plate); }
-      else { html+=opt(x.id,a.sw.target,x.id+" "+x.plate); } // Please/Driver: VE-02 always
+      if(isHelper){ if(act==="DUMP"){const h=helperByName(a.helper); if(h&&(h.canDrive||[]).includes("Rail")) html+=opt(x.id,a.sw.target,x.id+" "+x.plate);} else { html+=opt(x.id,a.sw.target,x.id+" "+x.plate);} }
+      else { html+=opt(x.id,a.sw.target,x.id+" "+x.plate); }
       return;
     }
     if(isHelper&&act==="DUMP") return;            // helper+dump: only VE-02
@@ -580,29 +630,47 @@ function switchTargetOptions(a){
   if(isHelper&&act!=="DUMP") (CFG.swTargets||[]).forEach(x=>{html+=opt(x,a.sw.target);});
   return html;
 }
-function assignmentRow(bl,a,ai,routeCount,personCount,truckCount){personCount=personCount||{};truckCount=truckCount||{};
+function assignmentRow(bl,a,ai,routeCount,CFL){CFL=CFL||{D:{},H:{},T:{}};
+  function dblTag(map,key){const o=map[key];if(!o)return "";return o.same?`<span class="pill down">⚠️ DOUBLE-BOOKED (same time)</span>`:`<span class="pill dbl">⚠️ 2+ SHIFTS (diff time)</span>`;}
   const r=routeSpecOf(a);const wrap=document.createElement("div");wrap.className="asgrow";
-  const locked=rowLocked(a,bl);if(locked)wrap.classList.add("locked");
+  const selfLock=rowLocked(a,bl);const locked=anyLocked();if(selfLock)wrap.classList.add("locked");if(locked)wrap.classList.add("disabledrow");
   if(routeCount[routeLabelOf(a)]>1)wrap.classList.add("dup");
+  if(!a.driver&&a.helper&&a.route!=="Yard"&&a.route!=="Standby"&&a.truck!=="VE-02"&&!r.noDriver)wrap.classList.add("helperonly");
   let legalTrucks=r&&!r.noTruck?((a.route==="__custom"||a.route==="__dump")?activeTrucks():trucksForRoute(a.route)):[];
   if(a.route==="__handservice")legalTrucks=activeTrucks().filter(t=>["VE-02","EQ-12","EQ-13"].includes(t.id));
+  if(a.route==="Standby")legalTrucks=activeTrucks();
   const drv=availDrivers(bl.yymmdd),hlp=availHelpers(bl.yymmdd);const t=truckById(a.truck);
-  let dlist=drv.filter(d=>{if(!t||r.noTruck)return true;return abilityFor(d.name,t.id)!=="unable";}).map(d=>({name:d.name,label:d.name+(d.trainee?" (trainee)":"")+(t&&abilityFor(d.name,t.id)==="unfamiliar"?" ⚠️":"")}));
-  if(t&&t.helperCanDrive)hlp.forEach(h=>{if((h.canDrive||[]).includes("Rail")&&!dlist.find(x=>x.name===h.name))dlist.push({name:h.name,label:h.name+" (helper-driver)"});});
+  let dlist;
+  if(t&&t.id==="VE-02"){ // rail truck: any driver + rail-capable helpers
+    dlist=drv.map(d=>({name:d.name,label:d.name+(d.trainee?" (trainee)":"")}));
+    hlp.forEach(h=>{if((h.canDrive||[]).includes("Rail")&&!dlist.find(x=>x.name===h.name))dlist.push({name:h.name,label:h.name+" (helper-driver)"});});
+  } else {
+    dlist=drv.filter(d=>{if(!t||r.noTruck)return true;return abilityFor(d.name,t.id)!=="unable";}).map(d=>({name:d.name,label:d.name+(d.trainee?" (trainee)":"")+(t&&abilityFor(d.name,t.id)==="unfamiliar"?" ⚠️":"")}));
+  }
   const routeOpts=CFG.routes.map(x=>opt(x.name,a.route)).join("")+opt("__dump",a.route,"Dump only (no route)")+opt("__handservice",a.route,"Hand service")+opt("__custom",a.route,"➕ Custom…");
   const dupTag=routeCount[routeLabelOf(a)]>1?`<span class="pill down">⚠️ ROUTE DOUBLE-BOOKED</span>`:"";
+  const helperOnlyBad=(!a.driver&&a.helper&&a.route!=="Yard"&&a.route!=="Standby"&&a.truck!=="VE-02"&&!r.noDriver);
+  const helperOnlyTag=helperOnlyBad?`<span class="pill dbl">⚠️ HELPER, NO DRIVER</span>`:"";
   const lockTag=locked?`<span class="pill down">🔒 base pass expired/missing — override + reason to unlock</span>`:"";
   const dis=locked?"disabled":"";
   const top=document.createElement("div");top.className="asgtop";
   top.innerHTML=`
-    <div class="fld" style="flex:0 0 130px"><label>Route ${dupTag}</label><select class="r" ${dis}>${routeOpts}</select>${a.route==="__custom"?`<input class="cn" placeholder="Custom name" value="${esc(a.customName)}" style="margin-top:3px" ${dis}>`:""}</div>
+    <div class="fld" style="flex:0 0 130px"><label>Route</label><select class="r">${routeOpts}</select>${a.route==="__custom"?`<input class="cn" placeholder="Custom name" value="${esc(a.customName)}" style="margin-top:3px">`:""}</div>
     <div class="fld" style="flex:0 0 150px"><label>Start</label>${startPicker(a)}</div>
-    <div class="fld" style="flex:0 0 150px"><label>Truck ${a.truck&&truckCount[a.truck]>1?'<span class="pill down">⚠️ EQ DOUBLE-BOOKED</span>':''}</label>${r&&r.noTruck?'<span class="small">— none —</span>':`<select class="t" ${dis}><option value=""></option>${legalTrucks.map(x=>opt(x.id,a.truck,x.id+" "+x.plate)).join("")}</select>`}</div>
-    <div class="fld" style="flex:0 0 140px"><label>Driver ${a.driver&&personCount[a.driver]>1?'<span class="pill down">⚠️ DRIVER DOUBLE-BOOKED</span>':''}</label>${r&&r.noDriver?'<span class="small">— none —</span>':`<select class="d" data-db="${a.driver&&personCount[a.driver]>1?1:0}"><option value=""></option>${dlist.map(d=>opt(d.name,a.driver,d.label)).join("")}</select>`}</div>
-    <div class="fld" style="flex:0 0 120px"><label>Helper ${a.helper&&personCount[a.helper]>1?'<span class="pill down">⚠️ HELPER DOUBLE-BOOKED</span>':''}</label><select class="h" ${dis}><option value=""></option>${hlp.map(h=>opt(h.name,a.helper)).join("")}</select></div>
+    <div class="fld" style="flex:0 0 150px"><label>Truck</label>${r&&r.noTruck?'<span class="small">— none —</span>':`<select class="t"><option value=""></option>${legalTrucks.map(x=>opt(x.id,a.truck,x.id+" "+x.plate)).join("")}${a.route==="Standby"?opt("YARD",a.truck,"Yard"):""}${(a.route==="Standby"||a.route==="__handservice")?opt("__othertruck",a.truck,"Other…"):""}</select>${a.truck==="__othertruck"?`<input class="tother" placeholder="Custom truck/label" value="${esc(a.truckOther)}" style="margin-top:3px">`:""}`}</div>
+    <div class="fld" style="flex:0 0 140px"><label>Driver</label>${r&&r.noDriver?'<span class="small">— none —</span>':`<select class="d" ><option value=""></option>${dlist.map(d=>opt(d.name,a.driver,d.label)).join("")}</select>`}</div>
+    <div class="fld" style="flex:0 0 120px"><label>Helper</label><select class="h"><option value=""></option>${hlp.map(h=>opt(h.name,a.helper)).join("")}</select></div>
     <div class="fld" style="flex:0 0 40px"><label>&nbsp;</label><button class="mini rm">✕</button></div>`;
   wrap.appendChild(top);
+  {const flags=[dupTag,dblTag(CFL.T,a.truck)?("Truck "+dblTag(CFL.T,a.truck)):"",dblTag(CFL.D,a.driver)?("Driver "+dblTag(CFL.D,a.driver)):"",dblTag(CFL.H,a.helper)?("Helper "+dblTag(CFL.H,a.helper)):"",helperOnlyTag].filter(Boolean);
+   if(flags.length){const fs=document.createElement("div");fs.style.cssText="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:2px 0 4px;font-size:11px";fs.innerHTML=flags.join(" ");wrap.appendChild(fs);}}
   if(lockTag){const lt=document.createElement("div");lt.style.margin="4px 0";lt.innerHTML=lockTag;wrap.appendChild(lt);}
+  if(a.route==="Standby"){const sb=document.createElement("div");sb.className="baseblk";
+    const SBOPTS=(CFG.standbyReasons||["on-call","typhoon / weather","COR level","government announcement","mechanic / repair","no work","Other"]);
+    sb.innerHTML=`<b>Standby note</b> <select class="sbn">${SBOPTS.map(o=>opt(o,a.standbyText||"on-call")).join("")}</select> <input class="sbo" placeholder="custom" value="${esc(a.standbyOther)}" style="${(a.standbyText==="Other")?"":"display:none"};margin-left:6px">`;
+    wrap.appendChild(sb);const sbn=sb.querySelector("select.sbn"),sbo=sb.querySelector("input.sbo");
+    sbn.addEventListener("change",e=>{a.standbyText=e.target.value;if(sbo)sbo.style.display=(a.standbyText==="Other")?"inline-block":"none";saveDay();updateNotePrev(wrap,a);});
+    if(sbo)sbo.addEventListener("change",e=>{a.standbyOther=e.target.value;saveDay();updateNotePrev(wrap,a);});}
   // base pass — all three, horizontal
   if(r&&!r.noTruck&&a.route!=="__dump"){const bb=document.createElement("div");bb.className="baseblk";
     bb.innerHTML=`<b>Base pass</b> <span class="small">(usual pre-ticked; changing from usual needs a reason)</span>`;
@@ -625,7 +693,7 @@ function assignmentRow(bl,a,ai,routeCount,personCount,truckCount){personCount=pe
   
   nb.innerHTML=`<div class="row" style="gap:8px">
       <div class="fld" style="flex:0 0 130px"><label>Subject</label><select class="swsub"><option value=""></option>${(CFG.swSubjects||[]).filter(x=>x&&!(x==="HELPER TO"&&!a.helper)).map(x=>opt(x,a.sw.subject)).join("")}</select></div>
-      <div class="fld" style="flex:0 0 130px"><label>Action</label><select class="swact"><option value="">— none —</option>${(CFG.swActions||[]).map(x=>opt(x,a.sw.action)).join("")}</select></div>
+      <div class="fld" style="flex:0 0 130px"><label>Action</label><select class="swact"><option value="">— none —</option>${(CFG.swActions||[]).filter(x=>{if(x==="DUMP"&&a.sw.subject==="HELPER TO"){const h=helperByName(a.helper);return h&&(h.canDrive||[]).includes("Rail");}return true;}).map(x=>opt(x,a.sw.action)).join("")}</select></div>
       <div class="fld" style="flex:0 0 160px"><label>Target</label><select class="swtgt"><option value=""></option>${switchTargetOptions(a)}</select></div>
       <div class="fld" style="flex:0 0 130px"><label>Timing</label><select class="swtim"><option value=""></option>${(CFG.swTimings||[]).filter(x=>x).map(x=>opt(x,a.sw.timing)).join("")}</select></div>
     </div>
@@ -637,14 +705,15 @@ function assignmentRow(bl,a,ai,routeCount,personCount,truckCount){personCount=pe
     <div class="small" style="margin-top:4px" id="notePrev"></div>`;
   nd.appendChild(nb);wrap.appendChild(nd);
   const q=s=>wrap.querySelector(s);
-  function tryEdit(fn){if(locked){alert("This row is locked: the driver’s required base pass is expired/missing.\nTick the base’s override + enter a reason, or change the driver. (Other routes stay editable.)");renderDayBlocks();return;}fn();}
+  function tryEdit(fn){if(locked){showDialog("The form is locked: a driver has an expired/missing REQUIRED base pass.\nResolve it on the flagged row (tick that base’s override + reason, or change that driver). Everything else stays locked until then.");renderDayBlocks();return;}fn();}
   q("select.r").addEventListener("change",e=>tryEdit(()=>{a.route=e.target.value;const nr=routeByName(a.route);if(nr)a.start=startFor(nr,bl.dow3);a.truck="";const usual=usualBases(routeByName(a.route)||{},bl.dow3);const c={},o={};BASES.forEach(b=>{c[b]=usual.includes(b);o[b]={override:false,reason:"",rother:""};});a.baseChecks=c;a.baseUsual=usual.slice();a.baseOver=o;saveDay();renderDayBlocks();}));
   if(q("input.cn"))q("input.cn").addEventListener("change",e=>{a.customName=e.target.value;saveDay();renderDayBlocks();});
+  if(q("input.tother"))q("input.tother").addEventListener("change",e=>{a.truckOther=e.target.value;saveDay();});
   function commitStart(){const H=wrap.querySelector("select.sth"),M=wrap.querySelector("select.stm"),AP=wrap.querySelector("select.stap");if(H&&M&&AP)tryEdit(()=>{a.start=joinTime(H.value,M.value,AP.value);saveDay();renderDayBlocks();});}
   ["select.sth","select.stm","select.stap"].forEach(sel=>{const e2=wrap.querySelector(sel);if(e2)e2.addEventListener("change",commitStart);});
   if(q("select.t"))q("select.t").addEventListener("change",e=>tryEdit(()=>{a.truck=e.target.value;saveDay();renderDayBlocks();}));
-  if(q("select.d"))q("select.d").addEventListener("change",e=>{a.driver=e.target.value;saveDay();renderDayBlocks();}); // driver always editable (to fix lock)
-  q("select.h").addEventListener("change",e=>tryEdit(()=>{a.helper=e.target.value;saveDay();}));
+  if(q("select.d"))q("select.d").addEventListener("change",e=>{if(locked&&!selfLock){showDialog("Form locked: fix the flagged base-pass row first.\nOnly the flagged row’s driver can be changed.");renderDayBlocks();return;}a.driver=e.target.value;saveDay();renderDayBlocks();});
+  q("select.h").addEventListener("change",e=>tryEdit(()=>{a.helper=e.target.value;saveDay();renderDayBlocks();}));
   wrap.querySelectorAll(".baseitem").forEach(item=>{const base=item.dataset.base;const ov=a.baseOver[base];
     const bc=item.querySelector("input.bc");if(bc)bc.addEventListener("change",()=>{a.baseChecks[base]=bc.checked;saveDay();renderDayBlocks();});
     const cb=item.querySelector("input.ov");if(cb)cb.addEventListener("change",()=>{ov.override=cb.checked;saveDay();renderDayBlocks();});
@@ -658,7 +727,14 @@ function assignmentRow(bl,a,ai,routeCount,personCount,truckCount){personCount=pe
   if(q("input.vwo"))q("input.vwo").addEventListener("change",e=>{a.vccWaOther=e.target.value;saveDay();updateNotePrev(wrap,a);});
   if(q("input.vko"))q("input.vko").addEventListener("change",e=>{a.vccKkOther=e.target.value;saveDay();updateNotePrev(wrap,a);});
   q("button.rm").addEventListener("click",()=>{bl.assignments.splice(ai,1);saveDay();renderDayBlocks();});
+  if(locked){
+    wrap.querySelectorAll("select,input,button,summary,textarea").forEach(elm=>{
+      const keep = selfLock && (elm.classList.contains("d")||elm.classList.contains("ov")||elm.classList.contains("rs")||elm.classList.contains("ro"));
+      if(keep){elm.classList.add("escape");} else {elm.classList.add("lockgrey");}
+    });
+    const dt=wrap.querySelector("details.note");if(dt&&!selfLock){dt.removeAttribute("open");}}
   updateNotePrev(wrap,a);return wrap;}
+function livePreview(){try{if(el("outWA"))el("outWA").textContent=renderWA();if(el("outKK"))el("outKK").textContent=renderKK();}catch(e){}}
 function updateNotePrev(wrap,a){const p=wrap.querySelector("#notePrev");if(!p)return;const bits=[];const sw=switchWA(a);if(sw)bits.push("WA: "+sw+"  /  Kakao: "+switchKK(a));const vw=vccWA(a);if(vw)bits.push("WA: "+vw+"  /  Kakao: "+(vccKK(a)||"(omitted)"));p.innerHTML=bits.map(b=>"<div>"+b+"</div>").join("");}
 function doLoadUsual(){try{const d=ensureDay();if(!d){el("loadUsualNote").textContent="Pick a service date first.";return;}
   let added=0;DAY.blocks.forEach(bl=>{const map=(CFG.usualRoutesByDay||{})[bl.dow3];const names=(map&&map.length)?map:CFG.routes.filter(r=>(r.days||[]).includes(bl.dow3)).map(r=>r.name);
@@ -719,7 +795,7 @@ function renderBackup(){el("cfgVer").value=CFG.cfgVersion;el("cfgVer").addEventL
 function download(name,text){const b=new Blob([text],{type:"text/plain"});const u=URL.createObjectURL(b);const a=document.createElement("a");a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
 
 /* ================= CHECKLIST (3 sections) ================= */
-const CODE_TAG={T00:"No truck",T01:"Unknown truck",T02:"Truck down",T04:"Wrong truck kind",T05:"Driver can’t operate truck",T05w:"Unfamiliar with truck",T06:"Truck double-booked",D00:"No driver",D01:"Unknown driver",D05:"Driver double-booked",D06:"Driver out",D07:"Trainee placement",H02:"Helper double-booked",H03:"Needs a helper",H06:"Helper out",B01:"Missing base pass",B02:"Expired base pass",B03:"Base pass expiring",B05:"Override needs reason",B01o:"Override (no pass)",B02o:"Override (expired)",BX1:"Base changed from usual",BK1:"Break override needs reason",R01:"Unknown route",R02:"Unusual day",R03:"Duplicate route",SW1:"Switch truck not allowed",SW2:"Switch truck unfamiliar",P01:"OFF but assigned",P02:"Not scheduled / not OFF",RS1:"Usual route missing",SP1:"Double space",SP2:"Trailing space",SP3:"Unmatched *",SP4:"Possible typo"};
+const CODE_TAG={T00:"No truck",T01:"Unknown truck",T02:"Truck down",T04:"Wrong truck kind",T05:"Driver can’t operate truck",T05w:"Unfamiliar with truck",T06:"Truck double-booked",D00:"No driver",D01:"Unknown driver",D05:"Driver double-booked",D06:"Driver out",D07:"Trainee placement",H02:"Helper double-booked",H03:"Needs a helper",H06:"Helper out",B01:"Missing base pass",B02:"Expired base pass",B03:"Base pass expiring",B05:"Override needs reason",B01o:"Override (no pass)",B02o:"Override (expired)",BX1:"Base changed from usual",BK1:"Break override needs reason",R01:"Unknown route",R02:"Unusual day",R03:"Duplicate route",SW1:"Switch truck not allowed",SW2:"Switch truck unfamiliar",P01:"OFF but assigned",P02:"Not scheduled / not OFF",T06w:"EQ on 2+ shifts (diff times)",D05w:"Driver on 2+ shifts (diff times)",H02w:"Helper on 2+ shifts (diff times)",D08:"Helper-only route not allowed",RS1:"Usual route missing",SP1:"Double space",SP2:"Trailing space",SP3:"Unmatched *",SP4:"Possible typo"};
 function tagOf(c){return CODE_TAG[c]||c;}
 const CODE_RANK={B02:100,B01:99,T05:95,T06:94,D05:93,T02:92,T04:90,T00:85,D01:84,H02:83,H06:82,D06:81,P01:80,BX1:75,SW1:70,R01:60,D00:40,H03:38,R03:36,R02:34,B03:30,SW2:28,D07:26,P02:20,RS1:18,B05:16,BK1:14,SP3:8,SP4:6,SP1:4,SP2:2};
 function rankOf(c){return CODE_RANK[c]||1;}
@@ -727,7 +803,7 @@ function openChecklist(iss){const body=el("checklistBody");let html="";
   html+=`<p class="small">Tags are plain-language; hover shows nothing cryptic. Tick each to confirm you reviewed it.</p>`;
   const errs=iss.filter(i=>i.l==="ERROR").sort((x,y)=>rankOf(y.c)-rankOf(x.c)),warns=iss.filter(i=>i.l==="WARN").sort((x,y)=>rankOf(y.c)-rankOf(x.c));
   html+=`<h4 class="sec-resolve">① Resolve (must fix before posting) — ${errs.length}</h4>`;
-  html+=errs.length?errs.map(it=>`<label class="chk"><input type="checkbox"> <span><b>${tagOf(it.c)}</b> [${it.w}] — ${it.m}</span></label>`).join(""):`<div class="small">None 🎉</div>`;
+  html+=errs.length?errs.map(it=>`<div class="chk"><span style="color:var(--err);font-weight:700">✗</span> <span><b>${tagOf(it.c)}</b> [${it.w}] — ${it.m}</span></div>`).join(""):`<div class="small">None 🎉</div>`;
   html+=`<h4 class="sec-review">② Review (warnings) — ${warns.length}</h4>`;
   const infos=iss.filter(i=>i.l==="INFO");
   html+=warns.map(it=>`<label class="chk"><input type="checkbox"> <span><b>${tagOf(it.c)}</b> [${it.w}] — ${it.m}</span></label>`).join("");
@@ -747,9 +823,9 @@ function openChecklist(iss){const body=el("checklistBody");let html="";
   items.push("Any rollovers or redistributions today that would affect route timing / start times?");
   html+=`<h4 class="sec-common">③ Routine checks — ${items.length}</h4>`+items.map(it=>`<label class="chk"><input type="checkbox"> <span>${it}</span></label>`).join("");
   body.innerHTML=html;
-  const boxes=body.querySelectorAll("input[type=checkbox]");const done=el("btnChkDone");
-  function upd(){done.disabled=[...boxes].some(b=>!b.checked);}boxes.forEach(b=>b.addEventListener("change",upd));upd();
+  LAST_ISS=iss;el("btnChkDone").disabled=false;
   el("checklistModal").classList.add("show");}
+let LAST_ISS=[];
 
 function renderReadme(){const r=CFG._readme||{};let h=`<h2>README — v${APP_VERSION} (cfg ${CFG.cfgVersion})</h2>`;
   h+=`<p class="small">${r.tool||""}</p>`;
@@ -774,16 +850,40 @@ function renderHelp(){el("helpBody").innerHTML=`
   <li><b>Cons:</b> risk of “cruise control” — staff may not re-examine whether today truly matches the usual (e.g. a fuller cardboard truck needs an earlier start). Mitigation: the review popup asks about cardboard-truck fullness, and every start is a visible editable dropdown.</li></ul>
   <p class="small">App v${APP_VERSION}. Dates yymmdd. Times = this device’s clock (Guam/ChST).</p>`;}
 
+/* ============= GitHub latest-config fetch ============= */
+function loadLatestConfig(manual){
+  fetch("lagu_settings.json?cb="+Date.now()).then(r=>r.ok?r.json():Promise.reject()).then(repo=>{
+    const rv=repo.cfgVersion||"", cur=CFG.cfgVersion||"";
+    if(rv&&rv!==cur){
+      if(confirm("A newer shared config is available on the server (cfg "+rv+"). Your current is "+cur+".\n\nLoad the latest? (Your unsaved day plan stays.)")){
+        CFG=repo;persist();el("verLabel").textContent="v"+APP_VERSION+" · cfg "+CFG.cfgVersion;renderMake();flash("Loaded latest config "+rv);}
+    } else if(manual){ showDialog("You already have the latest config (cfg "+cur+")."); }
+  }).catch(()=>{ if(manual)showDialog("Couldn’t reach lagu_settings.json (only works when hosted on GitHub Pages / a web server, not a local file)."); });
+}
 /* ================= BOOT ================= */
-function boot(){
+const LOCKMSG="⚠️ FORM LOCKED\n\nA driver is assigned to a route that needs a base pass, but their required pass is EXPIRED or MISSING.\n\nEverything is greyed out until you fix it on the red-outlined route:\n  • change that driver to someone with a valid pass, OR\n  • tick that base’s Override checkbox and type a reason.\n\nThose two controls are the only ones still active.";
+function installLockGuard(){
+  document.addEventListener("mousedown",function(ev){
+    if(!anyLocked())return;
+    const t=ev.target;
+    if(t.closest&&t.closest(".escape"))return;               // escape-hatch controls stay live
+    if(t.closest&&t.closest("#dayBlocks")){                    // only guard the assignment area
+      const ctl=t.closest("select,input,button,summary,textarea,option");
+      if(ctl && !ctl.classList.contains("escape")){ev.preventDefault();ev.stopPropagation();showDialog(LOCKMSG);}
+    }
+  },true);
+}
+function boot(){installLockGuard();var _ok=document.getElementById("dlgOk");if(_ok)_ok.addEventListener("click",hideDialog);
   CFG=load("lg_cfg",defaultConfig());DAY=load("lg_day",null);LOG=load("lg_log",[]);
   el("verLabel").textContent="v"+APP_VERSION+" · cfg "+CFG.cfgVersion;wireTabs();
+  el("btnLoadLatest").addEventListener("click",()=>loadLatestConfig(true));
+  loadLatestConfig(false); // auto-check on load (no overwrite without confirm)
   el("svcDate").addEventListener("change",renderMake);
   el("btnReset").addEventListener("click",()=>{DAY=buildDay(el("svcDate").value);saveDay();renderMake();});
   el("btnLoadUsual").addEventListener("click",doLoadUsual);
   el("btnSuggestOff").addEventListener("click",suggestOff);
   el("btnChkCancel").addEventListener("click",()=>el("checklistModal").classList.remove("show"));
-  el("btnChkDone").addEventListener("click",()=>{const boxes=el("checklistBody").querySelectorAll("input[type=checkbox]");if([...boxes].some(b=>!b.checked)){alert("Please tick every item first (or use “Close without posting”).");return;}el("checklistModal").classList.remove("show");});
+  el("btnChkDone").addEventListener("click",()=>{const errs=(LAST_ISS||[]).filter(i=>i.l==="ERROR");if(errs.length){showDialog("All items in the Resolve section must be fixed before you can generate the drafts. There "+(errs.length===1?"is 1 unresolved item":"are "+errs.length+" unresolved items")+".");return;}const boxes=el("checklistBody").querySelectorAll("input[type=checkbox]");if([...boxes].some(b=>!b.checked)){showDialog("Please tick every Review item to confirm you\u2019ve checked it (or use \u201CClose without posting\u201D).");return;}el("checklistModal").classList.remove("show");flash("Reviewed \u2014 OK to post.");});
   el("offList").addEventListener("change",()=>{DAY.off=csv(el("offList").value);saveDay();});
   el("dayNotes").addEventListener("change",()=>{DAY.dayNotes=(el("dayNotes").value||"").split("\n").map(x=>x.trim()).filter(Boolean);saveDay();});
   el("btnGen").addEventListener("click",()=>{DAY.off=csv(el("offList").value);saveDay();
@@ -794,6 +894,7 @@ function boot(){
     if(errs.length){head.innerHTML+=` <b style="color:var(--err)">— cannot finalize until Resolve items are fixed.</b>`;}
     const ov=[];DAY.blocks.forEach(bl=>bl.assignments.forEach(a=>{Object.entries(a.baseOver||{}).forEach(([b,o])=>{if(o.override)ov.push(`${bl.dow3}/${routeLabelOf(a)}/${b}(${o.reason==="Other"?o.rother:o.reason||"no reason"})`);});}));
     LOG.unshift({ts:new Date().toISOString(),day:DAY.blocks.map(b=>b.yymmdd).join("+"),mode:DAY.mode,cfg:CFG.cfgVersion,errors:errs.length,warns:warns.length,overrides:ov.join(" | ")});LOG=LOG.slice(0,300);save("lg_log",LOG);
+    if(errs.length)showDialog("⚠️ "+errs.length+" item(s) need to be resolved before posting. See the Resolve section.");
     openChecklist(iss);});
   document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",()=>navigator.clipboard.writeText(el(b.dataset.copy).textContent).then(()=>flash("Copied."))));
   el("btnAddEquip").addEventListener("click",()=>{CFG.trucks.push({id:"EQ-XX",plate:"",kind:"FrontLoader",status:"active",helperCanDrive:false,note:""});persist();renderEquip();});
@@ -803,7 +904,7 @@ function boot(){
   el("btnAddVcc").addEventListener("click",()=>{CFG.vccVersions.push({when:"New",wa:"PLEASE GET {base} PASS AT VCC",kk:"to collect renewed {base} base pass"});persist();renderWording();});
   el("btnExport").addEventListener("click",()=>download(`lagu_settings_${CFG.cfgVersion}.json`,JSON.stringify(CFG,null,2)));
   el("btnImport").addEventListener("click",()=>el("cfgFile").click());
-  el("cfgFile").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{CFG=JSON.parse(r.result);persist();renderBackup();flash("Imported.");}catch(err){alert("Bad file: "+err.message);}};r.readAsText(f);});
+  el("cfgFile").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{CFG=JSON.parse(r.result);persist();renderBackup();flash("Imported.");}catch(err){showDialog("Bad file: "+err.message);}};r.readAsText(f);});
   el("btnDefaults").addEventListener("click",()=>{if(confirm("Replace ALL settings with built-in defaults?")){CFG=defaultConfig();persist();renderBackup();}});
   el("btnExportLog").addEventListener("click",()=>{const rows=[["when","days","mode","ver","errors","warns","overrides"],...LOG.map(r=>[r.ts,r.day,r.mode,r.cfg,r.errors,r.warns,(r.overrides||"").replace(/,/g,";")])];download("lagu_run_log.csv",rows.map(r=>r.join(",")).join("\n"));});
   el("btnClearLog").addEventListener("click",()=>{if(confirm("Clear log?")){LOG=[];save("lg_log",LOG);renderBackup();}});
