@@ -1,5 +1,5 @@
 {
-  "cfgVersion": "260720-14",
+  "cfgVersion": "260720-23",
   "renewDays": 30,
   "trucks": [
     {
@@ -587,6 +587,7 @@
       ],
       "noTruck": false,
       "noDriver": false,
+      "allOptional": true,
       "standbyNote": true,
       "days": [
         "Mon",
@@ -684,6 +685,15 @@
       "Yard"
     ]
   },
+  "standbyReasons": [
+    "on-call",
+    "typhoon / weather",
+    "COR level",
+    "government announcement",
+    "mechanic / repair",
+    "no work",
+    "Other"
+  ],
   "swSubjects": [
     "PLEASE",
     "DRIVER TO",
@@ -705,23 +715,18 @@
   ],
   "vccVersions": [
     {
-      "when": "Get pass at {base} VCC",
-      "wa": "PLEASE GET BASE PASS AT {base} VCC",
+      "when": "Get renewed pass at {base} VCC",
+      "wa": "PLEASE GET RENEWED BASE PASS AT {base} VCC",
       "kk": "to collect renewed {base} base pass"
     },
     {
-      "when": "Process {base} add-on",
+      "when": "Process {base} add-on at VCC",
       "wa": "DRIVER PLEASE PROCESS THE {base} BASE PASS ADD-ON AT VCC",
       "kk": "to process {base} base pass add-on at VCC"
     },
     {
-      "when": "{base} pickup — bring passport + GDOL ID",
-      "wa": "PLEASE BRING PASSPORT AND GDOL ID",
-      "kk": "to collect renewed {base} base pass"
-    },
-    {
-      "when": "{base} pickup — bring DBIDS + passport + GDOL ID",
-      "wa": "PLEASE BRING DBIDS, PASSPORT, AND GDOL ID",
+      "when": "Bring {base} requirements to VCC",
+      "wa": "PLEASE BRING {req}",
       "kk": "to collect renewed {base} base pass"
     }
   ],
@@ -845,17 +850,19 @@
   ],
   "baseRequirements": {
     "AAFB": [
-      "DBIDS",
-      "AAFB pass"
+      "contract letter",
+      "pass for renewal",
+      "valid govt ID"
     ],
     "CampBlaz": [
-      "DBIDS",
-      "Camp Blaz pass"
+      "contract letter",
+      "pass for renewal",
+      "valid govt ID"
     ],
     "NBG": [
-      "DBIDS",
-      "passport",
-      "GDOL ID"
+      "contract letter",
+      "pass for renewal",
+      "valid govt ID"
     ]
   },
   "dumpTime": {
@@ -866,7 +873,7 @@
     "driverSpeedMultiplier": {}
   },
   "_readme": {
-    "tool": "Lagu Schedule Generator (single-file HTML)",
+    "tool": "Lagu Manpower Schedule Generator (single-file HTML)",
     "persistence": "Config persists in this browser. If the browser changes, settings are lost unless you Export the JSON. Source of truth = the settings JSON; if base data lives on SharePoint Excel, export to CSV and re-Import on change (no login/backend).",
     "githubVsHtml": "HTML = the tool (the machine). GitHub = optional shelf/hosting + version history so everyone opens one URL. GitHub Pages fetching a JSON in the SAME public repo needs no login; a SharePoint file always needs sign-in, so it can't be auto-read without a backend.",
     "soonParam": "'Expiring soon' = renewDays (default 30) on the Base Passes tab — centralized.",
@@ -886,10 +893,47 @@
       "Roster 260720: drivers Abeth/Allan/Bong/Celso/Graymar/Miarfy/Racel/Robert; helpers Joseph/Ramdhel/Ron/Davis."
     ],
     "openQuestions": [
-      "Confirm Northern Tue=CampBlaz+AAFB and Southern has no Tue pass.",
-      "Confirm ability edits (Allan/Graymar all-but-15/16; Miarfy fork)."
+      "DATA STILL NEEDED for build-ons (base-pass matrix & driver/truck ability are CONFIRMED): (a) which routes require a helper per day; (b) each worker's familiarity level per route per day; (c) speed multiplier per driver (fast/slow); (d) actual duration per route per day (for dump-time)."
+    ],
+    "futureBuilds": [
+      "Dump-time estimator: route start + actualDurationByRouteDay x driverSpeedMultiplier vs disposal-site cutoff -> flag 'won't reach tipping in time'.",
+      "Familiarity-pairing check: warn if a driver who needs a guide is paired with a helper who doesn't know that route/day.",
+      "Cost projection: hours-to-date + projected planned hours; regular vs OT; per-worker + weekly totals; compare plans.",
+      "FOR EACH of the above: ALSO ship a non-coder settings UI (a tab) so staff can edit the values and Export to JSON for GitHub upload — never JSON-only."
     ],
     "versionLog": [
+      {
+        "v": "260720-23",
+        "note": "v18.2 ROOT-CAUSE FIX (confirmed from user console: 14x 'Ignored call to alert() — document is sandboxed, allow-modals not set'). The SharePoint/preview sandbox SILENTLY BLOCKS alert(), so the lock dialog and the Done popup fired but were suppressed — it was never a lock-logic bug. Replaced ALL 8 alert() calls with a custom in-page modal (showDialog/#dlgBg + OK button) the sandbox cannot block. Also carried the needed v18 fixes onto this build: removed the CSS 'pointer-events:none' on locked rows (which had also killed the click-guard AND the escape-hatch driver dropdown); override CHECKBOX ALONE now frees the form (reason still a WARN); flag bubbles (route/eq/driver/helper double-book + helper-no-driver) moved to ONE full-width horizontal strip above the row so two bubbles no longer stack and inflate row height. NOTE: all red console errors the user saw were SharePoint's own service worker (spserviceworker.js/odsp), not the tool."
+      },
+      {
+        "v": "260720-21",
+        "note": "v17.1 PATCH: LOCK now reliable — replaced fragile per-element listeners with ONE global capture-phase mousedown guard (installLockGuard) that blocks any assignment-area control while anyLocked() and shows the FORM LOCKED dialog over everything; escape hatch = the flagged row's Driver + that base's Override/reason carry class 'escape' and stay live; changing the driver or ticking override frees the whole form. Helper-without-driver now shows a YELLOW bubble ('⚠️ HELPER, NO DRIVER') beside (not stacked on) any red double-book bubble, plus the yellow row background. STANDBY now truly optional — shows truck/driver/helper dropdowns but requires NONE (allOptional flag; exempt from T00 no-truck, D00 no-driver, D08 helper-only), so an all-crew-standby day is valid; a truck can still be attached (e.g. *STANDBY* Fork Service EQ-13). OFFICIAL-CHAT RESEARCH (2025+2026, 127,079 msgs): STANDBY variants = *STANDBY* section header (1/1/25, 7/11/25, 8/15/25, 8/20/25...), *STAND BY* (10/29/25), plus inline equipment/mechanic standby notes (EQ04/EQ03/EQ16 helper standby, EQ-03 breaks not working 4/4/25, mechanic standby 4/16/26); 'remain on standby' for typhoons (Sinlaku 4/14/26, Bavi 7/6/26). ON-CALL never used as a manpower assignment — only customer/billing ('invoice as on-call' 10/30/25, 'HOLD SERVICES to ON CALL' 10/31/25, 'oncall svc' 11/12/25, 'front loader on call log' 7/16/26) — so NOT added as a route; stays a Standby reason label. No route section headers exist beyond the current dropdown (all other all-caps tokens are crew names)."
+      },
+      {
+        "v": "260720-20",
+        "note": "v16.1 PATCH: FIXED the lock dialog — previously locked fields used disabled+pointer-events:none, so mousedown never fired and NO popup appeared. Now locked fields are greyed via .lockgrey and intercept mousedown/click/keydown/focus (not disabled) so the explanatory dialog DOES appear over everything (modal z-index 9999). Escape hatch confirmed: the flagged route's Driver dropdown + that base's Override checkbox/reason stay live; changing the driver or ticking override frees the whole form. Helper-only route (non-Yard/Standby/VE-02) now shows BOTH the immediate yellow row background AND a '⚠️ HELPER WITHOUT DRIVER' bubble on the Helper label explaining why. Standby may be fully empty (no driver AND no helper) — for all-crew-standby days. CHAT FINDINGS (dated): STANDBY is used as a schedule SECTION header (e.g. 1/5/26 *STANDBY* holding Fork Service EQ-13/Bong) and verbally ('on standby' 12/4, 12/10, 12/12, 12/17/25, 1/9/26; 'remain on standby' for Typhoon Sinlaku 4/14/26 and Typhoon Bavi 7/6/26). ON-CALL is a CUSTOMER/BILLING remark, not a manpower assignment ('invoice as on-call' 10/30/25; 'HOLD SERVICES to ON CALL' 10/31/25; 'oncall svc' 11/12/25; 'front loader on call log' 7/16/26) — so it is NOT added as a separate add-a-route option; on-call remains a Standby reason label."
+      },
+      {
+        "v": "260720-19",
+        "note": "v15.1 PATCH: removed 'invoice as on-call' from standbyReasons (not seen in chat); Standby may now be helper-only OR fully empty (exempt from D08); VCC {req} now renders as a COMMA + Oxford-AND list ('CONTRACT LETTER, PASS FOR RENEWAL, AND VALID GOVT ID') via joinList(); CHANGING THE DATE now KEEPS all rows/fields and only refreshes base-pass DEFAULTS for the new weekday (via migrateDay) — full wipe happens only on Reset day or Load usual routes; helper-only non-Yard/non-Standby/non-VE-02 route now shows an IMMEDIATE yellow row highlight (.helperonly) in addition to the Resolve D08 error; the draft black boxes now LIVE-UPDATE on every change (livePreview() at end of renderDayBlocks) — Generate is still what opens the review popup + logs. NOTE: standby wording/date mining was requested but the WhatsApp chat wasn't attached this turn — deferred; confirmed on-call stays a Standby REASON (not a separate route) per prior chat usage."
+      },
+      {
+        "v": "260720-18",
+        "note": "v14.1 PATCH: renamed to 'Lagu Manpower Schedule Generator'; internal renewal BANNER RESTORED to v9 style with (soon)/(expired); Standby route now uses a REASON dropdown (on-call, invoice as on-call, typhoon/weather, COR level, government announcement, mechanic/repair, no work, Other) — chat-confirmed terms; VCC baseRequirements default = 'contract letter, pass for renewal, valid govt ID' (NBG same, editable); README openQuestions replaced — base-pass matrix & driver/truck ability are CONFIRMED; still-needed build-on DATA = (a) which routes need a helper per day, (b) familiarity level per worker per route per day, (c) driver speed multiplier, (d) actual duration per route per day; README futureBuilds section added (dump-time, familiarity-pairing, cost projection) with mandate that EACH ships a non-coder settings UI + JSON export for GitHub. FORM-WIDE LOCK refined: when a driver has an expired/missing REQUIRED pass, EVERY field in EVERY row is greyed + non-interactive (dropdowns can't open; details can't expand) EXCEPT the flagged route's Driver dropdown and that base's Override checkbox + reason; popup on any blocked interaction. Helper dropdown ALWAYS selectable (arrange helpers before drivers); helper-only non-Yard/non-VE-02 => immediate D08 in Resolve. Checklist Resolve items are NO LONGER checkboxes (a checkmark can't clear a hard error) — shown with ✗; Review items keep checkboxes. Done button popup: 'All items in the Resolve section must be fixed before you can generate the drafts.' Uniform 16px checkboxes audited. On-Call handled as a Standby reason (not a separate route) — matches chat usage."
+      },
+      {
+        "v": "260720-17",
+        "note": "v13.1 PATCH: removed the internal renewal BANNER — expiring/expired pass follow-ups now appear ONLY in the checklist Review section, scoped to the drivers/routes/base passes actually ON the schedule; B03 wording => 'Follow up on <driver>'s <base> pass renewal. Add reminder to go to the VCC if ready (current expires YYMMDD).'; FORM-WIDE HARD LOCK — when any driver has an expired/missing REQUIRED pass, EVERY field in EVERY row is greyed + disabled (dropdowns can't open; mousedown shows a popup), except the flagged red row's Driver + that base's override/reason; helper-only rule now enforced at the CONTROL — Helper dropdown is disabled (with tooltip) unless a driver is set, for any non-Yard non-VE-02 truck; VCC baseRequirements default set to 'contract letter, pass being renewed, valid ID' (NBG adds passport + GDOL ID) — covers both expired and soon-to-expire; checkbox size uniform (16px) audited; Done button pops up if any Resolve error remains or any item unticked. BUILD-ON NOTE: when adding the dump-time, familiarity-pairing, and cost-projection features, ALSO add non-coder UI (a settings tab) so staff can edit those values and Export to JSON for GitHub upload — do not leave them JSON-only."
+      },
+      {
+        "v": "260720-16",
+        "note": "v12.1 PATCH: helper double-book badge now updates IMMEDIATELY and CLEARS immediately (helper select re-renders like driver/truck); one-off notes guideline text simplified per request; VCC cleaned — removed 'pickup', consistent get/collect, {req} auto-fills bring-list from baseRequirements (now includes the current pass + base extras), stale vccIdx auto-migrates to blank (fixes phantom 'PLEASE BRING CAMP BLAZ PASS'); plain-language tags added for T06w/D05w/H02w/D08; FORM-WIDE lock — any row with an unresolved expired/missing REQUIRED pass locks EVERY field across the form except the flagged row's driver (popup on any other edit); switch Action shows DUMP for a HELPER subject only if that helper is rail-capable; Standby route now shows an on-call note field (default 'on-call', chat term confirmed); GitHub: header 'Load latest config' button + auto fetch of lagu_settings.json on load with version stamp + confirm-to-load (works on GitHub Pages URL https://lagullc.github.io/manpower-schedule/). CONFIG LOCATIONS: disposal sites = CFG.disposalSites; route needs-helper = Routes tab 'Helper' checkbox (r.needsHelper); per-worker route familiarity is NOT yet a field — driver↔truck ability lives in Drivers tab matrix; route/day familiarity is a documented build-on (dumpTime + a future familiarityByRouteDay map). Answers: route double-booked vs duplicated kept distinct (R03 duplicate route = same route twice; D05/T06/H02 = same resource two shifts)."
+      },
+      {
+        "v": "260720-15",
+        "note": "v11.1 PATCH: TIME-AWARE double-booking — EQ/driver/helper booked at the SAME start time = RESOLVE/red bubble (ERROR T06/D05/H02); at DIFFERENT times = REVIEW/yellow bubble (WARN T06w/D05w/H02w). Helper flag now updates immediately via bookingConflicts() recompute each render (no stale badge). Row badge label unified 'DOUBLE-BOOKED (same time)' vs '2+ SHIFTS (diff time)'. VE-02 truck: driver dropdown now shows ALL drivers + rail-capable helpers (Ron/Joseph). switch-target: VE-02 shown for ALL helpers when action=SWITCH TO, only rail-capable helpers when action=DUMP. Helper-only route now ERROR (D08) unless Yard or VE-02 rail. Serious lock: locked-row fields route through tryEdit -> popup + revert (driver kept editable as the fix path). VCC wording uses 'get/collect' (no 'pick up'); {req} variable auto-fills bring-list from baseRequirements (minus DBIDS) so options aren't hardcoded per base. Standby truck dropdown adds Yard + Other(custom text); Hand Service truck adds Other(custom). Base-pass expiring wording: 'Confirm X's renewed <base> pass is ready — if not, remind them to go to the VCC (expires YYMMDD)'. Generate now POPS UP when Resolve errors exist; checklist Done button no longer silently disabled — it pops up if any Resolve ERROR remains (ticking cannot clear an error) or any review item unticked. DEFERRED: GitHub fetch-settings-on-load + Load-latest button (steps in Readme tab; needs repo hosted first)."
+      },
       {
         "v": "260720-14",
         "note": "v10.1 PATCH: Dump option label 'Dump only (no route)' + truck dropdown fixed (was empty); Hand Service add-route option (trucks VE-02/EQ-12/EQ-13, driver list adds rail-capable helpers); Standby now has a truck dropdown; double-book/duplicate flags unified ALL-CAPS with subject prefix (ROUTE/EQ/DRIVER/HELPER DOUBLE-BOOKED) + consistent red-bubble style (removed yellow bg); README added as its own in-app TAB (renders _readme incl GitHub step-by-step); base-pass expiring wording 'confirm renewed <base> pass is ready (expires YYMMDD)'; VCC {base} variable everywhere (add-on + pickups no longer hardcode Camp Blaz/NBG), de-duplicated versions, 'Base for {base}' label -> 'Base'; switch-note no longer collapses on subject/action change (a._noteOpen persists <details>); 'HELPER TO' subject only offered when a helper is assigned; VE-02 in switch target only for rail-capable helpers; helper+DUMP -> VE-02 only, no Yard; PER-ROW lock restored (expired/missing required ticked pass locks only THAT row's non-override fields, popup on attempt; other routes stay editable); Generate shows 'cannot finalize until Resolve fixed' and checklist Done stays blocked until all ticked; START TIME now hour + minute(00/15/30/45) + AM/PM dials (stored HH:MM; no free-minute entry); one-off notes guideline corrected (Cardboard/Hand Service belong in Add-a-route, not notes). DEFERRED: GitHub fetch-settings-on-load + 'Load latest' button (needs repo hosted; steps documented in Readme tab)."
