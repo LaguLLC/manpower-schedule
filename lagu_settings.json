@@ -1,5 +1,5 @@
 {
-  "cfgVersion": "260720-23",
+  "cfgVersion": "260720-42",
   "renewDays": 30,
   "trucks": [
     {
@@ -127,7 +127,10 @@
         "EQ-18": "unable"
       },
       "canGuide": [],
-      "needsGuide": []
+      "needsGuide": [
+        "Southern",
+        "Cardboard"
+      ]
     },
     {
       "name": "Allan",
@@ -155,7 +158,13 @@
         "VE-02": "able"
       },
       "canGuide": [],
-      "needsGuide": []
+      "needsGuide": [
+        "Northern",
+        "Central",
+        "Southern",
+        "Cardboard",
+        "Fork Service"
+      ]
     },
     {
       "name": "Bong",
@@ -175,7 +184,11 @@
         "EQ-16": "unfamiliar"
       },
       "canGuide": [],
-      "needsGuide": []
+      "needsGuide": [
+        "Northern",
+        "Southern",
+        "Fork Service"
+      ]
     },
     {
       "name": "Celso",
@@ -196,7 +209,11 @@
         "EQ-18": "unable"
       },
       "canGuide": [],
-      "needsGuide": []
+      "needsGuide": [
+        "Northern",
+        "Southern",
+        "Cardboard"
+      ]
     },
     {
       "name": "Graymar",
@@ -224,12 +241,19 @@
         "VE-02": "able"
       },
       "canGuide": [],
-      "needsGuide": []
+      "needsGuide": [
+        "Northern",
+        "Central",
+        "Southern",
+        "Cardboard",
+        "Fork Service"
+      ]
     },
     {
       "name": "Miarfy",
       "kinds": [
         "FrontLoader",
+        "Cardboard",
         "Fork"
       ],
       "solo": true,
@@ -247,7 +271,9 @@
         "EQ-18": "unable"
       },
       "canGuide": [],
-      "needsGuide": []
+      "needsGuide": [
+        "Fork Service"
+      ]
     },
     {
       "name": "Racel",
@@ -268,7 +294,10 @@
         "EQ-18": "unable"
       },
       "canGuide": [],
-      "needsGuide": []
+      "needsGuide": [
+        "Northern",
+        "Southern"
+      ]
     },
     {
       "name": "Robert",
@@ -306,14 +335,28 @@
       "canDrive": [
         "Rail"
       ],
-      "knows": []
+      "knows": [
+        "Northern",
+        "Central",
+        "Southern",
+        "Cardboard",
+        "Fork Service",
+        "Roll-Off"
+      ]
     },
     {
       "name": "Ramdhel",
       "outUntil": "",
       "reason": "",
       "canDrive": [],
-      "knows": []
+      "knows": [
+        "Northern",
+        "Central",
+        "Southern",
+        "Cardboard",
+        "Fork Service",
+        "Roll-Off"
+      ]
     },
     {
       "name": "Ron",
@@ -322,20 +365,34 @@
       "canDrive": [
         "Rail"
       ],
-      "knows": []
+      "knows": [
+        "Northern",
+        "Central",
+        "Southern",
+        "Cardboard",
+        "Fork Service",
+        "Roll-Off"
+      ]
     },
     {
       "name": "Davis",
       "outUntil": "",
       "reason": "",
       "canDrive": [],
-      "knows": []
+      "knows": [
+        "Northern",
+        "Central",
+        "Southern",
+        "Cardboard",
+        "Fork Service",
+        "Roll-Off"
+      ]
     }
   ],
   "basePasses": {
     "Abeth": {
       "CampBlaz": "260724",
-      "NBG": "260724",
+      "NBG": "270630",
       "AAFB": "270417"
     },
     "Celso": {
@@ -355,8 +412,8 @@
     },
     "Bong": {
       "CampBlaz": "270411",
-      "NBG": "260609",
-      "AAFB": "260612"
+      "NBG": "270126",
+      "AAFB": "270604"
     },
     "Allan": {
       "CampBlaz": "261214",
@@ -769,7 +826,6 @@
   "kkPlates": true,
   "checklistItems": [
     "Every route that runs today is on the schedule (nothing skipped/rolled over without a make-up day).",
-    "Start times and break overrides are right for today.",
     "Switch / VCC notes read correctly in BOTH WhatsApp and Kakao.",
     "OFF list is complete; no-shows accounted for."
   ],
@@ -865,6 +921,216 @@
       "valid govt ID"
     ]
   },
+  "familiarity": {
+    "note": "Per worker per route per day. Drivers default 'ok'; only 'needs guide' days listed. Helpers default 'able to guide'; only 'partially'/'unable' listed. Feeds the familiarity-pairing build-on.",
+    "driversNeedGuide": {
+      "Abeth": {
+        "Southern": [
+          "Tue",
+          "Fri"
+        ],
+        "Cardboard": [
+          "Mon",
+          "Tue",
+          "Wed",
+          "Thu",
+          "Fri"
+        ]
+      },
+      "Allan": {
+        "Northern": [
+          "Mon",
+          "Tue",
+          "Thu",
+          "Fri",
+          "Sat"
+        ],
+        "Central": [
+          "Tue"
+        ],
+        "Southern": [
+          "Mon",
+          "Tue",
+          "Thu",
+          "Fri"
+        ],
+        "N+S": [
+          "Wed"
+        ],
+        "Cardboard": [
+          "Mon",
+          "Tue",
+          "Wed",
+          "Thu"
+        ],
+        "Fork Service": [
+          "Tue",
+          "Thu"
+        ]
+      },
+      "Bong": {
+        "Northern": [
+          "Mon",
+          "Tue",
+          "Thu",
+          "Fri",
+          "Sat"
+        ],
+        "Southern": [
+          "Mon",
+          "Tue",
+          "Thu",
+          "Fri"
+        ],
+        "N+S": [
+          "Wed"
+        ],
+        "Fork Service": [
+          "Tue",
+          "Thu"
+        ]
+      },
+      "Celso": {
+        "Northern": [
+          "Mon",
+          "Fri",
+          "Sat"
+        ],
+        "Southern": [
+          "Mon",
+          "Tue",
+          "Thu",
+          "Fri"
+        ],
+        "N+S": [
+          "Wed"
+        ],
+        "Cardboard": [
+          "Mon",
+          "Wed",
+          "Thu"
+        ]
+      },
+      "Graymar": {
+        "Northern": [
+          "Mon",
+          "Tue",
+          "Thu",
+          "Fri",
+          "Sat",
+          "Sun"
+        ],
+        "Central": [
+          "Tue"
+        ],
+        "Southern": [
+          "Mon",
+          "Tue",
+          "Thu",
+          "Fri"
+        ],
+        "N+S": [
+          "Wed"
+        ],
+        "Cardboard": [
+          "Mon",
+          "Tue",
+          "Wed",
+          "Thu",
+          "Fri"
+        ],
+        "Fork Service": [
+          "Tue",
+          "Thu"
+        ]
+      },
+      "Miarfy": {
+        "Fork Service": [
+          "Tue",
+          "Thu"
+        ]
+      },
+      "Racel": {
+        "Northern": [
+          "Mon",
+          "Sat"
+        ],
+        "Southern": [
+          "Mon",
+          "Tue",
+          "Thu",
+          "Fri"
+        ],
+        "N+S": [
+          "Wed"
+        ]
+      }
+    },
+    "helperGuide": {
+      "Joseph": "able",
+      "Ron": "able",
+      "Ramdhel": "able (NOT weekends)",
+      "Davis": "partial (able on S Tue/Thu/Fri, CB Tue-Fri, FS all, N Sun)"
+    }
+  },
+  "helperNeededByRouteDay": {
+    "_note": "VERIFY vs the helper-needed table (was a screenshot). true=needs helper that day.",
+    "Northern": {
+      "Mon": true,
+      "Tue": true,
+      "Wed": false,
+      "Thu": true,
+      "Fri": true,
+      "Sat": false,
+      "Sun": false
+    },
+    "Central": {
+      "Tue": false
+    },
+    "Southern": {
+      "Mon": true,
+      "Tue": true,
+      "Thu": true,
+      "Fri": true
+    },
+    "N+S Combined": {
+      "Wed": true,
+      "Sat": true
+    },
+    "Cardboard": {
+      "Mon": true,
+      "Tue": true,
+      "Wed": true,
+      "Thu": true,
+      "Fri": true
+    },
+    "Roll-Off": {
+      "Mon": false,
+      "Tue": false,
+      "Wed": false,
+      "Thu": false,
+      "Fri": false,
+      "Sat": false
+    },
+    "Fork Service": {
+      "Mon": true,
+      "Tue": true,
+      "Wed": true,
+      "Thu": true,
+      "Fri": true
+    }
+  },
+  "workerConstraints": {
+    "Ramdhel": {
+      "noWeekends": true,
+      "note": "cannot work weekends"
+    },
+    "Bong": {
+      "earliest": "07:00",
+      "latest": "15:00",
+      "note": "7 a.m.–3 p.m. only"
+    }
+  },
   "dumpTime": {
     "enabled": false,
     "defaultSpeedMultiplier": 1,
@@ -896,12 +1162,85 @@
       "DATA STILL NEEDED for build-ons (base-pass matrix & driver/truck ability are CONFIRMED): (a) which routes require a helper per day; (b) each worker's familiarity level per route per day; (c) speed multiplier per driver (fast/slow); (d) actual duration per route per day (for dump-time)."
     ],
     "futureBuilds": [
+      "INDIVIDUAL WORKER CONSTRAINTS (now stubbed in CFG.workerConstraints + WARN checks WC1/WC2): e.g. Ramdhel cannot work weekends; Bong 7 a.m.–3 p.m. only. Build out a Constraints settings tab (non-coder UI) supporting: unavailable weekdays, working-hour windows, max hours/day, route/base exclusions — with Export-to-JSON. Per-day FAMILIARITY (CFG.familiarity) and per-day HELPER-NEEDED (CFG.helperNeededByRouteDay) are now stored; wire them into the familiarity-pairing check (warn if a needs-guide driver is paired with a helper who can't guide that route/day) and into H03 (needs-helper per day, not just per route).",
       "Dump-time estimator: route start + actualDurationByRouteDay x driverSpeedMultiplier vs disposal-site cutoff -> flag 'won't reach tipping in time'.",
       "Familiarity-pairing check: warn if a driver who needs a guide is paired with a helper who doesn't know that route/day.",
       "Cost projection: hours-to-date + projected planned hours; regular vs OT; per-worker + weekly totals; compare plans.",
       "FOR EACH of the above: ALSO ship a non-coder settings UI (a tab) so staff can edit the values and Export to JSON for GitHub upload — never JSON-only."
     ],
     "versionLog": [
+      {
+        "v": "260720-42",
+        "note": "v20.1: (1) CHECKLIST — deleted vague routine item 'Start times and break overrides are right'; Review now lists start times AND (new) break overrides explicitly, each as its own confirm line. (2) BANNER — renewals now sorted alphabetically by FIRST name (the display key used everywhere) for consistency. (3) INDIVIDUAL CONSTRAINTS — added CFG.workerConstraints (Ramdhel noWeekends; Bong 07:00–15:00) with live WARNs: WC1 (weekend assignment) + WC2 (start outside working hours); documented a Constraints settings-tab build-on. (4) FAMILIARITY + HELPER-NEEDED from your tables: derived per-driver needsGuide route lists (Abeth S/CB; Allan N/C/S/CB/FS; Bong N/S/FS; Celso N/S/CB; Graymar N/C/S/CB/FS; Miarfy FS; Racel N/S; Robert none) so existing G01 guide-check fires; set helper knows[] (Joseph/Ron/Ramdhel/Davis are guides); stored full per-day matrix in CFG.familiarity + CFG.helperNeededByRouteDay for the familiarity-pairing / per-day-helper build-ons. NOTE: helperNeededByRouteDay + Davis partial-guide days came from a screenshot — flagged VERIFY; send as CSV to lock exact Y/N."
+      },
+      {
+        "v": "260720-41",
+        "note": "v20.0: (1) Bong AAFB expiry updated to 270604 (was 260612). (2) Flag bubbles now UNIFORM HEIGHT without changing wording — .fbub min-height:26px + flex-centered, so 1-line and 2-line bubbles read as the same size (answer to 'is 3 different heights necessary?' = no). (3) Service-date row now top-aligns labels (align-items:flex-start) so the 'Mode' label lines up with the 'Service date' label, and the weekday/mode pill has margin-left:0 so its LEFT edge aligns with the 'Mode' label's left edge. (4) FORM-LOCKED dialog now lists ALL THREE escape hatches and when to pick each: change driver; UNCHECK base + reason (no on-base stop today); or OVERRIDE + reason (needed but proceeding) — previously the uncheck option was missing."
+      },
+      {
+        "v": "260720-40",
+        "note": "v19.9: (1) WITHIN-SHIFT ORDERING — routes under the same start time now print ALPHABETICALLY by route label in BOTH WhatsApp and Kakao (e.g. Cardboard, Fork Service, Roll-Off; Roll-Off before Yard). Implemented by sorting slots via routeLabelOf().localeCompare in renderWA/renderKK. (2) BRING-PASS LEAD depends on crew: since no helpers currently hold base passes, the reminder now reads 'DRIVER PLEASE BRING ...' ONLY when a helper is also on the route (to specify who), and just 'PLEASE BRING ...' when the driver is solo. bringPassNote(bases,hasHelper) + call passes !!a.helper."
+      },
+      {
+        "v": "260720-39",
+        "note": "v19.8: FIX renewal banner was MISSING drivers with NO pass for a base (status 'none' e.g. Celso NBG, Graymar NBG) — it only listed expired/soon after the v9-style banner was restored in an earlier turn, dropping the 'none' case. Banner now shows '<Base> (none)' alongside expired/soon. FIX yellow bubble vertical alignment — a short bubble (HELPER, NO DRIVER) sat top-aligned next to a 2-line wrapped red bubble; .flagwrap align-items:stretch + .fbub display:flex/align-items:center/justify-center so every bubble centers its text vertically and short + wrapped bubbles look consistent side by side."
+      },
+      {
+        "v": "260720-38",
+        "note": "v19.7: DEFINITIVE flag-bubble layout fix. Prior attempts failed two ways: flex:1 1 0 forced the two bubbles to share+shrink (vertical squish), and width:max-content let a single wide bubble overflow into the neighbouring field. Now: .flagwrap is width:auto, left:0, flex-nowrap (grows to the right, never shares); each .fbub is flex:0 0 auto with max-width:120px (≈ field column) and white-space:normal so it wraps its OWN text to ~2 lines. Result: red bubble's LEFT edge aligns to the field's left edge and is ~field width whether alone or not; a yellow bubble is added horizontally to its RIGHT (its right edge may extend past the field, which is fine); a lone wide bubble no longer overflows into the neighbour field."
+      },
+      {
+        "v": "260720-37",
+        "note": "v19.6: FIX overlapping flag bubbles. Cause: .flagwrap used width:max-content, so a field's bubble grew past its column and overlapped the NEIGHBOURING field's bubble (Driver bleeding into Helper). Now .flagwrap is width:100% of its own field (cannot overflow into the neighbour), flex-nowrap so the two same-field bubbles (red MULTI-ASSIGNMENT + yellow HELPER, NO DRIVER) stay SIDE BY SIDE (never stacked vertically), and .fbub uses white-space:normal + flex:1 1 0 + min-width:0 so each bubble WRAPS ITS OWN TEXT to 2 lines if needed and they share the column width. Font nudged to 9px for fit."
+      },
+      {
+        "v": "260720-36",
+        "note": "v19.5: FIX helper flag bubbles stacking — .flagwrap was width:100% of the ~120px field so two bubbles wrapped vertically; now width:max-content + flex-wrap:nowrap + .fbub white-space:nowrap, so red (MULTI-ASSIGNMENT) and yellow (HELPER, NO DRIVER) sit side-by-side horizontally. FIX ovr-releases-without-reason — the override's reason PERSISTED when ovr was unticked, so re-ticking reused the old reason and looked like 'ovr alone unlocks'. Now unchecking ovr CLEARS ov.reason/rother, so every override requires a freshly entered reason to release the grey-out. (rowLocked already required ovr+reason; this removes the stale-reason path.)"
+      },
+      {
+        "v": "260720-35",
+        "note": "v19.4: WORDING unified to one consistent root across all four flags — ROUTE / EQ / DRIVER / HELPER MULTI-ASSIGNMENT (was inconsistent: route said DOUBLE-BOOKED while others said OVERLAP/2+ ASSIGNMENTS). Same-time = 'MULTI-ASSIGNMENT (same time)' (red hard conflict); different-times = 'MULTI-ASSIGNMENT (diff times)' (yellow, allowed-confirm); route-listed-twice = 'ROUTE MULTI-ASSIGNMENT' (red). Noun form (not the imperative 'multi-assign'); no clash/dbl/book*/shift. Shorter alt swaps in dbBub if wanted: MULTI-SLOT / MULTI-USE. LOCK: verified by automated test that ovr WITHOUT a reason KEEPS the form locked and only ovr+reason (or uncheck+reason, or valid driver) releases — the logic was already correct in v19.3, so a build seen releasing on ovr-alone was a STALE cached copy. Added a visible red 'reason needed to unlock' hint next to a checked ovr with no reason, so it is obvious why the grey-out persists. CACHE TIP: hard-refresh (Ctrl+F5) after replacing the file so the browser doesn't serve an old copy."
+      },
+      {
+        "v": "260720-34",
+        "note": "v19.3: double-booking bubble now uses TWO accurate labels instead of one forced root (a single word can't fairly describe both states): same-time = 'OVERLAP (same time)' (red, hard conflict — impossible to be two places at once); different-times = '2+ ASSIGNMENTS' (yellow, allowed — confirm). Avoids clash/dbl/book/shift, and leaves 'route' free for the separate duplicate-route flag. Both cover any count (2 and 2+). Subject prefix (EQ/DRIVER/HELPER) still applied."
+      },
+      {
+        "v": "260720-33",
+        "note": "v19.2: FIXED both lock bugs. ROOT CAUSE: wireReason() (the base-pass reason dropdown handler) called saveDay() but NOT renderDayBlocks(), so after picking a reason the lock was never re-evaluated — making Override appear to release with no reason, and Uncheck+reason fail to unlock. wireReason now re-renders. Result (verified): Override releases the grey-out ONLY with Override ticked AND a reason; Unchecking a base releases ONLY with a reason; changing the driver to a valid-pass driver also releases. Double-booking bubble wording changed to MULTI-SHIFT (same time)=red hard conflict / MULTI-SHIFT (diff times)=yellow allowed-confirm (no clash/dbl/book*; broad enough for 2 and 2+; alt one-token swap: MULTI-ROUTE). PACKAGING NOTE: build from the current working file, never a stale upload — a prior turn regressed because v19.0 was rebuilt off an older uploaded copy."
+      },
+      {
+        "v": "260720-32",
+        "note": "v19.1: double-booking wording finalized to 'MULTI-BOOKED' — reads naturally with the subject (EQ/DRIVER/HELPER MULTI-BOOKED), 'booked' is a state (not the clunky verb 'assigned'), covers 2 and 2+. Red = 'MULTI-BOOKED (same time)' (hard conflict), yellow = 'MULTI-BOOKED (diff times)' (allowed, confirm). One-token swap in dbBub if a different term is wanted (alt: OVERBOOKED)."
+      },
+      {
+        "v": "260720-31",
+        "note": "v19.0: double-booking bubble wording changed to a single broad root that covers 2 AND 2+ assignments — 'MULTI-SHIFT (same time)' (red, hard conflict) and 'MULTI-SHIFT (diff times)' (yellow, allowed-but-confirm), with the subject prefix (EQ / DRIVER / HELPER). Editable one-token swap in dbBub if a different term is preferred (alts: MULTIPLE ASSIGNMENTS, 2+ ASSIGNMENTS, MULTI-SCHEDULED, DOUBLE-ASSIGNED)."
+      },
+      {
+        "v": "260720-30",
+        "note": "v18.9: (1) double-booked bubble wording is now 'MULTI-SHIFT (same time)' (concise, no 'DBL'); same-time still red, different-times still yellow '2+ SHIFTS'. (Alternatives if preferred: CONFLICT / OVERLAP / TWICE — one-word swap in dbBub.) (2) LOCK RELEASE now requires BOTH an action AND a reason, for BOTH escape hatches: for an expired/missing required base, the form stays greyed until either (a) the base stays TICKED with Override checked AND a reason entered, or (b) the base is UNCHECKED with a reason entered (or the driver is changed). rowLocked now evaluates the route's usual bases (union ticked) so unchecking without a reason no longer silently unlocks — it keeps the lock until the reason is filled."
+      },
+      {
+        "v": "260720-29",
+        "note": "v18.8: FIX (bug in screenshot) — unchecking a base pass on the LOCKED row was blocked by the FORM-LOCKED dialog. The base checkbox (.bc) is now an escape control on the flagged row, and the global lock guard allows .bc/.ov/.rs/.ro/.d clicks through — so 'uncheck the base' works as a real escape hatch (no base stop today -> row unlocks). FIX overlap — driver/helper flag bubbles no longer collide: .flagwrap now width:100% of its field with flex-wrap + .fbub white-space:normal, so a wide bubble wraps within its own column instead of overflowing into the neighbour; hasflags top margin raised to 40px; double-book text shortened to 'DBL (same time)'. ESCAPE HATCHES for expired/missing required pass (all three valid, documented): (a) UNCHECK that base + reason = no on-base stop today; (b) tick OVERRIDE + reason = base needed, pass expired, proceed anyway (e.g. renewal in progress); (c) CHANGE driver to one with a valid pass. ROLLOVER PROCESS: if the base stop must be rolled over because no valid-pass driver is available, leave the base CHECKED, tick OVERRIDE, and enter reason 'rolled over — no valid-pass driver' (keeps the requirement visible + logged rather than pretending the stop didn't exist)."
+      },
+      {
+        "v": "260720-27",
+        "note": "v18.6: FIXED Miarfy missing from Cardboard/EQ-04 dropdown — her kinds were ['FrontLoader','Fork'] with no 'Cardboard', and EQ-04 is kind 'Cardboard', so abilityFor() fell back to kind and returned 'unable' (hidden). Added 'Cardboard' to Miarfy's kinds. Base-pass tracker sync (260527 sheet): Abeth NBG 260724->270630; Bong NBG 260609->270126 (all others already matched). DESIGN CONFIRMED for expired-required-pass lock: THREE escape hatches all work and mean different things — (a) UNCHECK that base's checkbox + give a reason = 'this route doesn't need that base today' (BX1 requires the reason; rowLocked ignores unchecked bases so this unlocks); (b) TICK the base's Override + reason = 'base is needed, pass is expired, proceed anyway'; (c) CHANGE the driver to one with a valid pass. Kept checkboxes changeable (not frozen) so 'no base stop today' stays expressible; the Override box handles 'needed but expired'."
+      },
+      {
+        "v": "260720-26",
+        "note": "v18.5 FLAG-BUBBLE UX FIX: each warning bubble is now PINNED inside its own field (.flagwrap, position:absolute, bottom:100%) so it sits directly ABOVE that exact control (Route/EQ/Driver/Helper) and matches the field's left edge — no more guessed-width strip. Bubbles are uniform: .fbub with fixed font/padding, white-space:nowrap (single line, consistent height); red=.fbub.r (same-time double-book / route), yellow=.fbub.y (diff-time / helper-no-driver). Helper: red (double-booked) sits directly over the Helper field; if a yellow (HELPER, NO DRIVER) also applies it sits to the RIGHT of the red in the same nowrap row. Row reserves 24px top margin only when it has flags (.asgtop.hasflags) so heights stay consistent and bubbles never overlap the card. Builds on v18.4 crash fix (wrap.appendChild(top) restored)."
+      },
+      {
+        "v": "260720-25",
+        "note": "v18.4 CRITICAL CRASH FIX: the page failed to load (‘Cannot read properties of null (reading addEventListener) at assignmentRow’). Root cause: the v18.3 flag-row change deleted ‘wrap.appendChild(top)’ and used ‘wrap.insertBefore(fr,top)’ while top was NOT yet a child of wrap — so the field row (Route/Start/Truck/Driver/Helper) was never inserted, wrap.querySelector('select.r') returned null, and .addEventListener threw, killing render (and preventing the lock dialog from ever showing). Restored: append the flag row (fr) then append the field row (top). Because rendering now completes, the sandbox-proof showDialog() lock dialog and the Done popup work again. Flag bubbles stay column-aligned above their field; each column is flex-wrap so two bubbles (helper double-book + helper-no-driver) sit side-by-side without inflating the whole row."
+      },
+      {
+        "v": "260720-24",
+        "note": "v18.3 PATCH (flag bubble UX): (1) each warning bubble now sits in a COLUMN-ALIGNED flag row directly ABOVE its field (Route above Route, EQ above Truck, Driver above Driver, Helper+helper-no-driver above Helper) — flex widths 130/150/150/140/120 match the field row, so bubbles line up over the right control instead of a misaligned strip below. (2) The subject word is now INSIDE every bubble, consistent with ROUTE: '⚠️ EQ DOUBLE-BOOKED', '⚠️ DRIVER DOUBLE-BOOKED', '⚠️ HELPER DOUBLE-BOOKED' (was 'Driver' outside the bubble). Two bubbles in the same column (helper double-book + helper-no-driver) sit side-by-side within that column."
+      },
       {
         "v": "260720-23",
         "note": "v18.2 ROOT-CAUSE FIX (confirmed from user console: 14x 'Ignored call to alert() — document is sandboxed, allow-modals not set'). The SharePoint/preview sandbox SILENTLY BLOCKS alert(), so the lock dialog and the Done popup fired but were suppressed — it was never a lock-logic bug. Replaced ALL 8 alert() calls with a custom in-page modal (showDialog/#dlgBg + OK button) the sandbox cannot block. Also carried the needed v18 fixes onto this build: removed the CSS 'pointer-events:none' on locked rows (which had also killed the click-guard AND the escape-hatch driver dropdown); override CHECKBOX ALONE now frees the form (reason still a WARN); flag bubbles (route/eq/driver/helper double-book + helper-no-driver) moved to ONE full-width horizontal strip above the row so two bubbles no longer stack and inflate row height. NOTE: all red console errors the user saw were SharePoint's own service worker (spserviceworker.js/odsp), not the tool."
