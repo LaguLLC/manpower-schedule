@@ -1,5 +1,5 @@
 {
-  "cfgVersion": "260720-42",
+  "cfgVersion": "260720-49",
   "renewDays": 30,
   "trucks": [
     {
@@ -162,6 +162,7 @@
         "Northern",
         "Central",
         "Southern",
+        "N+S Combined",
         "Cardboard",
         "Fork Service"
       ]
@@ -187,6 +188,7 @@
       "needsGuide": [
         "Northern",
         "Southern",
+        "N+S Combined",
         "Fork Service"
       ]
     },
@@ -212,6 +214,7 @@
       "needsGuide": [
         "Northern",
         "Southern",
+        "N+S Combined",
         "Cardboard"
       ]
     },
@@ -245,6 +248,7 @@
         "Northern",
         "Central",
         "Southern",
+        "N+S Combined",
         "Cardboard",
         "Fork Service"
       ]
@@ -296,7 +300,8 @@
       "canGuide": [],
       "needsGuide": [
         "Northern",
-        "Southern"
+        "Southern",
+        "N+S Combined"
       ]
     },
     {
@@ -380,12 +385,14 @@
       "reason": "",
       "canDrive": [],
       "knows": [
+        "Fork Service"
+      ],
+      "partial": [
         "Northern",
-        "Central",
+        "N+S Combined",
         "Southern",
-        "Cardboard",
-        "Fork Service",
-        "Roll-Off"
+        "Central",
+        "Cardboard"
       ]
     }
   ],
@@ -442,19 +449,15 @@
       "days": [
         "Mon",
         "Tue",
-        "Wed",
         "Thu",
         "Fri",
-        "Sat",
         "Sun"
       ],
       "startByDay": {
         "Mon": "03:00",
         "Tue": "03:00",
-        "Wed": "02:00",
         "Thu": "02:00",
         "Fri": "02:30",
-        "Sat": "03:00",
         "Sun": "06:00"
       },
       "needsHelper": true,
@@ -471,6 +474,26 @@
           "CampBlaz"
         ]
       },
+      "bases": []
+    },
+    {
+      "name": "N+S Combined",
+      "waLabel": "NORTHERN ROUTE",
+      "kinds": [
+        "FrontLoader"
+      ],
+      "noTruck": false,
+      "days": [
+        "Wed",
+        "Sat"
+      ],
+      "startByDay": {
+        "Wed": "02:00",
+        "Sat": "03:00"
+      },
+      "needsHelper": true,
+      "basePass": "never",
+      "dayBases": {},
       "bases": []
     },
     {
@@ -711,7 +734,7 @@
       "Yard"
     ],
     "Wed": [
-      "Northern",
+      "N+S Combined",
       "Cardboard",
       "Fork Service",
       "Roll-Off",
@@ -734,7 +757,7 @@
       "Yard"
     ],
     "Sat": [
-      "Northern",
+      "N+S Combined",
       "Yard"
     ],
     "Sun": [
@@ -871,37 +894,72 @@
   },
   "disposalSites": [
     {
-      "name": "Rubbishman transfer station",
+      "name": "Trash dump site",
       "waste": [
         "trash"
       ],
-      "cutoff": "15:00",
-      "note": "MSW/general trash"
+      "hours": {
+        "Mon": [
+          "04:30",
+          "14:00"
+        ],
+        "Tue": [
+          "04:30",
+          "14:00"
+        ],
+        "Wed": [
+          "04:30",
+          "14:00"
+        ],
+        "Thu": [
+          "04:30",
+          "14:00"
+        ],
+        "Fri": [
+          "04:30",
+          "14:00"
+        ],
+        "Sat": [
+          "04:30",
+          "12:00"
+        ],
+        "Sun": null
+      },
+      "note": "Trash: 4:30 a.m.–2 p.m. Mon–Fri; 4:30 a.m.–12 p.m. Sat; closed Sun. Edit here to change closure times."
     },
     {
-      "name": "Guahan (cardboard recycling)",
+      "name": "Cardboard dump site",
       "waste": [
         "cardboard"
       ],
-      "cutoff": "16:00",
-      "note": "Cardboard dump"
-    },
-    {
-      "name": "Layon landfill (GSWA)",
-      "waste": [
-        "trash"
-      ],
-      "cutoff": "15:00",
-      "note": "Landfill; mind GSWA breaks"
-    },
-    {
-      "name": "Pyramid / JY Recycling",
-      "waste": [
-        "ewaste",
-        "metal"
-      ],
-      "cutoff": "16:00",
-      "note": "E-waste / metal"
+      "hours": {
+        "Mon": [
+          "08:00",
+          "17:00"
+        ],
+        "Tue": [
+          "08:00",
+          "17:00"
+        ],
+        "Wed": [
+          "08:00",
+          "17:00"
+        ],
+        "Thu": [
+          "08:00",
+          "17:00"
+        ],
+        "Fri": [
+          "08:00",
+          "17:00"
+        ],
+        "Sat": [
+          "08:00",
+          "12:00"
+        ],
+        "Sun": null
+      },
+      "note": "Cardboard: 8 a.m.–5 p.m. Mon–Fri; 8 a.m.–12 p.m. Sat; closed Sun. Edit here to change closure times."
     }
   ],
   "baseRequirements": {
@@ -1085,7 +1143,7 @@
       "Sun": false
     },
     "Central": {
-      "Tue": false
+      "Tue": true
     },
     "Southern": {
       "Mon": true,
@@ -1115,9 +1173,9 @@
     "Fork Service": {
       "Mon": true,
       "Tue": true,
-      "Wed": true,
+      "Wed": false,
       "Thu": true,
-      "Fri": true
+      "Fri": false
     }
   },
   "workerConstraints": {
@@ -1126,17 +1184,60 @@
       "note": "cannot work weekends"
     },
     "Bong": {
-      "earliest": "07:00",
-      "latest": "15:00",
-      "note": "7 a.m.–3 p.m. only"
+      "earliest": "06:00",
+      "note": "unavailable before 6 a.m."
     }
   },
   "dumpTime": {
-    "enabled": false,
+    "enabled": true,
     "defaultSpeedMultiplier": 1,
     "note": "Future: finish = route start + (actualHoursByRouteDay[route][day] x driverSpeedMultiplier[driver]); compare to disposalSites cutoff; flag 'won't reach tipping in time'. <1 faster, >1 slower.",
-    "actualHoursByRouteDay": {},
-    "driverSpeedMultiplier": {}
+    "actualHoursByRouteDay": {
+      "Northern": {
+        "Mon": 8.7,
+        "Tue": 8.95,
+        "Thu": 11.2,
+        "Fri": 10,
+        "Sun": 1.5
+      },
+      "N+S Combined": {
+        "Wed": 11.9,
+        "Sat": 9.5
+      },
+      "Central": {
+        "Tue": 10.1
+      },
+      "Southern": {
+        "Mon": 10.7,
+        "Tue": 11.6,
+        "Thu": 11.5,
+        "Fri": 11.2
+      },
+      "Cardboard": {
+        "Mon": 7.3,
+        "Tue": 6.9,
+        "Wed": 8.9,
+        "Thu": 7.2,
+        "Fri": 7.3
+      },
+      "Roll-Off": {
+        "Mon": 10,
+        "Tue": 10,
+        "Wed": 10,
+        "Thu": 10,
+        "Fri": 10,
+        "Sat": 10
+      },
+      "Fork Service": {
+        "Mon": 3.7,
+        "Tue": 6.3,
+        "Wed": 3.7,
+        "Thu": 6.8,
+        "Fri": 1.4
+      }
+    },
+    "driverSpeedMultiplier": {},
+    "_estNote": "ESTIMATES from Timesheets Summary avg hours (per route/day). Replace with Power-Automate rolling actuals when available."
   },
   "_readme": {
     "tool": "Lagu Manpower Schedule Generator (single-file HTML)",
@@ -1162,13 +1263,42 @@
       "DATA STILL NEEDED for build-ons (base-pass matrix & driver/truck ability are CONFIRMED): (a) which routes require a helper per day; (b) each worker's familiarity level per route per day; (c) speed multiplier per driver (fast/slow); (d) actual duration per route per day (for dump-time)."
     ],
     "futureBuilds": [
+      "TRAINEE-AS-HELPER SCENARIO (to address): today a trainee DRIVER renders after the hyphen with a qualified lead in the helper slot. The reverse — a fully-qualified DRIVER intentionally riding as the HELPER to train/guide a newer driver (i.e. two drivers on one route, the senior acting as guide) — is NOT yet modeled. Need: allow a driver to be placed in the Helper slot as a guide, have that satisfy the needs-guide check, and render the crew line correctly (lead driver - guiding driver). Decide WhatsApp wording and whether base-pass/ability checks apply to the guiding driver too.",
       "INDIVIDUAL WORKER CONSTRAINTS (now stubbed in CFG.workerConstraints + WARN checks WC1/WC2): e.g. Ramdhel cannot work weekends; Bong 7 a.m.–3 p.m. only. Build out a Constraints settings tab (non-coder UI) supporting: unavailable weekdays, working-hour windows, max hours/day, route/base exclusions — with Export-to-JSON. Per-day FAMILIARITY (CFG.familiarity) and per-day HELPER-NEEDED (CFG.helperNeededByRouteDay) are now stored; wire them into the familiarity-pairing check (warn if a needs-guide driver is paired with a helper who can't guide that route/day) and into H03 (needs-helper per day, not just per route).",
-      "Dump-time estimator: route start + actualDurationByRouteDay x driverSpeedMultiplier vs disposal-site cutoff -> flag 'won't reach tipping in time'.",
+      "Dump-time estimator (HOW IT WILL WORK): projectedFinish = route START + (CFG.dumpTime.actualHoursByRouteDay[route][day] — the Timesheets-Summary average hours baked in — x CFG.dumpTime.driverSpeedMultiplier[driver], default 1.0). Compare projectedFinish to that waste type's disposal-site CLOSE time (CFG.disposalSites[].hours[day][1]; Trash 2 p.m. M–F/12 p.m. Sat, Cardboard 5 p.m. M–F/12 p.m. Sat, both closed Sun). If projectedFinish > close -> Resolve/Review flag 'won't reach [site] before [close]'. Currently the hours are ESTIMATES (flagged _estNote) and the check is not yet wired to the row — enable via CFG.dumpTime.enabled once rolling actuals arrive.",
       "Familiarity-pairing check: warn if a driver who needs a guide is paired with a helper who doesn't know that route/day.",
       "Cost projection: hours-to-date + projected planned hours; regular vs OT; per-worker + weekly totals; compare plans.",
       "FOR EACH of the above: ALSO ship a non-coder settings UI (a tab) so staff can edit the values and Export to JSON for GitHub upload — never JSON-only."
     ],
     "versionLog": [
+      {
+        "v": "260720-49",
+        "note": "v20.8: DUMP-TIME CHECK TURNED ON using the baked-in Timesheets-Summary estimates. For each truck route with a driver, estimated finish = start + (actualHoursByRouteDay[route][day] x driverSpeedMultiplier[driver], default 1.0); compared to that waste type's disposal-site CLOSE time (Trash 2pm M-F/12pm Sat; Cardboard 5pm M-F/12pm Sat; both closed Sun). Flags in checklist Review: 'May miss dump cutoff' (est finish after close) and 'Disposal site closed' (route runs on a day the site is closed). WARN-level (estimate-based, not a hard block). README: added TRAINEE-AS-HELPER scenario to future builds (a qualified driver riding as helper/guide for a newer driver is not yet modeled)."
+      },
+      {
+        "v": "260720-48",
+        "note": "v20.7: Helper dropdown color + placeholder now shown ONLY when helper-need is DEFINED for that route/day in CFG.helperNeededByRouteDay (yellow 'Needed' / grey 'Not needed'). Routes with no helper concept — Yard, Standby, Rail Truck, Custom, Dump, Hand Service — keep a PLAIN WHITE dropdown with a BLANK placeholder (per request: Yard shift helper stays white/blank). No jargon codes in UI (checklist uses plain tagOf() labels). DUMP-TIME (documented, not yet on row): projectedFinish = route start + hoursEstimate[route][day] (Timesheets-Summary avg, baked into CFG.dumpTime.actualHoursByRouteDay) x driverSpeedMultiplier (default 1.0); compared to the waste type's disposal-site CLOSE time in CFG.disposalSites[].hours; if it would finish after close, flag 'won't reach [site] before [close]'. Estimates flagged; enable via CFG.dumpTime.enabled when rolling actuals exist."
+      },
+      {
+        "v": "260720-47",
+        "note": "v20.6: (1) Day-block header restored to the full DATE (e.g. 'Sunday, July 26, 2026') and the duplicate grey day-abbrev pill removed. (2) Helper-needed indicator: removed the pill/bubbles; the Helper dropdown itself is coloured (yellow=needed, grey=not) AND its placeholder now reads 'Needed' / 'Not needed' (grey, sentence case) — no separate bubble. (3) GUIDE FLAG now surfaced on the ROW as a bubble over the Helper field — red 'NEEDS GUIDE' (driver needs a guide but helper can't/none), yellow 'PARTIAL GUIDE ONLY' (helper only partially guides) — visible immediately, in addition to the checklist Review line. (4) DISPOSAL-SITE CLOSURE TIMES are now a centralized, editable per-day setting: Trash 4:30 a.m.–2 p.m. Mon–Fri, 4:30 a.m.–12 p.m. Sat, closed Sun; Cardboard 8 a.m.–5 p.m. Mon–Fri, 8 a.m.–12 p.m. Sat, closed Sun — stored in CFG.disposalSites[].hours for the dump-time build-on. (5) No jargony codes surface in the UI (checklist uses plain tagOf() labels; g01/g02-style codes never shown)."
+      },
+      {
+        "v": "260720-46",
+        "note": "v20.5: (1) GUIDE-PAIRING CHECK ADDED (was missing entirely — data existed but nothing consumed it, so no flag ever showed): 'Driver needs a guide' (G01) fires when a needs-guide driver has NO helper or a helper who can't guide that route; 'Helper only partial guide' (G02) fires when the assigned helper can only PARTIALLY guide it — both in checklist Review. Davis given partial-guide list (N/N+S/S/C/CB); Joseph/Ramdhel/Ron remain full guides. (2) PARTIAL-GUIDE surfaced as its own warning only when the driver needs a guide (per request). (3) Day-block header no longer repeats the full date (already in the Service-date field) — shows the weekday name + grey day-abbrev pill only. (4) Bong wording -> 'Bong is unavailable before 6 a.m.' (parallel to 'Ramdhel is unavailable on Sat'). (5) Helper-needed now also COLOURS the Helper dropdown (yellow=needed, grey=not) in addition to the sentence-case pill (Helper needed / No helper needed). (6) Checklist popup now closes by clicking anywhere on the dark backdrop (no need to scroll to 'Close without posting'). ANSWER on dump-time: Timesheets-Summary per-route-per-day average hours are stored in CFG.dumpTime.actualHoursByRouteDay and tagged _estNote='ESTIMATES ...'; they are NOT yet shown on the schedule row — they exist as the input for the future dump-time check (start + hours×driverSpeedMultiplier vs disposal-site cutoff). Nothing user-facing yet beyond the stored estimates."
+      },
+      {
+        "v": "260720-45",
+        "note": "v20.4: VERIFIED familiarity + helper-needed against the authoritative 'Route Familiarity and Needs Helper' file (CSV/XLSX). CORRECTIONS: (1) added 'N+S Combined' to needsGuide for Allan, Ariel Bong, Celso, Graymar, Racel (all show NS-Wed = needs guide; Abeth & Miarfy are OK on NS so unchanged). (2) Central Tuesday now REQUIRES a helper (table Tue_NeedsHelper = Y; was false). (3) De-duplicated the 'N+S Combined' key in helperNeededByRouteDay. CONFIRMED CORRECT and unchanged: all other driver needsGuide route-lists; Roll-Off never needs helper; Fork Service helper Mon/Tue/Thu only; Cardboard helper Mon-Fri; Southern Mon/Tue/Thu/Fri; Northern Mon/Tue/Thu/Fri (Sun runs, no helper). Driver drive-ability (RO front-loader-driver exclusions; Robert FS-only) matches the file. NOTES/OPEN: (a) Davis is 'partially able to guide' on many route/days (full only on FS all, S Tue/Thu/Fri, CB Tue-Fri, N Sun) — kept helper.knows=[Fork Service] conservatively; per-day partial detail belongs in the familiarity-pairing build-on. (b) The file lists Shawn Lujan as a full guide, but Shawn was removed from the current roster earlier per instruction — left out; say the word to re-add. (c) DisposalSite column (Trash/Cardboard) captured in the file for the future dump-time routing."
+      },
+      {
+        "v": "260720-44",
+        "note": "v20.3: T00 -> 'No truck chosen' (matches 'No driver chosen'). Two worker-constraint flags merged into ONE label 'Worker unavailable' with clear messages ('Bong is only available not before 6 a.m. — Northern starts 3AM'; 'Ramdhel is unavailable on Sat (cannot work weekends)'). Bong = earliest 06:00 only (3 p.m. cutoff removed). HELPER-NEEDED now shown inline on every Helper field: yellow 'helper needed' pill when required that day, grey 'no helper needed' pill when not — dropdown stays visible. HOW THE THREE FLAG: helper-needed = inline pill + H03 Review warning if missing; familiarity = driver.needsGuide -> G01 Review warning + unfamiliar-truck yellow warning in driver dropdown; route-hours = stored estimates (Timesheets Summary) feeding the future dump-time check, not yet on the row. NOTE: route-sheet tabs not attached this turn, so route-hours stay Timesheets-Summary estimates."
+      },
+      {
+        "v": "260720-43",
+        "note": "v20.2: (1) N+S COMBINED route added for Wed+Sat (waLabel stays 'NORTHERN ROUTE' so workers see no change; modeled separately for accurate longer hours + both-region stops). Northern now runs Mon/Tue/Thu/Fri/Sun only (Sun ~1.5h confirmed short). usualRoutesByDay Wed/Sat -> N+S Combined. (2) Missing equipment already ERROR (Resolve) via T00 — confirmed. (3) WC labels renamed to plain language: 'Unavailable (weekend)' / 'Outside work hours'. (4) Davis set to PARTIAL guide — knows=[Fork Service] only (the one route he guides every running day); per-day partial detail kept in CFG.familiarity. (5) HELPER-NEEDED now PER DAY — H03 reads CFG.helperNeededByRouteDay: Fork Service helper Mon/Tue/Thu only (Wed/Fri none), Northern no helper Sun, N+S Combined helper Wed+Sat. (6) Estimate route-hours baked into dumpTime.actualHoursByRouteDay from Timesheets Summary averages (flagged as estimates until rolling actuals arrive). (7) Bong hours constraint = 6 a.m.-3 p.m. FLAGGING: if Bong is assigned with a start earlier than 06:00, validate() adds WARN 'WC2 Outside work hours' shown in the checklist Review section (and the run log); it is a warning, not a hard block, so you can still post with an int_reason but you're told."
+      },
       {
         "v": "260720-42",
         "note": "v20.1: (1) CHECKLIST — deleted vague routine item 'Start times and break overrides are right'; Review now lists start times AND (new) break overrides explicitly, each as its own confirm line. (2) BANNER — renewals now sorted alphabetically by FIRST name (the display key used everywhere) for consistency. (3) INDIVIDUAL CONSTRAINTS — added CFG.workerConstraints (Ramdhel noWeekends; Bong 07:00–15:00) with live WARNs: WC1 (weekend assignment) + WC2 (start outside working hours); documented a Constraints settings-tab build-on. (4) FAMILIARITY + HELPER-NEEDED from your tables: derived per-driver needsGuide route lists (Abeth S/CB; Allan N/C/S/CB/FS; Bong N/S/FS; Celso N/S/CB; Graymar N/C/S/CB/FS; Miarfy FS; Racel N/S; Robert none) so existing G01 guide-check fires; set helper knows[] (Joseph/Ron/Ramdhel/Davis are guides); stored full per-day matrix in CFG.familiarity + CFG.helperNeededByRouteDay for the familiarity-pairing / per-day-helper build-ons. NOTE: helperNeededByRouteDay + Davis partial-guide days came from a screenshot — flagged VERIFY; send as CSV to lock exact Y/N."

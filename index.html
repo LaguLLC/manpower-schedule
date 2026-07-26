@@ -211,7 +211,7 @@
 "use strict";
 function showDialog(msg){var bg=document.getElementById("dlgBg");if(!bg){try{window.showDialog(msg);}catch(e){}return;}document.getElementById("dlgMsg").textContent=msg;bg.style.display="flex";}
 function hideDialog(){var bg=document.getElementById("dlgBg");if(bg)bg.style.display="none";}
-const APP_VERSION="20.1";
+const APP_VERSION="20.8";
 const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 const DOWfull=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -225,7 +225,7 @@ function defaultConfig(){
  // ability helper: front-loader drivers can't do roll-off trucks
  const noRO={"EQ-09":"unable","EQ-10":"unable","EQ-11":"unable","EQ-18":"unable"};
  return {
- cfgVersion:"260720-42", renewDays:30,
+ cfgVersion:"260720-49", renewDays:30,
  trucks:[
   {id:"EQ-01",plate:"615 CV",kind:"FrontLoader",status:"active",helperCanDrive:false,note:""},
   {id:"EQ-02",plate:"658 CV",kind:"FrontLoader",status:"down",helperCanDrive:false,note:"Out of commission"},
@@ -243,19 +243,19 @@ function defaultConfig(){
  ],
  drivers:[
   {name:"Abeth",kinds:["FrontLoader","Cardboard"],solo:true,trainee:false,outUntil:"",reason:"",ability:Object.assign({"EQ-15":"able","EQ-16":"able"},noRO),canGuide:[],needsGuide:["Southern", "Cardboard"]},
-  {name:"Allan",kinds:["RollOff","Fork"],solo:true,trainee:false,outUntil:"",reason:"",ability:{"EQ-15":"unable","EQ-16":"unable","EQ-12":"able","EQ-13":"able","EQ-01":"able","EQ-02":"able","EQ-03":"able","EQ-04":"able","EQ-09":"able","EQ-10":"able","EQ-11":"able","EQ-18":"able","VE-02":"able"},canGuide:[],needsGuide:["Northern", "Central", "Southern", "Cardboard", "Fork Service"]},
-  {name:"Bong",kinds:["FrontLoader","Cardboard","Fork","RollOff"],solo:true,trainee:false,outUntil:"",reason:"",ability:{"EQ-18":"unfamiliar","EQ-15":"unfamiliar","EQ-16":"unfamiliar"},canGuide:[],needsGuide:["Northern", "Southern", "Fork Service"]},
-  {name:"Celso",kinds:["FrontLoader","Cardboard"],solo:true,trainee:false,outUntil:"",reason:"",ability:Object.assign({"EQ-15":"able","EQ-16":"able"},noRO),canGuide:[],needsGuide:["Northern", "Southern", "Cardboard"]},
-  {name:"Graymar",kinds:["RollOff","Fork"],solo:true,trainee:false,outUntil:"",reason:"",ability:{"EQ-15":"unable","EQ-16":"unable","EQ-12":"able","EQ-13":"able","EQ-01":"able","EQ-02":"able","EQ-03":"able","EQ-04":"able","EQ-09":"able","EQ-10":"able","EQ-11":"able","EQ-18":"unfamiliar","VE-02":"able"},canGuide:[],needsGuide:["Northern", "Central", "Southern", "Cardboard", "Fork Service"]},
+  {name:"Allan",kinds:["RollOff","Fork"],solo:true,trainee:false,outUntil:"",reason:"",ability:{"EQ-15":"unable","EQ-16":"unable","EQ-12":"able","EQ-13":"able","EQ-01":"able","EQ-02":"able","EQ-03":"able","EQ-04":"able","EQ-09":"able","EQ-10":"able","EQ-11":"able","EQ-18":"able","VE-02":"able"},canGuide:[],needsGuide:["Northern", "Central", "Southern", "N+S Combined", "Cardboard", "Fork Service"]},
+  {name:"Bong",kinds:["FrontLoader","Cardboard","Fork","RollOff"],solo:true,trainee:false,outUntil:"",reason:"",ability:{"EQ-18":"unfamiliar","EQ-15":"unfamiliar","EQ-16":"unfamiliar"},canGuide:[],needsGuide:["Northern", "Southern", "N+S Combined", "Fork Service"]},
+  {name:"Celso",kinds:["FrontLoader","Cardboard"],solo:true,trainee:false,outUntil:"",reason:"",ability:Object.assign({"EQ-15":"able","EQ-16":"able"},noRO),canGuide:[],needsGuide:["Northern", "Southern", "N+S Combined", "Cardboard"]},
+  {name:"Graymar",kinds:["RollOff","Fork"],solo:true,trainee:false,outUntil:"",reason:"",ability:{"EQ-15":"unable","EQ-16":"unable","EQ-12":"able","EQ-13":"able","EQ-01":"able","EQ-02":"able","EQ-03":"able","EQ-04":"able","EQ-09":"able","EQ-10":"able","EQ-11":"able","EQ-18":"unfamiliar","VE-02":"able"},canGuide:[],needsGuide:["Northern", "Central", "Southern", "N+S Combined", "Cardboard", "Fork Service"]},
   {name:"Miarfy",kinds:["FrontLoader","Cardboard","Fork"],solo:true,trainee:false,outUntil:"",reason:"",ability:Object.assign({"EQ-15":"able","EQ-16":"able","EQ-12":"able","EQ-13":"able"},noRO),canGuide:[],needsGuide:["Fork Service"]},
-  {name:"Racel",kinds:["FrontLoader","Cardboard"],solo:true,trainee:false,outUntil:"",reason:"",ability:Object.assign({"EQ-15":"unfamiliar","EQ-16":"unfamiliar"},noRO),canGuide:[],needsGuide:["Northern", "Southern"]},
+  {name:"Racel",kinds:["FrontLoader","Cardboard"],solo:true,trainee:false,outUntil:"",reason:"",ability:Object.assign({"EQ-15":"unfamiliar","EQ-16":"unfamiliar"},noRO),canGuide:[],needsGuide:["Northern", "Southern", "N+S Combined"]},
   {name:"Robert",kinds:["Fork"],solo:false,trainee:false,outUntil:"",reason:"",ability:{"EQ-12":"able","EQ-13":"able","VE-02":"able","EQ-01":"unable","EQ-02":"unable","EQ-03":"unable","EQ-04":"unable","EQ-09":"unable","EQ-10":"unable","EQ-11":"unable","EQ-15":"unable","EQ-16":"unable","EQ-18":"unable"},canGuide:[],needsGuide:[]}
  ],
  helpers:[
   {name:"Joseph",outUntil:"",reason:"",canDrive:["Rail"],knows:["Northern","Central","Southern","Cardboard","Fork Service","Roll-Off"]},
   {name:"Ramdhel",outUntil:"",reason:"",canDrive:[],knows:["Northern","Central","Southern","Cardboard","Fork Service","Roll-Off"]},
   {name:"Ron",outUntil:"",reason:"",canDrive:["Rail"],knows:["Northern","Central","Southern","Cardboard","Fork Service","Roll-Off"]},
-  {name:"Davis",outUntil:"",reason:"",canDrive:[],knows:["Northern","Central","Southern","Cardboard","Fork Service","Roll-Off"]}
+  {name:"Davis",outUntil:"",reason:"",canDrive:[],knows:["Fork Service"],partial:["Northern","N+S Combined","Southern","Central","Cardboard"]}
  ],
  basePasses:{
   Abeth:{CampBlaz:"260724",NBG:"270630",AAFB:"270417"},
@@ -268,9 +268,12 @@ function defaultConfig(){
   Robert:{CampBlaz:"",NBG:"",AAFB:""}
  },
  routes:[
-  {name:"Northern",waLabel:"NORTHERN ROUTE",kinds:["FrontLoader"],noTruck:false,days:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
-    startByDay:{Mon:"03:00",Tue:"03:00",Wed:"02:00",Thu:"02:00",Fri:"02:30",Sat:"03:00",Sun:"06:00"},needsHelper:true,
+  {name:"Northern",waLabel:"NORTHERN ROUTE",kinds:["FrontLoader"],noTruck:false,days:["Mon","Tue","Thu","Fri","Sun"],
+    startByDay:{Mon:"03:00",Tue:"03:00",Thu:"02:00",Fri:"02:30",Sun:"06:00"},needsHelper:true,
     basePass:"byDay",dayBases:{Tue:["CampBlaz","AAFB"],Thu:["CampBlaz"],Fri:["CampBlaz"]},bases:[]},
+  {name:"N+S Combined",waLabel:"NORTHERN ROUTE",kinds:["FrontLoader"],noTruck:false,days:["Wed","Sat"],
+    startByDay:{Wed:"02:00",Sat:"03:00"},needsHelper:true,
+    basePass:"never",dayBases:{},bases:[]},
   {name:"Central",waLabel:"CENTRAL ROUTE",kinds:["FrontLoader"],noTruck:false,days:["Tue"],startByDay:{Tue:"03:00"},needsHelper:false,basePass:"never",dayBases:{},bases:[]},
   {name:"Southern",waLabel:"SOUTHERN ROUTE",kinds:["FrontLoader"],noTruck:false,days:["Mon","Tue","Thu","Fri"],startByDay:{Mon:"03:00",Tue:"03:00",Thu:"02:00",Fri:"02:30"},needsHelper:true,basePass:"byDay",dayBases:{Thu:["NBG"]},bases:[]},
   {name:"Cardboard",waLabel:"CARDBOARD",kinds:["Cardboard","FrontLoader"],noTruck:false,days:["Mon","Tue","Wed","Thu","Fri"],startByDay:{Mon:"06:00",Tue:"06:00",Wed:"06:00",Thu:"06:00",Fri:"06:00"},needsHelper:true,basePass:"byDay",dayBases:{Wed:["AAFB","CampBlaz"],Thu:["NBG"]},bases:[]},
@@ -284,10 +287,10 @@ function defaultConfig(){
  usualRoutesByDay:{
    Mon:["Northern","Southern","Cardboard","Fork Service","Roll-Off","Yard"],
    Tue:["Northern","Central","Southern","Cardboard","Fork Service","Roll-Off","Yard"],
-   Wed:["Northern","Cardboard","Fork Service","Roll-Off","Yard"],
+   Wed:["N+S Combined","Cardboard","Fork Service","Roll-Off","Yard"],
    Thu:["Northern","Southern","Cardboard","Fork Service","Roll-Off","Yard"],
    Fri:["Northern","Southern","Cardboard","Fork Service","Roll-Off","Yard"],
-   Sat:["Northern","Yard"], Sun:["Northern","Yard"]
+   Sat:["N+S Combined","Yard"], Sun:["Northern","Yard"]
  },
  standbyReasons:["on-call","typhoon / weather","COR level","government announcement","mechanic / repair","no work","Other"],
  swSubjects:["PLEASE","DRIVER TO","HELPER TO",""],
@@ -316,10 +319,8 @@ function defaultConfig(){
  dataSources:{basePassTracker:{link:"",format:"Excel/CSV: name, CampBlaz/NBG/AAFB expiry",note:"DBIDS & AAFB Pass Tracker — master (Import CSV when it changes)"},driverPool:{link:"",format:"",note:""},helperPool:{link:"",format:"",note:""},equipment:{link:"",format:"",note:""},hoursToDate:{link:"",format:"Timesheet export",note:"Cost projection (future)"}},
  costs:{enabled:false,otAfterHrs:40,otMultiplier:1.5,regularShiftHrs:8,defaultRate:9.25,rates:{},note:"Future OT projection."},
  disposalSites:[
-   {name:"Rubbishman transfer station",waste:["trash"],cutoff:"15:00",note:"MSW/general trash"},
-   {name:"Guahan (cardboard recycling)",waste:["cardboard"],cutoff:"16:00",note:"Cardboard dump"},
-   {name:"Layon landfill (GSWA)",waste:["trash"],cutoff:"15:00",note:"Landfill; mind GSWA breaks"},
-   {name:"Pyramid / JY Recycling",waste:["ewaste","metal"],cutoff:"16:00",note:"E-waste / metal"}
+   {name:"Trash dump site",waste:["trash"],hours:{Mon:["04:30","14:00"],Tue:["04:30","14:00"],Wed:["04:30","14:00"],Thu:["04:30","14:00"],Fri:["04:30","14:00"],Sat:["04:30","12:00"],Sun:null},note:"Trash: 4:30 a.m.–2 p.m. Mon–Fri; 4:30 a.m.–12 p.m. Sat; closed Sun. Edit here to change closure times."},
+   {name:"Cardboard dump site",waste:["cardboard"],hours:{Mon:["08:00","17:00"],Tue:["08:00","17:00"],Wed:["08:00","17:00"],Thu:["08:00","17:00"],Fri:["08:00","17:00"],Sat:["08:00","12:00"],Sun:null},note:"Cardboard: 8 a.m.–5 p.m. Mon–Fri; 8 a.m.–12 p.m. Sat; closed Sun. Edit here to change closure times."}
  ],
  baseRequirements:{ AAFB:["contract letter","pass for renewal","valid govt ID"], CampBlaz:["contract letter","pass for renewal","valid govt ID"], NBG:["contract letter","pass for renewal","valid govt ID"] },
  familiarity:{ note:"Per worker per route per day. Drivers default 'ok'; only 'needs guide' days listed. Helpers default 'able to guide'; only 'partially'/'unable' listed. Feeds the familiarity-pairing build-on.",
@@ -336,17 +337,17 @@ function defaultConfig(){
  },
  helperNeededByRouteDay:{ _note:"VERIFY vs the helper-needed table (was a screenshot). true=needs helper that day.",
    Northern:{Mon:true,Tue:true,Wed:false,Thu:true,Fri:true,Sat:false,Sun:false},
-   Central:{Tue:false},
+   Central:{Tue:true},
    Southern:{Mon:true,Tue:true,Thu:true,Fri:true},
    "N+S Combined":{Wed:true,Sat:true},
    Cardboard:{Mon:true,Tue:true,Wed:true,Thu:true,Fri:true},
    "Roll-Off":{Mon:false,Tue:false,Wed:false,Thu:false,Fri:false,Sat:false},
-   "Fork Service":{Mon:true,Tue:true,Wed:true,Thu:true,Fri:true}
+   "Fork Service":{Mon:true,Tue:true,Wed:false,Thu:true,Fri:false} 
  },
- workerConstraints:{ Ramdhel:{noWeekends:true,note:"cannot work weekends"}, Bong:{earliest:"07:00",latest:"15:00",note:"7 a.m.–3 p.m. only"} },
- dumpTime:{ enabled:false, defaultSpeedMultiplier:1.0,
+ workerConstraints:{ Ramdhel:{noWeekends:true,note:"cannot work weekends"}, Bong:{earliest:"06:00",note:"unavailable before 6 a.m."} },
+ dumpTime:{ enabled:true, defaultSpeedMultiplier:1.0,
    note:"Future: finish = route start + (actualHoursByRouteDay[route][day] x driverSpeedMultiplier[driver]); compare to disposalSites cutoff; flag 'won't reach tipping in time'. <1 faster, >1 slower.",
-   actualHoursByRouteDay:{}, driverSpeedMultiplier:{} },
+   actualHoursByRouteDay:{ "Northern":{Mon:8.7,Tue:8.95,Thu:11.2,Fri:10.0,Sun:1.5}, "N+S Combined":{Wed:11.9,Sat:9.5}, "Central":{Tue:10.1}, "Southern":{Mon:10.7,Tue:11.6,Thu:11.5,Fri:11.2}, "Cardboard":{Mon:7.3,Tue:6.9,Wed:8.9,Thu:7.2,Fri:7.3}, "Roll-Off":{Mon:10,Tue:10,Wed:10,Thu:10,Fri:10,Sat:10}, "Fork Service":{Mon:3.7,Tue:6.3,Wed:3.7,Thu:6.8,Fri:1.4} }, driverSpeedMultiplier:{}, _estNote:"ESTIMATES from Timesheets Summary avg hours (per route/day). Replace with Power-Automate rolling actuals when available." },
  _readme:{
    tool:"Lagu Manpower Schedule Generator (single-file HTML)",
    persistence:"Config persists in this browser. If the browser changes, settings are lost unless you Export the JSON. Source of truth = the settings JSON; if base data lives on SharePoint Excel, export to CSV and re-Import on change (no login/backend).",
@@ -368,8 +369,15 @@ function defaultConfig(){
      "Roster 260720: drivers Abeth/Allan/Bong/Celso/Graymar/Miarfy/Racel/Robert; helpers Joseph/Ramdhel/Ron/Davis."
    ],
    openQuestions:["DATA STILL NEEDED for build-ons (base-pass matrix & driver/truck ability are CONFIRMED): (a) which routes require a helper per day; (b) each worker's familiarity level per route per day; (c) speed multiplier per driver (fast/slow); (d) actual duration per route per day (for dump-time)."],
-   futureBuilds:["INDIVIDUAL WORKER CONSTRAINTS (now stubbed in CFG.workerConstraints + WARN checks WC1/WC2): e.g. Ramdhel cannot work weekends; Bong 7 a.m.–3 p.m. only. Build out a Constraints settings tab (non-coder UI) supporting: unavailable weekdays, working-hour windows, max hours/day, route/base exclusions — with Export-to-JSON. Per-day FAMILIARITY (CFG.familiarity) and per-day HELPER-NEEDED (CFG.helperNeededByRouteDay) are now stored; wire them into the familiarity-pairing check (warn if a needs-guide driver is paired with a helper who can't guide that route/day) and into H03 (needs-helper per day, not just per route).","Dump-time estimator: route start + actualDurationByRouteDay x driverSpeedMultiplier vs disposal-site cutoff -> flag 'won't reach tipping in time'.","Familiarity-pairing check: warn if a driver who needs a guide is paired with a helper who doesn't know that route/day.","Cost projection: hours-to-date + projected planned hours; regular vs OT; per-worker + weekly totals; compare plans.","FOR EACH of the above: ALSO ship a non-coder settings UI (a tab) so staff can edit the values and Export to JSON for GitHub upload — never JSON-only."],
+   futureBuilds:["TRAINEE-AS-HELPER SCENARIO (to address): today a trainee DRIVER renders after the hyphen with a qualified lead in the helper slot. The reverse — a fully-qualified DRIVER intentionally riding as the HELPER to train/guide a newer driver (i.e. two drivers on one route, the senior acting as guide) — is NOT yet modeled. Need: allow a driver to be placed in the Helper slot as a guide, have that satisfy the needs-guide check, and render the crew line correctly (lead driver - guiding driver). Decide WhatsApp wording and whether base-pass/ability checks apply to the guiding driver too.","INDIVIDUAL WORKER CONSTRAINTS (now stubbed in CFG.workerConstraints + WARN checks WC1/WC2): e.g. Ramdhel cannot work weekends; Bong 7 a.m.–3 p.m. only. Build out a Constraints settings tab (non-coder UI) supporting: unavailable weekdays, working-hour windows, max hours/day, route/base exclusions — with Export-to-JSON. Per-day FAMILIARITY (CFG.familiarity) and per-day HELPER-NEEDED (CFG.helperNeededByRouteDay) are now stored; wire them into the familiarity-pairing check (warn if a needs-guide driver is paired with a helper who can't guide that route/day) and into H03 (needs-helper per day, not just per route).","Dump-time estimator (HOW IT WILL WORK): projectedFinish = route START + (CFG.dumpTime.actualHoursByRouteDay[route][day] — the Timesheets-Summary average hours baked in — x CFG.dumpTime.driverSpeedMultiplier[driver], default 1.0). Compare projectedFinish to that waste type's disposal-site CLOSE time (CFG.disposalSites[].hours[day][1]; Trash 2 p.m. M–F/12 p.m. Sat, Cardboard 5 p.m. M–F/12 p.m. Sat, both closed Sun). If projectedFinish > close -> Resolve/Review flag 'won't reach [site] before [close]'. Currently the hours are ESTIMATES (flagged _estNote) and the check is not yet wired to the row — enable via CFG.dumpTime.enabled once rolling actuals arrive.","Familiarity-pairing check: warn if a driver who needs a guide is paired with a helper who doesn't know that route/day.","Cost projection: hours-to-date + projected planned hours; regular vs OT; per-worker + weekly totals; compare plans.","FOR EACH of the above: ALSO ship a non-coder settings UI (a tab) so staff can edit the values and Export to JSON for GitHub upload — never JSON-only."],
    versionLog:[
+     {v:"260720-49",note:"v20.8: DUMP-TIME CHECK TURNED ON using the baked-in Timesheets-Summary estimates. For each truck route with a driver, estimated finish = start + (actualHoursByRouteDay[route][day] x driverSpeedMultiplier[driver], default 1.0); compared to that waste type's disposal-site CLOSE time (Trash 2pm M-F/12pm Sat; Cardboard 5pm M-F/12pm Sat; both closed Sun). Flags in checklist Review: 'May miss dump cutoff' (est finish after close) and 'Disposal site closed' (route runs on a day the site is closed). WARN-level (estimate-based, not a hard block). README: added TRAINEE-AS-HELPER scenario to future builds (a qualified driver riding as helper/guide for a newer driver is not yet modeled)."},
+     {v:"260720-48",note:"v20.7: Helper dropdown color + placeholder now shown ONLY when helper-need is DEFINED for that route/day in CFG.helperNeededByRouteDay (yellow 'Needed' / grey 'Not needed'). Routes with no helper concept — Yard, Standby, Rail Truck, Custom, Dump, Hand Service — keep a PLAIN WHITE dropdown with a BLANK placeholder (per request: Yard shift helper stays white/blank). No jargon codes in UI (checklist uses plain tagOf() labels). DUMP-TIME (documented, not yet on row): projectedFinish = route start + hoursEstimate[route][day] (Timesheets-Summary avg, baked into CFG.dumpTime.actualHoursByRouteDay) x driverSpeedMultiplier (default 1.0); compared to the waste type's disposal-site CLOSE time in CFG.disposalSites[].hours; if it would finish after close, flag 'won't reach [site] before [close]'. Estimates flagged; enable via CFG.dumpTime.enabled when rolling actuals exist."},
+     {v:"260720-47",note:"v20.6: (1) Day-block header restored to the full DATE (e.g. 'Sunday, July 26, 2026') and the duplicate grey day-abbrev pill removed. (2) Helper-needed indicator: removed the pill/bubbles; the Helper dropdown itself is coloured (yellow=needed, grey=not) AND its placeholder now reads 'Needed' / 'Not needed' (grey, sentence case) — no separate bubble. (3) GUIDE FLAG now surfaced on the ROW as a bubble over the Helper field — red 'NEEDS GUIDE' (driver needs a guide but helper can't/none), yellow 'PARTIAL GUIDE ONLY' (helper only partially guides) — visible immediately, in addition to the checklist Review line. (4) DISPOSAL-SITE CLOSURE TIMES are now a centralized, editable per-day setting: Trash 4:30 a.m.–2 p.m. Mon–Fri, 4:30 a.m.–12 p.m. Sat, closed Sun; Cardboard 8 a.m.–5 p.m. Mon–Fri, 8 a.m.–12 p.m. Sat, closed Sun — stored in CFG.disposalSites[].hours for the dump-time build-on. (5) No jargony codes surface in the UI (checklist uses plain tagOf() labels; g01/g02-style codes never shown)."},
+     {v:"260720-46",note:"v20.5: (1) GUIDE-PAIRING CHECK ADDED (was missing entirely — data existed but nothing consumed it, so no flag ever showed): 'Driver needs a guide' (G01) fires when a needs-guide driver has NO helper or a helper who can't guide that route; 'Helper only partial guide' (G02) fires when the assigned helper can only PARTIALLY guide it — both in checklist Review. Davis given partial-guide list (N/N+S/S/C/CB); Joseph/Ramdhel/Ron remain full guides. (2) PARTIAL-GUIDE surfaced as its own warning only when the driver needs a guide (per request). (3) Day-block header no longer repeats the full date (already in the Service-date field) — shows the weekday name + grey day-abbrev pill only. (4) Bong wording -> 'Bong is unavailable before 6 a.m.' (parallel to 'Ramdhel is unavailable on Sat'). (5) Helper-needed now also COLOURS the Helper dropdown (yellow=needed, grey=not) in addition to the sentence-case pill (Helper needed / No helper needed). (6) Checklist popup now closes by clicking anywhere on the dark backdrop (no need to scroll to 'Close without posting'). ANSWER on dump-time: Timesheets-Summary per-route-per-day average hours are stored in CFG.dumpTime.actualHoursByRouteDay and tagged _estNote='ESTIMATES ...'; they are NOT yet shown on the schedule row — they exist as the input for the future dump-time check (start + hours×driverSpeedMultiplier vs disposal-site cutoff). Nothing user-facing yet beyond the stored estimates."},
+     {v:"260720-45",note:"v20.4: VERIFIED familiarity + helper-needed against the authoritative 'Route Familiarity and Needs Helper' file (CSV/XLSX). CORRECTIONS: (1) added 'N+S Combined' to needsGuide for Allan, Ariel Bong, Celso, Graymar, Racel (all show NS-Wed = needs guide; Abeth & Miarfy are OK on NS so unchanged). (2) Central Tuesday now REQUIRES a helper (table Tue_NeedsHelper = Y; was false). (3) De-duplicated the 'N+S Combined' key in helperNeededByRouteDay. CONFIRMED CORRECT and unchanged: all other driver needsGuide route-lists; Roll-Off never needs helper; Fork Service helper Mon/Tue/Thu only; Cardboard helper Mon-Fri; Southern Mon/Tue/Thu/Fri; Northern Mon/Tue/Thu/Fri (Sun runs, no helper). Driver drive-ability (RO front-loader-driver exclusions; Robert FS-only) matches the file. NOTES/OPEN: (a) Davis is 'partially able to guide' on many route/days (full only on FS all, S Tue/Thu/Fri, CB Tue-Fri, N Sun) — kept helper.knows=[Fork Service] conservatively; per-day partial detail belongs in the familiarity-pairing build-on. (b) The file lists Shawn Lujan as a full guide, but Shawn was removed from the current roster earlier per instruction — left out; say the word to re-add. (c) DisposalSite column (Trash/Cardboard) captured in the file for the future dump-time routing."},
+     {v:"260720-44",note:"v20.3: T00 -> 'No truck chosen' (matches 'No driver chosen'). Two worker-constraint flags merged into ONE label 'Worker unavailable' with clear messages ('Bong is only available not before 6 a.m. — Northern starts 3AM'; 'Ramdhel is unavailable on Sat (cannot work weekends)'). Bong = earliest 06:00 only (3 p.m. cutoff removed). HELPER-NEEDED now shown inline on every Helper field: yellow 'helper needed' pill when required that day, grey 'no helper needed' pill when not — dropdown stays visible. HOW THE THREE FLAG: helper-needed = inline pill + H03 Review warning if missing; familiarity = driver.needsGuide -> G01 Review warning + unfamiliar-truck yellow warning in driver dropdown; route-hours = stored estimates (Timesheets Summary) feeding the future dump-time check, not yet on the row. NOTE: route-sheet tabs not attached this turn, so route-hours stay Timesheets-Summary estimates."},
+     {v:"260720-43",note:"v20.2: (1) N+S COMBINED route added for Wed+Sat (waLabel stays 'NORTHERN ROUTE' so workers see no change; modeled separately for accurate longer hours + both-region stops). Northern now runs Mon/Tue/Thu/Fri/Sun only (Sun ~1.5h confirmed short). usualRoutesByDay Wed/Sat -> N+S Combined. (2) Missing equipment already ERROR (Resolve) via T00 — confirmed. (3) WC labels renamed to plain language: 'Unavailable (weekend)' / 'Outside work hours'. (4) Davis set to PARTIAL guide — knows=[Fork Service] only (the one route he guides every running day); per-day partial detail kept in CFG.familiarity. (5) HELPER-NEEDED now PER DAY — H03 reads CFG.helperNeededByRouteDay: Fork Service helper Mon/Tue/Thu only (Wed/Fri none), Northern no helper Sun, N+S Combined helper Wed+Sat. (6) Estimate route-hours baked into dumpTime.actualHoursByRouteDay from Timesheets Summary averages (flagged as estimates until rolling actuals arrive). (7) Bong hours constraint = 6 a.m.-3 p.m. FLAGGING: if Bong is assigned with a start earlier than 06:00, validate() adds WARN 'WC2 Outside work hours' shown in the checklist Review section (and the run log); it is a warning, not a hard block, so you can still post with an int_reason but you're told."},
      {v:"260720-42",note:"v20.1: (1) CHECKLIST — deleted vague routine item 'Start times and break overrides are right'; Review now lists start times AND (new) break overrides explicitly, each as its own confirm line. (2) BANNER — renewals now sorted alphabetically by FIRST name (the display key used everywhere) for consistency. (3) INDIVIDUAL CONSTRAINTS — added CFG.workerConstraints (Ramdhel noWeekends; Bong 07:00–15:00) with live WARNs: WC1 (weekend assignment) + WC2 (start outside working hours); documented a Constraints settings-tab build-on. (4) FAMILIARITY + HELPER-NEEDED from your tables: derived per-driver needsGuide route lists (Abeth S/CB; Allan N/C/S/CB/FS; Bong N/S/FS; Celso N/S/CB; Graymar N/C/S/CB/FS; Miarfy FS; Racel N/S; Robert none) so existing G01 guide-check fires; set helper knows[] (Joseph/Ron/Ramdhel/Davis are guides); stored full per-day matrix in CFG.familiarity + CFG.helperNeededByRouteDay for the familiarity-pairing / per-day-helper build-ons. NOTE: helperNeededByRouteDay + Davis partial-guide days came from a screenshot — flagged VERIFY; send as CSV to lock exact Y/N."},
      {v:"260720-41",note:"v20.0: (1) Bong AAFB expiry updated to 270604 (was 260612). (2) Flag bubbles now UNIFORM HEIGHT without changing wording — .fbub min-height:26px + flex-centered, so 1-line and 2-line bubbles read as the same size (answer to 'is 3 different heights necessary?' = no). (3) Service-date row now top-aligns labels (align-items:flex-start) so the 'Mode' label lines up with the 'Service date' label, and the weekday/mode pill has margin-left:0 so its LEFT edge aligns with the 'Mode' label's left edge. (4) FORM-LOCKED dialog now lists ALL THREE escape hatches and when to pick each: change driver; UNCHECK base + reason (no on-base stop today); or OVERRIDE + reason (needed but proceeding) — previously the uncheck option was missing."},
      {v:"260720-40",note:"v19.9: (1) WITHIN-SHIFT ORDERING — routes under the same start time now print ALPHABETICALLY by route label in BOTH WhatsApp and Kakao (e.g. Cardboard, Fork Service, Roll-Off; Roll-Off before Yard). Implemented by sorting slots via routeLabelOf().localeCompare in renderWA/renderKK. (2) BRING-PASS LEAD depends on crew: since no helpers currently hold base passes, the reminder now reads 'DRIVER PLEASE BRING ...' ONLY when a helper is also on the route (to specify who), and just 'PLEASE BRING ...' when the driver is solo. bringPassNote(bases,hasHelper) + call passes !!a.helper."},
@@ -522,6 +530,22 @@ function bookingConflicts(bl){
     const same=arr.some((v,i)=>arr.indexOf(v)!==i); out[k]={count:arr.length,same};});return out;}
   return {D:classify(D),H:classify(H),T:classify(T)};
 }
+/* ================= DUMP-TIME (estimate) ================= */
+function hmToMin(t){if(!/^\d{1,2}:\d{2}$/.test(t||""))return null;const[h,m]=t.split(":").map(Number);return h*60+m;}
+function siteForRoute(routeName){const w=(routeName==="Cardboard")?"cardboard":"trash";
+  return (CFG.disposalSites||[]).find(s=>(s.waste||[]).includes(w));}
+function dumpEstimate(a,bl){ // returns {finishMin, closeMin, site, hrs} or null if not computable
+  if(!CFG.dumpTime||!CFG.dumpTime.enabled)return null;
+  const r=routeByName(a.route);if(!r||r.noTruck)return null;
+  const hrs=((CFG.dumpTime.actualHoursByRouteDay||{})[a.route]||{})[bl.dow3];
+  if(hrs==null)return null;
+  const startMin=hmToMin(a.start);if(startMin==null)return null;
+  const mult=(a.driver&&(CFG.dumpTime.driverSpeedMultiplier||{})[a.driver])||CFG.dumpTime.defaultSpeedMultiplier||1.0;
+  const finishMin=startMin+Math.round(hrs*mult*60);
+  const site=siteForRoute(a.route);if(!site)return null;
+  const win=(site.hours||{})[bl.dow3];if(!win){return {finishMin,closeMin:null,site,hrs,closed:true};}
+  return {finishMin,closeMin:hmToMin(win[1]),site,hrs,closed:false};
+}
 /* ================= VALIDATION ================= */
 
 function lightChecks(){const out=[];const add=(l,c,m,w)=>out.push({l,c,m,w});
@@ -564,7 +588,7 @@ function validate(){const I=[];const add=(l,c,m,w)=>I.push({l,c,m,w});
       } else if(!r.noTruck&&!r.noDriver&&!r.allOptional) add("WARN","D00",`No driver chosen for ${rl}.`,w);
       if(!a.driver&&a.helper&&a.route!=="Yard"&&a.route!=="Standby"&&a.truck!=="VE-02"&&!r.noDriver) add("ERROR","D08",`${rl} has a helper but no driver — assign a driver (only Yard, Standby, or a VE-02 rail run may be helper-only).`,w);
       if(a.helper){const h=helperByName(a.helper);if(h&&isOut(h.outUntil,bl.yymmdd)) add("ERROR","H06",`Helper ${a.helper} is OUT until ${h.outUntil}.`,w);
-      } else if(r.needsHelper && !DAY.weekend) add("WARN","H03",`${rl} usually needs a helper — none assigned.`,w);
+      } else { const hn=(CFG.helperNeededByRouteDay&&CFG.helperNeededByRouteDay[a.route]&&CFG.helperNeededByRouteDay[a.route][bl.dow3]); const needs=(hn!==undefined)?hn:(r.needsHelper&&!DAY.weekend); if(needs) add("WARN","H03",`${rl} needs a helper on ${bl.dow3} — none assigned.`,w); }
       // switch target ability
       if(a.sw&&a.sw.target&&a.sw.target!=="YARD"&&a.driver){const ab=abilityFor(a.driver,a.sw.target);
         if(ab==="unable") add("ERROR","SW1",`${a.driver} is ${ABILITY_LABEL.unable} the switch truck ${a.sw.target}.`,w);
@@ -579,10 +603,23 @@ function validate(){const I=[];const add=(l,c,m,w)=>I.push({l,c,m,w});
         else if(ps.s==="expired"){if(ov.override)add("INFO","B02o",`Override: ${a.driver}'s ${BASE_LABEL[base]} pass expired (${ps.exp}) — ${rs||"(no reason!)"}`,w);else add("ERROR","B02",`${a.driver}'s ${BASE_LABEL[base]} pass EXPIRED (${ps.exp}). Override + reason.`,w);}
         else if(ps.s==="expiring") add("WARN","B03",`Follow up on ${a.driver}'s ${BASE_LABEL[base]} pass renewal. Add reminder to go to the VCC if ready (current expires ${ps.exp}).`,w);
         if(ov.override&&!rs) add("WARN","B05",`Override for ${BASE_LABEL[base]} on ${rl} needs a reason.`,w);});}
+      // Guide-pairing: driver needs a guide on this route → helper must be able to guide it
+      if(a.driver){const dv=driverByName(a.driver);
+        if(dv&&(dv.needsGuide||[]).includes(a.route)){
+          if(!a.helper){ add("WARN","G01",`${a.driver} needs a guide on ${rl} but no helper is assigned to guide.`,w); }
+          else{const h=helperByName(a.helper);const full=h&&(h.knows||[]).includes(a.route);const part=h&&(h.partial||[]).includes(a.route);
+            if(!full&&!part) add("WARN","G01",`${a.driver} needs a guide on ${rl} but helper ${a.helper} can’t guide this route.`,w);
+            else if(part&&!full) add("WARN","G02",`${a.driver} needs a guide on ${rl} and helper ${a.helper} is only PARTIALLY able to guide it — confirm that’s enough.`,w);}
+        }}
+      // Dump-time (estimate) — will the route reach the disposal site before it closes?
+      if(a.driver){const de=dumpEstimate(a,bl);if(de){const fin=timeToLabel(pad(Math.floor(de.finishMin/60))+":"+pad(de.finishMin%60));
+        if(de.closed) add("WARN","DT1",`${rl}: ${de.site.name} is CLOSED on ${bl.dow3} — est. finish ${fin} (${de.hrs}h est).`,w);
+        else if(de.closeMin!=null && de.finishMin>de.closeMin){const cl=timeToLabel(pad(Math.floor(de.closeMin/60))+":"+pad(de.closeMin%60));
+          add("WARN","DT2",`${rl}: est. finish ${fin} is AFTER ${de.site.name} closes (${cl}); may not reach tipping in time (${de.hrs}h est).`,w);}}}
       // Individual worker constraints (build-on hook): weekend / working-hours
       [a.driver,a.helper].filter(Boolean).forEach(nm=>{const wc=(CFG.workerConstraints||{})[nm];if(!wc)return;
-        if(wc.noWeekends&&(bl.dow3==="Sat"||bl.dow3==="Sun")) add("WARN","WC1",`${nm} ${wc.note||"cannot work weekends"} — assigned to ${rl} on ${bl.dow3}.`,w);
-        if((wc.earliest&&a.start&&a.start<wc.earliest)||(wc.latest&&a.start&&a.start>wc.latest)) add("WARN","WC2",`${nm} works ${wc.note||(wc.earliest+"–"+wc.latest)} — ${rl} starts ${timeToLabel(a.start)}.`,w);});
+        if(wc.noWeekends&&(bl.dow3==="Sat"||bl.dow3==="Sun")) add("WARN","WC1",`${nm} is unavailable on ${bl.dow3} (${wc.note||"cannot work weekends"}) — assigned to ${rl}.`,w);
+        if((wc.earliest&&a.start&&a.start<wc.earliest)||(wc.latest&&a.start&&a.start>wc.latest)) add("WARN","WC2",`${nm} is ${wc.note||("only available "+wc.earliest+"–"+wc.latest)} — ${rl} starts ${timeToLabel(a.start)}.`,w);});
     });});
   DAY.blocks.forEach(bl=>{const CFL=bookingConflicts(bl);
     Object.entries(CFL.T).forEach(([id,o])=>add(o.same?"ERROR":"WARN",o.same?"T06":"T06w",`${id} ${o.same?"double-booked at the SAME start time":"on "+o.count+" shifts at different times — allowed, confirm"}.`,bl.dow3));
@@ -654,7 +691,7 @@ function renderRenewalBanner(){const host=el("renewalBanner");host.innerHTML="";
   Object.keys(CFG.basePasses||{}).filter(n=>current.has(n)).sort((a,b)=>a.localeCompare(b)).forEach(name=>{const parts=[];BASES.forEach(base=>{const ps=passStatus(name,base,ty);if(ps.s==="expired")parts.push(`${BASE_LABEL[base]} ${ps.exp} (expired)`);else if(ps.s==="expiring")parts.push(`${BASE_LABEL[base]} ${ps.exp} (soon)`);else if(ps.s==="none")parts.push(`${BASE_LABEL[base]} (none)`);});if(parts.length)items.push(`<span class="bi"><b>${name}</b>: ${parts.join("; ")}</span>`);});
   if(items.length){const d=document.createElement("div");d.className="panel warn";d.innerHTML=`<div class="banner"><b>Renewals (internal):</b>${items.join("")}</div>`;host.appendChild(d);}}
 function renderDayBlocks(){const host=el("dayBlocks");host.innerHTML="";
-  DAY.blocks.forEach(bl=>{const card=document.createElement("div");card.className="card";card.innerHTML=`<h2>${bl.long} <span class="pill">${bl.dow3}</span></h2>`;
+  DAY.blocks.forEach(bl=>{const card=document.createElement("div");card.className="card";card.innerHTML=`<h2>${bl.long}</h2>`;
     const routeCount={};bl.assignments.forEach(a=>{const rl=routeLabelOf(a);routeCount[rl]=(routeCount[rl]||0)+1;});const CFL=bookingConflicts(bl);
     const wrap=document.createElement("div");bl.assignments.forEach((a,ai)=>wrap.appendChild(assignmentRow(bl,a,ai,routeCount,CFL)));card.appendChild(wrap);
     const addA=document.createElement("button");addA.className="mini";addA.textContent="+ Add route row";
@@ -710,7 +747,9 @@ function assignmentRow(bl,a,ai,routeCount,CFL){CFL=CFL||{D:{},H:{},T:{}};
   const bTruck=dbBub(CFL.T,a.truck,"EQ");
   const bDriver=dbBub(CFL.D,a.driver,"DRIVER");
   const helperOnlyBad=(!a.driver&&a.helper&&a.route!=="Yard"&&a.route!=="Standby"&&a.truck!=="VE-02"&&!r.noDriver);
-  const bHelper=[dbBub(CFL.H,a.helper,"HELPER"), helperOnlyBad?fbub("HELPER, NO DRIVER",false):""].filter(Boolean).join("");
+  let guideBub="";{const dv=driverByName(a.driver);if(dv&&(dv.needsGuide||[]).includes(a.route)){const h=helperByName(a.helper);const full=h&&(h.knows||[]).includes(a.route);const part=h&&(h.partial||[]).includes(a.route);
+    if(!a.helper||(!full&&!part))guideBub=fbub("NEEDS GUIDE",true);else if(part&&!full)guideBub=fbub("PARTIAL GUIDE ONLY",false);}}
+  const bHelper=[dbBub(CFL.H,a.helper,"HELPER"), helperOnlyBad?fbub("HELPER, NO DRIVER",false):"", guideBub].filter(Boolean).join("");
   const lockTag=locked?`<span class="pill down">🔒 base pass expired/missing — override + reason to unlock</span>`:"";
   const dis=locked?"disabled":"";
   const top=document.createElement("div");top.className="asgtop"+((bRoute||bTruck||bDriver||bHelper)?" hasflags":"");
@@ -719,7 +758,7 @@ function assignmentRow(bl,a,ai,routeCount,CFL){CFL=CFL||{D:{},H:{},T:{}};
     <div class="fld" style="flex:0 0 150px"><label>Start</label>${startPicker(a)}</div>
     <div class="fld" style="flex:0 0 150px">${bTruck?`<span class="flagwrap">${bTruck}</span>`:""}<label>Truck</label>${r&&r.noTruck?'<span class="small">— none —</span>':`<select class="t"><option value=""></option>${legalTrucks.map(x=>opt(x.id,a.truck,x.id+" "+x.plate)).join("")}${a.route==="Standby"?opt("YARD",a.truck,"Yard"):""}${(a.route==="Standby"||a.route==="__handservice")?opt("__othertruck",a.truck,"Other…"):""}</select>${a.truck==="__othertruck"?`<input class="tother" placeholder="Custom truck/label" value="${esc(a.truckOther)}" style="margin-top:3px">`:""}`}</div>
     <div class="fld" style="flex:0 0 140px">${bDriver?`<span class="flagwrap">${bDriver}</span>`:""}<label>Driver</label>${r&&r.noDriver?'<span class="small">— none —</span>':`<select class="d" ><option value=""></option>${dlist.map(d=>opt(d.name,a.driver,d.label)).join("")}</select>`}</div>
-    <div class="fld" style="flex:0 0 120px">${bHelper?`<span class="flagwrap">${bHelper}</span>`:""}<label>Helper</label><select class="h"><option value=""></option>${hlp.map(h=>opt(h.name,a.helper)).join("")}</select></div>
+    <div class="fld" style="flex:0 0 120px">${bHelper?`<span class="flagwrap">${bHelper}</span>`:""}<label>Helper</label><select class="h" style="${(()=>{const hn=(CFG.helperNeededByRouteDay&&CFG.helperNeededByRouteDay[a.route])?CFG.helperNeededByRouteDay[a.route][bl.dow3]:undefined;return hn===false?"background:#eef2f5":(hn===true?"background:#fdf8ec":"");})()}"><option value="">${(()=>{const hn=(CFG.helperNeededByRouteDay&&CFG.helperNeededByRouteDay[a.route])?CFG.helperNeededByRouteDay[a.route][bl.dow3]:undefined;return hn===false?"Not needed":(hn===true?"Needed":"");})()}</option>${hlp.map(h=>opt(h.name,a.helper)).join("")}</select></div>
     <div class="fld" style="flex:0 0 40px"><label>&nbsp;</label><button class="mini rm">✕</button></div>`;
   wrap.appendChild(top);   // field row (bubbles are pinned inside each .fld above its control)
   if(lockTag){const lt=document.createElement("div");lt.style.margin="4px 0";lt.innerHTML=lockTag;wrap.appendChild(lt);}
@@ -853,9 +892,9 @@ function renderBackup(){el("cfgVer").value=CFG.cfgVersion;el("cfgVer").addEventL
 function download(name,text){const b=new Blob([text],{type:"text/plain"});const u=URL.createObjectURL(b);const a=document.createElement("a");a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
 
 /* ================= CHECKLIST (3 sections) ================= */
-const CODE_TAG={T00:"No truck",T01:"Unknown truck",T02:"Truck down",T04:"Wrong truck kind",T05:"Driver can’t operate truck",T05w:"Unfamiliar with truck",T06:"Truck double-booked",D00:"No driver",D01:"Unknown driver",D05:"Driver double-booked",D06:"Driver out",D07:"Trainee placement",H02:"Helper double-booked",H03:"Needs a helper",H06:"Helper out",B01:"Missing base pass",B02:"Expired base pass",B03:"Base pass expiring",B05:"Override needs reason",B01o:"Override (no pass)",B02o:"Override (expired)",BX1:"Base changed from usual",BK1:"Break override needs reason",R01:"Unknown route",R02:"Unusual day",R03:"Duplicate route",SW1:"Switch truck not allowed",SW2:"Switch truck unfamiliar",P01:"OFF but assigned",P02:"Not scheduled / not OFF",T06w:"EQ on 2+ shifts (diff times)",D05w:"Driver on 2+ shifts (diff times)",H02w:"Helper on 2+ shifts (diff times)",D08:"Helper-only route not allowed",WC1:"Worker constraint: weekend",WC2:"Worker constraint: hours",RS1:"Usual route missing",SP1:"Double space",SP2:"Trailing space",SP3:"Unmatched *",SP4:"Possible typo"};
+const CODE_TAG={T00:"No truck chosen",T01:"Unknown truck",T02:"Truck down",T04:"Wrong truck kind",T05:"Driver can’t operate truck",T05w:"Unfamiliar with truck",T06:"Truck double-booked",D00:"No driver",D01:"Unknown driver",D05:"Driver double-booked",D06:"Driver out",D07:"Trainee placement",H02:"Helper double-booked",H03:"Needs a helper",H06:"Helper out",B01:"Missing base pass",B02:"Expired base pass",B03:"Base pass expiring",B05:"Override needs reason",B01o:"Override (no pass)",B02o:"Override (expired)",BX1:"Base changed from usual",BK1:"Break override needs reason",R01:"Unknown route",R02:"Unusual day",R03:"Duplicate route",SW1:"Switch truck not allowed",SW2:"Switch truck unfamiliar",P01:"OFF but assigned",P02:"Not scheduled / not OFF",T06w:"EQ on 2+ shifts (diff times)",D05w:"Driver on 2+ shifts (diff times)",H02w:"Helper on 2+ shifts (diff times)",D08:"Helper-only route not allowed",WC1:"Worker unavailable",WC2:"Worker unavailable",DT1:"Disposal site closed",DT2:"May miss dump cutoff",G01:"Driver needs a guide",G02:"Helper only partial guide",RS1:"Usual route missing",SP1:"Double space",SP2:"Trailing space",SP3:"Unmatched *",SP4:"Possible typo"};
 function tagOf(c){return CODE_TAG[c]||c;}
-const CODE_RANK={B02:100,B01:99,T05:95,T06:94,D05:93,T02:92,T04:90,T00:85,D01:84,H02:83,H06:82,D06:81,P01:80,BX1:75,SW1:70,R01:60,D00:40,H03:38,R03:36,R02:34,B03:30,SW2:28,D07:26,P02:20,RS1:18,B05:16,BK1:14,SP3:8,SP4:6,SP1:4,SP2:2};
+const CODE_RANK={DT2:50,DT1:48,G01:44,G02:32,B02:100,B01:99,T05:95,T06:94,D05:93,T02:92,T04:90,T00:85,D01:84,H02:83,H06:82,D06:81,P01:80,BX1:75,SW1:70,R01:60,D00:40,H03:38,R03:36,R02:34,B03:30,SW2:28,D07:26,P02:20,RS1:18,B05:16,BK1:14,SP3:8,SP4:6,SP1:4,SP2:2};
 function rankOf(c){return CODE_RANK[c]||1;}
 function openChecklist(iss){const body=el("checklistBody");let html="";
   html+=`<p class="small">Tags are plain-language; hover shows nothing cryptic. Tick each to confirm you reviewed it.</p>`;
@@ -943,6 +982,7 @@ function boot(){installLockGuard();var _ok=document.getElementById("dlgOk");if(_
   el("btnLoadUsual").addEventListener("click",doLoadUsual);
   el("btnSuggestOff").addEventListener("click",suggestOff);
   el("btnChkCancel").addEventListener("click",()=>el("checklistModal").classList.remove("show"));
+  el("checklistModal").addEventListener("mousedown",function(ev){if(ev.target===el("checklistModal"))el("checklistModal").classList.remove("show");});
   el("btnChkDone").addEventListener("click",()=>{const errs=(LAST_ISS||[]).filter(i=>i.l==="ERROR");if(errs.length){showDialog("All items in the Resolve section must be fixed before you can generate the drafts. There "+(errs.length===1?"is 1 unresolved item":"are "+errs.length+" unresolved items")+".");return;}const boxes=el("checklistBody").querySelectorAll("input[type=checkbox]");if([...boxes].some(b=>!b.checked)){showDialog("Please tick every Review item to confirm you\u2019ve checked it (or use \u201CClose without posting\u201D).");return;}el("checklistModal").classList.remove("show");flash("Reviewed \u2014 OK to post.");});
   el("offList").addEventListener("change",()=>{DAY.off=csv(el("offList").value);saveDay();});
   el("dayNotes").addEventListener("change",()=>{DAY.dayNotes=(el("dayNotes").value||"").split("\n").map(x=>x.trim()).filter(Boolean);saveDay();});
