@@ -1,5 +1,5 @@
 {
-  "cfgVersion": "260720-49",
+  "cfgVersion": "260720-91",
   "renewDays": 30,
   "trucks": [
     {
@@ -398,13 +398,13 @@
   ],
   "basePasses": {
     "Abeth": {
-      "CampBlaz": "260724",
+      "CampBlaz": "270411",
       "NBG": "270630",
       "AAFB": "270417"
     },
     "Celso": {
       "CampBlaz": "261214",
-      "NBG": "",
+      "NBG": "270126",
       "AAFB": "260821"
     },
     "Graymar": {
@@ -428,7 +428,7 @@
       "AAFB": "260814"
     },
     "Miarfy": {
-      "CampBlaz": "260129",
+      "CampBlaz": "270411",
       "NBG": "270126",
       "AAFB": "270417"
     },
@@ -849,8 +849,7 @@
   "kkPlates": true,
   "checklistItems": [
     "Every route that runs today is on the schedule (nothing skipped/rolled over without a make-up day).",
-    "Switch / VCC notes read correctly in BOTH WhatsApp and Kakao.",
-    "OFF list is complete; no-shows accounted for."
+    "Switch / VCC notes read correctly in BOTH WhatsApp and Kakao."
   ],
   "dynChecklist": {
     "cardboard": "How full is the cardboard truck? (affects the cardboard route start time.)",
@@ -884,13 +883,67 @@
     }
   },
   "costs": {
-    "enabled": false,
+    "enabled": true,
     "otAfterHrs": 40,
     "otMultiplier": 1.5,
     "regularShiftHrs": 8,
     "defaultRate": 9.25,
-    "rates": {},
-    "note": "Future OT projection."
+    "rates": {
+      "Abeth": {
+        "reg": 22,
+        "ot": 33
+      },
+      "Allan": {
+        "reg": 18.97,
+        "ot": 28.46
+      },
+      "Bong": {
+        "reg": 21,
+        "ot": 31.5
+      },
+      "Celso": {
+        "reg": 18.97,
+        "ot": 28.46
+      },
+      "Graymar": {
+        "reg": 18.97,
+        "ot": 28.46
+      },
+      "Miarfy": {
+        "reg": 15.5,
+        "ot": 23.25
+      },
+      "Racel": {
+        "reg": 18.97,
+        "ot": 28.46
+      },
+      "Robert": {
+        "reg": 13,
+        "ot": 19.5
+      },
+      "Davis": {
+        "reg": 9.25,
+        "ot": 13.88
+      },
+      "Joseph": {
+        "reg": 10.25,
+        "ot": 15.38
+      },
+      "Ramdhel": {
+        "reg": 10.25,
+        "ot": 15.38
+      },
+      "Ron": {
+        "reg": 10.25,
+        "ot": 15.38
+      }
+    },
+    "_ratesNote": "Per-worker reg + OT $/hr — edit here (centralized). Affiliate hours count toward the 40h OT threshold but are NOT charged to us.",
+    "noAffiliate": [
+      "Miarfy",
+      "Robert"
+    ],
+    "note": "Cost projection: only OUR (Lagu) hours are charged; affiliate hours raise the OT threshold usage but aren't billed."
   },
   "disposalSites": [
     {
@@ -1194,31 +1247,31 @@
     "note": "Future: finish = route start + (actualHoursByRouteDay[route][day] x driverSpeedMultiplier[driver]); compare to disposalSites cutoff; flag 'won't reach tipping in time'. <1 faster, >1 slower.",
     "actualHoursByRouteDay": {
       "Northern": {
-        "Mon": 8.7,
-        "Tue": 8.95,
-        "Thu": 11.2,
-        "Fri": 10,
-        "Sun": 1.5
+        "Mon": 12,
+        "Tue": 12,
+        "Thu": 12,
+        "Fri": 12,
+        "Sun": 2
       },
       "N+S Combined": {
-        "Wed": 11.9,
-        "Sat": 9.5
+        "Wed": 8,
+        "Sat": 8
       },
       "Central": {
-        "Tue": 10.1
+        "Tue": 10
       },
       "Southern": {
-        "Mon": 10.7,
-        "Tue": 11.6,
-        "Thu": 11.5,
-        "Fri": 11.2
+        "Mon": 12,
+        "Tue": 12,
+        "Thu": 12,
+        "Fri": 12
       },
       "Cardboard": {
-        "Mon": 7.3,
-        "Tue": 6.9,
-        "Wed": 8.9,
-        "Thu": 7.2,
-        "Fri": 7.3
+        "Mon": 8,
+        "Tue": 8,
+        "Wed": 8,
+        "Thu": 8,
+        "Fri": 8
       },
       "Roll-Off": {
         "Mon": 10,
@@ -1229,14 +1282,16 @@
         "Sat": 10
       },
       "Fork Service": {
-        "Mon": 3.7,
-        "Tue": 6.3,
-        "Wed": 3.7,
-        "Thu": 6.8,
-        "Fri": 1.4
+        "Mon": 4,
+        "Tue": 6,
+        "Wed": 4,
+        "Thu": 7,
+        "Fri": 1
       }
     },
     "driverSpeedMultiplier": {},
+    "helperHoursByRouteDay": {},
+    "_helperNote": "Helper baseline = driver baseline; a helper who washes the truck adds +2h via the assignment toggle.",
     "_estNote": "ESTIMATES from Timesheets Summary avg hours (per route/day). Replace with Power-Automate rolling actuals when available."
   },
   "_readme": {
@@ -1260,8 +1315,10 @@
       "Roster 260720: drivers Abeth/Allan/Bong/Celso/Graymar/Miarfy/Racel/Robert; helpers Joseph/Ramdhel/Ron/Davis."
     ],
     "openQuestions": [
+      "CONFIRM which drivers can operate the RAIL TRUCK (VE-02): currently only Allan, Graymar, Robert (+ rail-capable helpers Ron, Joseph); verify if anyone else should be added/removed. Thomas is NOT active — excluded everywhere.",
       "DATA STILL NEEDED for build-ons (base-pass matrix & driver/truck ability are CONFIRMED): (a) which routes require a helper per day; (b) each worker's familiarity level per route per day; (c) speed multiplier per driver (fast/slow); (d) actual duration per route per day (for dump-time)."
     ],
+    "trainingPair": "TRAINING PAIR (folded in v20.9): Phase 1 (trainee learning) — put the TRAINEE in the Driver slot? No: put the qualified TRAINER as Driver and the TRAINEE (who is a helper-level learner) in the Helper slot as usual. Phase 2 (trainee can drive) — put the TRAINEE as Driver and the qualified TRAINER as Helper: the Helper dropdown now also lists DRIVERS (tagged '(driver-guide)'), and a driver placed in the Helper slot COUNTS AS A FULL GUIDE (satisfies needsGuide, clears the NEEDS GUIDE flag). Crew line renders 'Driver - Helper' as normal (e.g. 'Racel - Miarfy'). Base-pass/ability checks still apply to the person in the DRIVER slot only. NOTE: if you want the guiding driver's own base pass checked too, or special WhatsApp wording like '(training)', say so.",
     "futureBuilds": [
       "TRAINEE-AS-HELPER SCENARIO (to address): today a trainee DRIVER renders after the hyphen with a qualified lead in the helper slot. The reverse — a fully-qualified DRIVER intentionally riding as the HELPER to train/guide a newer driver (i.e. two drivers on one route, the senior acting as guide) — is NOT yet modeled. Need: allow a driver to be placed in the Helper slot as a guide, have that satisfy the needs-guide check, and render the crew line correctly (lead driver - guiding driver). Decide WhatsApp wording and whether base-pass/ability checks apply to the guiding driver too.",
       "INDIVIDUAL WORKER CONSTRAINTS (now stubbed in CFG.workerConstraints + WARN checks WC1/WC2): e.g. Ramdhel cannot work weekends; Bong 7 a.m.–3 p.m. only. Build out a Constraints settings tab (non-coder UI) supporting: unavailable weekdays, working-hour windows, max hours/day, route/base exclusions — with Export-to-JSON. Per-day FAMILIARITY (CFG.familiarity) and per-day HELPER-NEEDED (CFG.helperNeededByRouteDay) are now stored; wire them into the familiarity-pairing check (warn if a needs-guide driver is paired with a helper who can't guide that route/day) and into H03 (needs-helper per day, not just per route).",
@@ -1270,158 +1327,73 @@
       "Cost projection: hours-to-date + projected planned hours; regular vs OT; per-worker + weekly totals; compare plans.",
       "FOR EACH of the above: ALSO ship a non-coder settings UI (a tab) so staff can edit the values and Export to JSON for GitHub upload — never JSON-only."
     ],
+    "cfgVersionExplained": "cfgVersion format = YYMMDD-NN (settings snapshot date + increment). '260720-89' = the 89th settings build stamped 2026-07-20. It tracks the DATA/settings snapshot; the app code version is the separate 'v21.38' in the header. They move independently: editing settings bumps cfg; new features bump the app version.",
+    "designPrinciples": [
+      "Our design principles (internal notes for how we build this):",
+      "1) SEPARATE DATA FROM CODE. All our specifics (people, equipment, routes, rates, passes, estimates) live in ONE editable config object exported as a single JSON = our portable source of truth. The HTML stays generic; the JSON carries the data.",
+      "2) MODEL DIMENSIONS INDEPENDENTLY, DON'T HARDCODE. Route, truck, driver, helper, day, and base/site permit are each their own list with per-day overrides (start times, bases, helper-needed, estimates). Adding a route or a rule never means touching logic.",
+      "3) DEFAULTS + REASONED EXCEPTIONS. Everything usual is pre-filled (usual routes, usual bases, projected hours); any deviation is allowed but REQUIRES a logged reason — captures the why for audit without slowing the normal case.",
+      "4) VALIDATE, DON'T BLOCK BLINDLY. Three tiers — hard errors that block posting (missing driver, expired required permit, same-time double-book), soft warnings to confirm (unusual day, 2+ shifts), and routine checklist items. Guardrails, not handcuffs.",
+      "5) OUTPUT IS A VIEW OF THE DATA. The WhatsApp/Kakao drafts are generated from the same model, gated behind an explicit Generate so a draft is never silently stale. Crew vs office = two renderers off one source.",
+      "6) PROJECT FORWARD, RECONCILE WITH ACTUALS. Hours/cost start as estimates and are overwritten by real numbers as they arrive (manual now, timesheet-automation later). The 40h OT threshold + cost fall out of the same running model.",
+      "7) NON-CODER-EDITABLE + OFFLINE. Every setting is editable in-app; sandbox-safe custom dialogs (no native alert/confirm); persists in localStorage; optional static hosting (GitHub Pages) with fetch-latest so one URL serves everyone — no backend, no login.",
+      "8) PLAN THESE INPUTS EARLY (hardest to backfill): per-person/route/day familiarity + guide rules; per-person availability constraints; real duration + speed per route/day; permit/credential expiries; pay rates incl. multi-employer OT."
+    ],
     "versionLog": [
       {
-        "v": "260720-49",
-        "note": "v20.8: DUMP-TIME CHECK TURNED ON using the baked-in Timesheets-Summary estimates. For each truck route with a driver, estimated finish = start + (actualHoursByRouteDay[route][day] x driverSpeedMultiplier[driver], default 1.0); compared to that waste type's disposal-site CLOSE time (Trash 2pm M-F/12pm Sat; Cardboard 5pm M-F/12pm Sat; both closed Sun). Flags in checklist Review: 'May miss dump cutoff' (est finish after close) and 'Disposal site closed' (route runs on a day the site is closed). WARN-level (estimate-based, not a hard block). README: added TRAINEE-AS-HELPER scenario to future builds (a qualified driver riding as helper/guide for a newer driver is not yet modeled)."
+        "v": "v1-3",
+        "feat": "Core generator: Service-date picker (weekday vs Sat+Sun weekend), per-assignment Route/Start/Truck/Driver/Helper rows, WhatsApp + Kakao draft output.",
+        "note": "Set the pattern early: one CFG object holds all company data; the two message renderers read from it. Worked well; foundation for everything after."
       },
       {
-        "v": "260720-48",
-        "note": "v20.7: Helper dropdown color + placeholder now shown ONLY when helper-need is DEFINED for that route/day in CFG.helperNeededByRouteDay (yellow 'Needed' / grey 'Not needed'). Routes with no helper concept — Yard, Standby, Rail Truck, Custom, Dump, Hand Service — keep a PLAIN WHITE dropdown with a BLANK placeholder (per request: Yard shift helper stays white/blank). No jargon codes in UI (checklist uses plain tagOf() labels). DUMP-TIME (documented, not yet on row): projectedFinish = route start + hoursEstimate[route][day] (Timesheets-Summary avg, baked into CFG.dumpTime.actualHoursByRouteDay) x driverSpeedMultiplier (default 1.0); compared to the waste type's disposal-site CLOSE time in CFG.disposalSites[].hours; if it would finish after close, flag 'won't reach [site] before [close]'. Estimates flagged; enable via CFG.dumpTime.enabled when rolling actuals exist."
+        "v": "v4-6",
+        "feat": "Equipment/Driver/Helper/Routes settings tabs; per-route usual-days + usual-bases; quarter-hour start-time grid per route per day.",
+        "note": "Decision that paid off: start times are dropdowns (no free-typed minutes) prefilled per route/day — kills typos and matches the near-identical weekly pattern (Northern Wed/Thu 2AM, Fri 2:30AM)."
       },
       {
-        "v": "260720-47",
-        "note": "v20.6: (1) Day-block header restored to the full DATE (e.g. 'Sunday, July 26, 2026') and the duplicate grey day-abbrev pill removed. (2) Helper-needed indicator: removed the pill/bubbles; the Helper dropdown itself is coloured (yellow=needed, grey=not) AND its placeholder now reads 'Needed' / 'Not needed' (grey, sentence case) — no separate bubble. (3) GUIDE FLAG now surfaced on the ROW as a bubble over the Helper field — red 'NEEDS GUIDE' (driver needs a guide but helper can't/none), yellow 'PARTIAL GUIDE ONLY' (helper only partially guides) — visible immediately, in addition to the checklist Review line. (4) DISPOSAL-SITE CLOSURE TIMES are now a centralized, editable per-day setting: Trash 4:30 a.m.–2 p.m. Mon–Fri, 4:30 a.m.–12 p.m. Sat, closed Sun; Cardboard 8 a.m.–5 p.m. Mon–Fri, 8 a.m.–12 p.m. Sat, closed Sun — stored in CFG.disposalSites[].hours for the dump-time build-on. (5) No jargony codes surface in the UI (checklist uses plain tagOf() labels; g01/g02-style codes never shown)."
+        "v": "v7-9",
+        "feat": "Base-pass tracker + per-assignment AAFB/Camp Blaz/NBG checkboxes; bring-pass line (per base, AAFB→Camp Blaz→NBG); renewal banner.",
+        "note": "Rule learned: never print generic 'DBIDS'; list each base. Unticking a usual base requires a logged reason. This is the defaults+reasoned-exception pattern that repeats across the app."
       },
       {
-        "v": "260720-46",
-        "note": "v20.5: (1) GUIDE-PAIRING CHECK ADDED (was missing entirely — data existed but nothing consumed it, so no flag ever showed): 'Driver needs a guide' (G01) fires when a needs-guide driver has NO helper or a helper who can't guide that route; 'Helper only partial guide' (G02) fires when the assigned helper can only PARTIALLY guide it — both in checklist Review. Davis given partial-guide list (N/N+S/S/C/CB); Joseph/Ramdhel/Ron remain full guides. (2) PARTIAL-GUIDE surfaced as its own warning only when the driver needs a guide (per request). (3) Day-block header no longer repeats the full date (already in the Service-date field) — shows the weekday name + grey day-abbrev pill only. (4) Bong wording -> 'Bong is unavailable before 6 a.m.' (parallel to 'Ramdhel is unavailable on Sat'). (5) Helper-needed now also COLOURS the Helper dropdown (yellow=needed, grey=not) in addition to the sentence-case pill (Helper needed / No helper needed). (6) Checklist popup now closes by clicking anywhere on the dark backdrop (no need to scroll to 'Close without posting'). ANSWER on dump-time: Timesheets-Summary per-route-per-day average hours are stored in CFG.dumpTime.actualHoursByRouteDay and tagged _estNote='ESTIMATES ...'; they are NOT yet shown on the schedule row — they exist as the input for the future dump-time check (start + hours×driverSpeedMultiplier vs disposal-site cutoff). Nothing user-facing yet beyond the stored estimates."
+        "v": "v10-13",
+        "feat": "Truck ability (Able/Unfamiliar/Unable) hides Unable trucks & flags Unfamiliar; switch/dump + VCC note builders (Kakao drops PLEASE/DRIVER, keeps caps).",
+        "note": "Ability data must be per-driver-per-truck, not per-kind (Racel Unfamiliar on EQ-15/16 etc.). Composable notes with a {base}/{truck} variable avoided hardcoding every phrasing."
       },
       {
-        "v": "260720-45",
-        "note": "v20.4: VERIFIED familiarity + helper-needed against the authoritative 'Route Familiarity and Needs Helper' file (CSV/XLSX). CORRECTIONS: (1) added 'N+S Combined' to needsGuide for Allan, Ariel Bong, Celso, Graymar, Racel (all show NS-Wed = needs guide; Abeth & Miarfy are OK on NS so unchanged). (2) Central Tuesday now REQUIRES a helper (table Tue_NeedsHelper = Y; was false). (3) De-duplicated the 'N+S Combined' key in helperNeededByRouteDay. CONFIRMED CORRECT and unchanged: all other driver needsGuide route-lists; Roll-Off never needs helper; Fork Service helper Mon/Tue/Thu only; Cardboard helper Mon-Fri; Southern Mon/Tue/Thu/Fri; Northern Mon/Tue/Thu/Fri (Sun runs, no helper). Driver drive-ability (RO front-loader-driver exclusions; Robert FS-only) matches the file. NOTES/OPEN: (a) Davis is 'partially able to guide' on many route/days (full only on FS all, S Tue/Thu/Fri, CB Tue-Fri, N Sun) — kept helper.knows=[Fork Service] conservatively; per-day partial detail belongs in the familiarity-pairing build-on. (b) The file lists Shawn Lujan as a full guide, but Shawn was removed from the current roster earlier per instruction — left out; say the word to re-add. (c) DisposalSite column (Trash/Cardboard) captured in the file for the future dump-time routing."
+        "v": "v14-17",
+        "feat": "Standby route + reasons; expired/missing REQUIRED base pass LOCKS the row until fixed; review checklist popup (Resolve / Review / Routine).",
+        "note": "BIG TROUBLESHOOT #1: the lock dialog + Reset/Clear buttons silently did nothing. Root cause: the SharePoint/preview SANDBOX BLOCKS native alert() and confirm(). Fix = custom in-page modal (showDialog/showConfirm). AVOID native alert/confirm entirely. Also fixed a lock that used pointer-events:none which killed the click-guard AND the escape hatch — greying must be visual only (.lockgrey), events stay live."
       },
       {
-        "v": "260720-44",
-        "note": "v20.3: T00 -> 'No truck chosen' (matches 'No driver chosen'). Two worker-constraint flags merged into ONE label 'Worker unavailable' with clear messages ('Bong is only available not before 6 a.m. — Northern starts 3AM'; 'Ramdhel is unavailable on Sat (cannot work weekends)'). Bong = earliest 06:00 only (3 p.m. cutoff removed). HELPER-NEEDED now shown inline on every Helper field: yellow 'helper needed' pill when required that day, grey 'no helper needed' pill when not — dropdown stays visible. HOW THE THREE FLAG: helper-needed = inline pill + H03 Review warning if missing; familiarity = driver.needsGuide -> G01 Review warning + unfamiliar-truck yellow warning in driver dropdown; route-hours = stored estimates (Timesheets Summary) feeding the future dump-time check, not yet on the row. NOTE: route-sheet tabs not attached this turn, so route-hours stay Timesheets-Summary estimates."
+        "v": "v18-19",
+        "feat": "Flag-bubble system (double-book, needs-guide, no-driver) pinned above each field; grouped Resolve by route; excluded-from-schedule multiselect→checkbox list.",
+        "note": "BIG TROUBLESHOOT #2: a refactor deleted wrap.appendChild(top) so the field row never rendered → 'Cannot read addEventListener of null' → whole page failed to load. Lesson: after moving markup, confirm the container is still appended. Bubble layout churned a lot (overlap, wrapping, stacking) before settling on fixed max-width chips that wrap their own text; don't let one field's bubble overflow into the neighbour."
       },
       {
-        "v": "260720-43",
-        "note": "v20.2: (1) N+S COMBINED route added for Wed+Sat (waLabel stays 'NORTHERN ROUTE' so workers see no change; modeled separately for accurate longer hours + both-region stops). Northern now runs Mon/Tue/Thu/Fri/Sun only (Sun ~1.5h confirmed short). usualRoutesByDay Wed/Sat -> N+S Combined. (2) Missing equipment already ERROR (Resolve) via T00 — confirmed. (3) WC labels renamed to plain language: 'Unavailable (weekend)' / 'Outside work hours'. (4) Davis set to PARTIAL guide — knows=[Fork Service] only (the one route he guides every running day); per-day partial detail kept in CFG.familiarity. (5) HELPER-NEEDED now PER DAY — H03 reads CFG.helperNeededByRouteDay: Fork Service helper Mon/Tue/Thu only (Wed/Fri none), Northern no helper Sun, N+S Combined helper Wed+Sat. (6) Estimate route-hours baked into dumpTime.actualHoursByRouteDay from Timesheets Summary averages (flagged as estimates until rolling actuals arrive). (7) Bong hours constraint = 6 a.m.-3 p.m. FLAGGING: if Bong is assigned with a start earlier than 06:00, validate() adds WARN 'WC2 Outside work hours' shown in the checklist Review section (and the run log); it is a warning, not a hard block, so you can still post with an int_reason but you're told."
+        "v": "v20.0-20.6",
+        "feat": "N+S Combined modeled separately (Wed/Sat) but printed as NORTHERN; per-route-per-day needs-guide + guide-pairing check; helper-needed per day; disposal-site hours + dump-time estimate; trainee handling.",
+        "note": "Naming: keep the worker-facing WA label ('NORTHERN ROUTE') even when the internal route differs — model accuracy without confusing crews. Rail truck should NOT appear as a default week row (only when scheduled)."
       },
       {
-        "v": "260720-42",
-        "note": "v20.1: (1) CHECKLIST — deleted vague routine item 'Start times and break overrides are right'; Review now lists start times AND (new) break overrides explicitly, each as its own confirm line. (2) BANNER — renewals now sorted alphabetically by FIRST name (the display key used everywhere) for consistency. (3) INDIVIDUAL CONSTRAINTS — added CFG.workerConstraints (Ramdhel noWeekends; Bong 07:00–15:00) with live WARNs: WC1 (weekend assignment) + WC2 (start outside working hours); documented a Constraints settings-tab build-on. (4) FAMILIARITY + HELPER-NEEDED from your tables: derived per-driver needsGuide route lists (Abeth S/CB; Allan N/C/S/CB/FS; Bong N/S/FS; Celso N/S/CB; Graymar N/C/S/CB/FS; Miarfy FS; Racel N/S; Robert none) so existing G01 guide-check fires; set helper knows[] (Joseph/Ron/Ramdhel/Davis are guides); stored full per-day matrix in CFG.familiarity + CFG.helperNeededByRouteDay for the familiarity-pairing / per-day-helper build-ons. NOTE: helperNeededByRouteDay + Davis partial-guide days came from a screenshot — flagged VERIFY; send as CSV to lock exact Y/N."
+        "v": "v20.7-21.5",
+        "feat": "Week View labor projection (Route + Worker orientations), affiliate hours, centralized pay rates, labor cost, helper-wash (+2h) toggle, one-off day adjustment, mobile-responsive grid.",
+        "note": "BIG TROUBLESHOOT #3 (repeated): browser/SharePoint CACHE served stale versions, making fixes look broken — always hard-refresh (Ctrl+F5) and check the header version. Preview draft was gated behind Generate so a stale draft can't be copied. Helper-wash UI went through several formats (checkbox broke row height) before landing as a compact chip / in-Helper-label toggle."
       },
       {
-        "v": "260720-41",
-        "note": "v20.0: (1) Bong AAFB expiry updated to 270604 (was 260612). (2) Flag bubbles now UNIFORM HEIGHT without changing wording — .fbub min-height:26px + flex-centered, so 1-line and 2-line bubbles read as the same size (answer to 'is 3 different heights necessary?' = no). (3) Service-date row now top-aligns labels (align-items:flex-start) so the 'Mode' label lines up with the 'Service date' label, and the weekday/mode pill has margin-left:0 so its LEFT edge aligns with the 'Mode' label's left edge. (4) FORM-LOCKED dialog now lists ALL THREE escape hatches and when to pick each: change driver; UNCHECK base + reason (no on-base stop today); or OVERRIDE + reason (needed but proceeding) — previously the uncheck option was missing."
+        "v": "v21.6-21.27",
+        "feat": "Two-way Week↔Daily sync; per-day affiliate + CHRONOLOGICAL OT cost; duplicate routes editable in Week View; per-worker labor cost + section/grand totals.",
+        "note": "Affiliate OT model: affiliate hours COUNT toward the 40h threshold but are NOT billed; splitting reg/OT must be chronological (walk the week day-by-day), verified against the interleaved example (38 aff + later Lagu → correct reg/OT). Intra-day ordering (Lagu-first toggle) is a good-enough approximation; exact intraday sequencing deferred to the future timesheet auto-pull."
       },
       {
-        "v": "260720-40",
-        "note": "v19.9: (1) WITHIN-SHIFT ORDERING — routes under the same start time now print ALPHABETICALLY by route label in BOTH WhatsApp and Kakao (e.g. Cardboard, Fork Service, Roll-Off; Roll-Off before Yard). Implemented by sorting slots via routeLabelOf().localeCompare in renderWA/renderKK. (2) BRING-PASS LEAD depends on crew: since no helpers currently hold base passes, the reminder now reads 'DRIVER PLEASE BRING ...' ONLY when a helper is also on the route (to specify who), and just 'PLEASE BRING ...' when the driver is solo. bringPassNote(bases,hasHelper) + call passes !!a.helper."
+        "v": "v21.28-21.34",
+        "feat": "Worker-cell click-to-edit (separate Lagu/Aff inputs, live-commit); grand ALL-STAFF total; consistent 1-dp hours; roll-off exempt from dump cutoff; Load-usual route ordering.",
+        "note": "TROUBLESHOOT: overloading one cell as both cumulative display AND day-hours input was confusing and regressed select/backspace; the fix is a clear click-opens-mini-editor with real number inputs. Custom dropdowns/confirms must re-render carefully so edits aren't lost."
       },
       {
-        "v": "260720-39",
-        "note": "v19.8: FIX renewal banner was MISSING drivers with NO pass for a base (status 'none' e.g. Celso NBG, Graymar NBG) — it only listed expired/soon after the v9-style banner was restored in an earlier turn, dropping the 'none' case. Banner now shows '<Base> (none)' alongside expired/soon. FIX yellow bubble vertical alignment — a short bubble (HELPER, NO DRIVER) sat top-aligned next to a 2-line wrapped red bubble; .flagwrap align-items:stretch + .fbub display:flex/align-items:center/justify-center so every bubble centers its text vertically and short + wrapped bubbles look consistent side by side."
-      },
-      {
-        "v": "260720-38",
-        "note": "v19.7: DEFINITIVE flag-bubble layout fix. Prior attempts failed two ways: flex:1 1 0 forced the two bubbles to share+shrink (vertical squish), and width:max-content let a single wide bubble overflow into the neighbouring field. Now: .flagwrap is width:auto, left:0, flex-nowrap (grows to the right, never shares); each .fbub is flex:0 0 auto with max-width:120px (≈ field column) and white-space:normal so it wraps its OWN text to ~2 lines. Result: red bubble's LEFT edge aligns to the field's left edge and is ~field width whether alone or not; a yellow bubble is added horizontally to its RIGHT (its right edge may extend past the field, which is fine); a lone wide bubble no longer overflows into the neighbour field."
-      },
-      {
-        "v": "260720-37",
-        "note": "v19.6: FIX overlapping flag bubbles. Cause: .flagwrap used width:max-content, so a field's bubble grew past its column and overlapped the NEIGHBOURING field's bubble (Driver bleeding into Helper). Now .flagwrap is width:100% of its own field (cannot overflow into the neighbour), flex-nowrap so the two same-field bubbles (red MULTI-ASSIGNMENT + yellow HELPER, NO DRIVER) stay SIDE BY SIDE (never stacked vertically), and .fbub uses white-space:normal + flex:1 1 0 + min-width:0 so each bubble WRAPS ITS OWN TEXT to 2 lines if needed and they share the column width. Font nudged to 9px for fit."
-      },
-      {
-        "v": "260720-36",
-        "note": "v19.5: FIX helper flag bubbles stacking — .flagwrap was width:100% of the ~120px field so two bubbles wrapped vertically; now width:max-content + flex-wrap:nowrap + .fbub white-space:nowrap, so red (MULTI-ASSIGNMENT) and yellow (HELPER, NO DRIVER) sit side-by-side horizontally. FIX ovr-releases-without-reason — the override's reason PERSISTED when ovr was unticked, so re-ticking reused the old reason and looked like 'ovr alone unlocks'. Now unchecking ovr CLEARS ov.reason/rother, so every override requires a freshly entered reason to release the grey-out. (rowLocked already required ovr+reason; this removes the stale-reason path.)"
-      },
-      {
-        "v": "260720-35",
-        "note": "v19.4: WORDING unified to one consistent root across all four flags — ROUTE / EQ / DRIVER / HELPER MULTI-ASSIGNMENT (was inconsistent: route said DOUBLE-BOOKED while others said OVERLAP/2+ ASSIGNMENTS). Same-time = 'MULTI-ASSIGNMENT (same time)' (red hard conflict); different-times = 'MULTI-ASSIGNMENT (diff times)' (yellow, allowed-confirm); route-listed-twice = 'ROUTE MULTI-ASSIGNMENT' (red). Noun form (not the imperative 'multi-assign'); no clash/dbl/book*/shift. Shorter alt swaps in dbBub if wanted: MULTI-SLOT / MULTI-USE. LOCK: verified by automated test that ovr WITHOUT a reason KEEPS the form locked and only ovr+reason (or uncheck+reason, or valid driver) releases — the logic was already correct in v19.3, so a build seen releasing on ovr-alone was a STALE cached copy. Added a visible red 'reason needed to unlock' hint next to a checked ovr with no reason, so it is obvious why the grey-out persists. CACHE TIP: hard-refresh (Ctrl+F5) after replacing the file so the browser doesn't serve an old copy."
-      },
-      {
-        "v": "260720-34",
-        "note": "v19.3: double-booking bubble now uses TWO accurate labels instead of one forced root (a single word can't fairly describe both states): same-time = 'OVERLAP (same time)' (red, hard conflict — impossible to be two places at once); different-times = '2+ ASSIGNMENTS' (yellow, allowed — confirm). Avoids clash/dbl/book/shift, and leaves 'route' free for the separate duplicate-route flag. Both cover any count (2 and 2+). Subject prefix (EQ/DRIVER/HELPER) still applied."
-      },
-      {
-        "v": "260720-33",
-        "note": "v19.2: FIXED both lock bugs. ROOT CAUSE: wireReason() (the base-pass reason dropdown handler) called saveDay() but NOT renderDayBlocks(), so after picking a reason the lock was never re-evaluated — making Override appear to release with no reason, and Uncheck+reason fail to unlock. wireReason now re-renders. Result (verified): Override releases the grey-out ONLY with Override ticked AND a reason; Unchecking a base releases ONLY with a reason; changing the driver to a valid-pass driver also releases. Double-booking bubble wording changed to MULTI-SHIFT (same time)=red hard conflict / MULTI-SHIFT (diff times)=yellow allowed-confirm (no clash/dbl/book*; broad enough for 2 and 2+; alt one-token swap: MULTI-ROUTE). PACKAGING NOTE: build from the current working file, never a stale upload — a prior turn regressed because v19.0 was rebuilt off an older uploaded copy."
-      },
-      {
-        "v": "260720-32",
-        "note": "v19.1: double-booking wording finalized to 'MULTI-BOOKED' — reads naturally with the subject (EQ/DRIVER/HELPER MULTI-BOOKED), 'booked' is a state (not the clunky verb 'assigned'), covers 2 and 2+. Red = 'MULTI-BOOKED (same time)' (hard conflict), yellow = 'MULTI-BOOKED (diff times)' (allowed, confirm). One-token swap in dbBub if a different term is wanted (alt: OVERBOOKED)."
-      },
-      {
-        "v": "260720-31",
-        "note": "v19.0: double-booking bubble wording changed to a single broad root that covers 2 AND 2+ assignments — 'MULTI-SHIFT (same time)' (red, hard conflict) and 'MULTI-SHIFT (diff times)' (yellow, allowed-but-confirm), with the subject prefix (EQ / DRIVER / HELPER). Editable one-token swap in dbBub if a different term is preferred (alts: MULTIPLE ASSIGNMENTS, 2+ ASSIGNMENTS, MULTI-SCHEDULED, DOUBLE-ASSIGNED)."
-      },
-      {
-        "v": "260720-30",
-        "note": "v18.9: (1) double-booked bubble wording is now 'MULTI-SHIFT (same time)' (concise, no 'DBL'); same-time still red, different-times still yellow '2+ SHIFTS'. (Alternatives if preferred: CONFLICT / OVERLAP / TWICE — one-word swap in dbBub.) (2) LOCK RELEASE now requires BOTH an action AND a reason, for BOTH escape hatches: for an expired/missing required base, the form stays greyed until either (a) the base stays TICKED with Override checked AND a reason entered, or (b) the base is UNCHECKED with a reason entered (or the driver is changed). rowLocked now evaluates the route's usual bases (union ticked) so unchecking without a reason no longer silently unlocks — it keeps the lock until the reason is filled."
-      },
-      {
-        "v": "260720-29",
-        "note": "v18.8: FIX (bug in screenshot) — unchecking a base pass on the LOCKED row was blocked by the FORM-LOCKED dialog. The base checkbox (.bc) is now an escape control on the flagged row, and the global lock guard allows .bc/.ov/.rs/.ro/.d clicks through — so 'uncheck the base' works as a real escape hatch (no base stop today -> row unlocks). FIX overlap — driver/helper flag bubbles no longer collide: .flagwrap now width:100% of its field with flex-wrap + .fbub white-space:normal, so a wide bubble wraps within its own column instead of overflowing into the neighbour; hasflags top margin raised to 40px; double-book text shortened to 'DBL (same time)'. ESCAPE HATCHES for expired/missing required pass (all three valid, documented): (a) UNCHECK that base + reason = no on-base stop today; (b) tick OVERRIDE + reason = base needed, pass expired, proceed anyway (e.g. renewal in progress); (c) CHANGE driver to one with a valid pass. ROLLOVER PROCESS: if the base stop must be rolled over because no valid-pass driver is available, leave the base CHECKED, tick OVERRIDE, and enter reason 'rolled over — no valid-pass driver' (keeps the requirement visible + logged rather than pretending the stop didn't exist)."
-      },
-      {
-        "v": "260720-27",
-        "note": "v18.6: FIXED Miarfy missing from Cardboard/EQ-04 dropdown — her kinds were ['FrontLoader','Fork'] with no 'Cardboard', and EQ-04 is kind 'Cardboard', so abilityFor() fell back to kind and returned 'unable' (hidden). Added 'Cardboard' to Miarfy's kinds. Base-pass tracker sync (260527 sheet): Abeth NBG 260724->270630; Bong NBG 260609->270126 (all others already matched). DESIGN CONFIRMED for expired-required-pass lock: THREE escape hatches all work and mean different things — (a) UNCHECK that base's checkbox + give a reason = 'this route doesn't need that base today' (BX1 requires the reason; rowLocked ignores unchecked bases so this unlocks); (b) TICK the base's Override + reason = 'base is needed, pass is expired, proceed anyway'; (c) CHANGE the driver to one with a valid pass. Kept checkboxes changeable (not frozen) so 'no base stop today' stays expressible; the Override box handles 'needed but expired'."
-      },
-      {
-        "v": "260720-26",
-        "note": "v18.5 FLAG-BUBBLE UX FIX: each warning bubble is now PINNED inside its own field (.flagwrap, position:absolute, bottom:100%) so it sits directly ABOVE that exact control (Route/EQ/Driver/Helper) and matches the field's left edge — no more guessed-width strip. Bubbles are uniform: .fbub with fixed font/padding, white-space:nowrap (single line, consistent height); red=.fbub.r (same-time double-book / route), yellow=.fbub.y (diff-time / helper-no-driver). Helper: red (double-booked) sits directly over the Helper field; if a yellow (HELPER, NO DRIVER) also applies it sits to the RIGHT of the red in the same nowrap row. Row reserves 24px top margin only when it has flags (.asgtop.hasflags) so heights stay consistent and bubbles never overlap the card. Builds on v18.4 crash fix (wrap.appendChild(top) restored)."
-      },
-      {
-        "v": "260720-25",
-        "note": "v18.4 CRITICAL CRASH FIX: the page failed to load (‘Cannot read properties of null (reading addEventListener) at assignmentRow’). Root cause: the v18.3 flag-row change deleted ‘wrap.appendChild(top)’ and used ‘wrap.insertBefore(fr,top)’ while top was NOT yet a child of wrap — so the field row (Route/Start/Truck/Driver/Helper) was never inserted, wrap.querySelector('select.r') returned null, and .addEventListener threw, killing render (and preventing the lock dialog from ever showing). Restored: append the flag row (fr) then append the field row (top). Because rendering now completes, the sandbox-proof showDialog() lock dialog and the Done popup work again. Flag bubbles stay column-aligned above their field; each column is flex-wrap so two bubbles (helper double-book + helper-no-driver) sit side-by-side without inflating the whole row."
-      },
-      {
-        "v": "260720-24",
-        "note": "v18.3 PATCH (flag bubble UX): (1) each warning bubble now sits in a COLUMN-ALIGNED flag row directly ABOVE its field (Route above Route, EQ above Truck, Driver above Driver, Helper+helper-no-driver above Helper) — flex widths 130/150/150/140/120 match the field row, so bubbles line up over the right control instead of a misaligned strip below. (2) The subject word is now INSIDE every bubble, consistent with ROUTE: '⚠️ EQ DOUBLE-BOOKED', '⚠️ DRIVER DOUBLE-BOOKED', '⚠️ HELPER DOUBLE-BOOKED' (was 'Driver' outside the bubble). Two bubbles in the same column (helper double-book + helper-no-driver) sit side-by-side within that column."
-      },
-      {
-        "v": "260720-23",
-        "note": "v18.2 ROOT-CAUSE FIX (confirmed from user console: 14x 'Ignored call to alert() — document is sandboxed, allow-modals not set'). The SharePoint/preview sandbox SILENTLY BLOCKS alert(), so the lock dialog and the Done popup fired but were suppressed — it was never a lock-logic bug. Replaced ALL 8 alert() calls with a custom in-page modal (showDialog/#dlgBg + OK button) the sandbox cannot block. Also carried the needed v18 fixes onto this build: removed the CSS 'pointer-events:none' on locked rows (which had also killed the click-guard AND the escape-hatch driver dropdown); override CHECKBOX ALONE now frees the form (reason still a WARN); flag bubbles (route/eq/driver/helper double-book + helper-no-driver) moved to ONE full-width horizontal strip above the row so two bubbles no longer stack and inflate row height. NOTE: all red console errors the user saw were SharePoint's own service worker (spserviceworker.js/odsp), not the tool."
-      },
-      {
-        "v": "260720-21",
-        "note": "v17.1 PATCH: LOCK now reliable — replaced fragile per-element listeners with ONE global capture-phase mousedown guard (installLockGuard) that blocks any assignment-area control while anyLocked() and shows the FORM LOCKED dialog over everything; escape hatch = the flagged row's Driver + that base's Override/reason carry class 'escape' and stay live; changing the driver or ticking override frees the whole form. Helper-without-driver now shows a YELLOW bubble ('⚠️ HELPER, NO DRIVER') beside (not stacked on) any red double-book bubble, plus the yellow row background. STANDBY now truly optional — shows truck/driver/helper dropdowns but requires NONE (allOptional flag; exempt from T00 no-truck, D00 no-driver, D08 helper-only), so an all-crew-standby day is valid; a truck can still be attached (e.g. *STANDBY* Fork Service EQ-13). OFFICIAL-CHAT RESEARCH (2025+2026, 127,079 msgs): STANDBY variants = *STANDBY* section header (1/1/25, 7/11/25, 8/15/25, 8/20/25...), *STAND BY* (10/29/25), plus inline equipment/mechanic standby notes (EQ04/EQ03/EQ16 helper standby, EQ-03 breaks not working 4/4/25, mechanic standby 4/16/26); 'remain on standby' for typhoons (Sinlaku 4/14/26, Bavi 7/6/26). ON-CALL never used as a manpower assignment — only customer/billing ('invoice as on-call' 10/30/25, 'HOLD SERVICES to ON CALL' 10/31/25, 'oncall svc' 11/12/25, 'front loader on call log' 7/16/26) — so NOT added as a route; stays a Standby reason label. No route section headers exist beyond the current dropdown (all other all-caps tokens are crew names)."
-      },
-      {
-        "v": "260720-20",
-        "note": "v16.1 PATCH: FIXED the lock dialog — previously locked fields used disabled+pointer-events:none, so mousedown never fired and NO popup appeared. Now locked fields are greyed via .lockgrey and intercept mousedown/click/keydown/focus (not disabled) so the explanatory dialog DOES appear over everything (modal z-index 9999). Escape hatch confirmed: the flagged route's Driver dropdown + that base's Override checkbox/reason stay live; changing the driver or ticking override frees the whole form. Helper-only route (non-Yard/Standby/VE-02) now shows BOTH the immediate yellow row background AND a '⚠️ HELPER WITHOUT DRIVER' bubble on the Helper label explaining why. Standby may be fully empty (no driver AND no helper) — for all-crew-standby days. CHAT FINDINGS (dated): STANDBY is used as a schedule SECTION header (e.g. 1/5/26 *STANDBY* holding Fork Service EQ-13/Bong) and verbally ('on standby' 12/4, 12/10, 12/12, 12/17/25, 1/9/26; 'remain on standby' for Typhoon Sinlaku 4/14/26 and Typhoon Bavi 7/6/26). ON-CALL is a CUSTOMER/BILLING remark, not a manpower assignment ('invoice as on-call' 10/30/25; 'HOLD SERVICES to ON CALL' 10/31/25; 'oncall svc' 11/12/25; 'front loader on call log' 7/16/26) — so it is NOT added as a separate add-a-route option; on-call remains a Standby reason label."
-      },
-      {
-        "v": "260720-19",
-        "note": "v15.1 PATCH: removed 'invoice as on-call' from standbyReasons (not seen in chat); Standby may now be helper-only OR fully empty (exempt from D08); VCC {req} now renders as a COMMA + Oxford-AND list ('CONTRACT LETTER, PASS FOR RENEWAL, AND VALID GOVT ID') via joinList(); CHANGING THE DATE now KEEPS all rows/fields and only refreshes base-pass DEFAULTS for the new weekday (via migrateDay) — full wipe happens only on Reset day or Load usual routes; helper-only non-Yard/non-Standby/non-VE-02 route now shows an IMMEDIATE yellow row highlight (.helperonly) in addition to the Resolve D08 error; the draft black boxes now LIVE-UPDATE on every change (livePreview() at end of renderDayBlocks) — Generate is still what opens the review popup + logs. NOTE: standby wording/date mining was requested but the WhatsApp chat wasn't attached this turn — deferred; confirmed on-call stays a Standby REASON (not a separate route) per prior chat usage."
-      },
-      {
-        "v": "260720-18",
-        "note": "v14.1 PATCH: renamed to 'Lagu Manpower Schedule Generator'; internal renewal BANNER RESTORED to v9 style with (soon)/(expired); Standby route now uses a REASON dropdown (on-call, invoice as on-call, typhoon/weather, COR level, government announcement, mechanic/repair, no work, Other) — chat-confirmed terms; VCC baseRequirements default = 'contract letter, pass for renewal, valid govt ID' (NBG same, editable); README openQuestions replaced — base-pass matrix & driver/truck ability are CONFIRMED; still-needed build-on DATA = (a) which routes need a helper per day, (b) familiarity level per worker per route per day, (c) driver speed multiplier, (d) actual duration per route per day; README futureBuilds section added (dump-time, familiarity-pairing, cost projection) with mandate that EACH ships a non-coder settings UI + JSON export for GitHub. FORM-WIDE LOCK refined: when a driver has an expired/missing REQUIRED pass, EVERY field in EVERY row is greyed + non-interactive (dropdowns can't open; details can't expand) EXCEPT the flagged route's Driver dropdown and that base's Override checkbox + reason; popup on any blocked interaction. Helper dropdown ALWAYS selectable (arrange helpers before drivers); helper-only non-Yard/non-VE-02 => immediate D08 in Resolve. Checklist Resolve items are NO LONGER checkboxes (a checkmark can't clear a hard error) — shown with ✗; Review items keep checkboxes. Done button popup: 'All items in the Resolve section must be fixed before you can generate the drafts.' Uniform 16px checkboxes audited. On-Call handled as a Standby reason (not a separate route) — matches chat usage."
-      },
-      {
-        "v": "260720-17",
-        "note": "v13.1 PATCH: removed the internal renewal BANNER — expiring/expired pass follow-ups now appear ONLY in the checklist Review section, scoped to the drivers/routes/base passes actually ON the schedule; B03 wording => 'Follow up on <driver>'s <base> pass renewal. Add reminder to go to the VCC if ready (current expires YYMMDD).'; FORM-WIDE HARD LOCK — when any driver has an expired/missing REQUIRED pass, EVERY field in EVERY row is greyed + disabled (dropdowns can't open; mousedown shows a popup), except the flagged red row's Driver + that base's override/reason; helper-only rule now enforced at the CONTROL — Helper dropdown is disabled (with tooltip) unless a driver is set, for any non-Yard non-VE-02 truck; VCC baseRequirements default set to 'contract letter, pass being renewed, valid ID' (NBG adds passport + GDOL ID) — covers both expired and soon-to-expire; checkbox size uniform (16px) audited; Done button pops up if any Resolve error remains or any item unticked. BUILD-ON NOTE: when adding the dump-time, familiarity-pairing, and cost-projection features, ALSO add non-coder UI (a settings tab) so staff can edit those values and Export to JSON for GitHub upload — do not leave them JSON-only."
-      },
-      {
-        "v": "260720-16",
-        "note": "v12.1 PATCH: helper double-book badge now updates IMMEDIATELY and CLEARS immediately (helper select re-renders like driver/truck); one-off notes guideline text simplified per request; VCC cleaned — removed 'pickup', consistent get/collect, {req} auto-fills bring-list from baseRequirements (now includes the current pass + base extras), stale vccIdx auto-migrates to blank (fixes phantom 'PLEASE BRING CAMP BLAZ PASS'); plain-language tags added for T06w/D05w/H02w/D08; FORM-WIDE lock — any row with an unresolved expired/missing REQUIRED pass locks EVERY field across the form except the flagged row's driver (popup on any other edit); switch Action shows DUMP for a HELPER subject only if that helper is rail-capable; Standby route now shows an on-call note field (default 'on-call', chat term confirmed); GitHub: header 'Load latest config' button + auto fetch of lagu_settings.json on load with version stamp + confirm-to-load (works on GitHub Pages URL https://lagullc.github.io/manpower-schedule/). CONFIG LOCATIONS: disposal sites = CFG.disposalSites; route needs-helper = Routes tab 'Helper' checkbox (r.needsHelper); per-worker route familiarity is NOT yet a field — driver↔truck ability lives in Drivers tab matrix; route/day familiarity is a documented build-on (dumpTime + a future familiarityByRouteDay map). Answers: route double-booked vs duplicated kept distinct (R03 duplicate route = same route twice; D05/T06/H02 = same resource two shifts)."
-      },
-      {
-        "v": "260720-15",
-        "note": "v11.1 PATCH: TIME-AWARE double-booking — EQ/driver/helper booked at the SAME start time = RESOLVE/red bubble (ERROR T06/D05/H02); at DIFFERENT times = REVIEW/yellow bubble (WARN T06w/D05w/H02w). Helper flag now updates immediately via bookingConflicts() recompute each render (no stale badge). Row badge label unified 'DOUBLE-BOOKED (same time)' vs '2+ SHIFTS (diff time)'. VE-02 truck: driver dropdown now shows ALL drivers + rail-capable helpers (Ron/Joseph). switch-target: VE-02 shown for ALL helpers when action=SWITCH TO, only rail-capable helpers when action=DUMP. Helper-only route now ERROR (D08) unless Yard or VE-02 rail. Serious lock: locked-row fields route through tryEdit -> popup + revert (driver kept editable as the fix path). VCC wording uses 'get/collect' (no 'pick up'); {req} variable auto-fills bring-list from baseRequirements (minus DBIDS) so options aren't hardcoded per base. Standby truck dropdown adds Yard + Other(custom text); Hand Service truck adds Other(custom). Base-pass expiring wording: 'Confirm X's renewed <base> pass is ready — if not, remind them to go to the VCC (expires YYMMDD)'. Generate now POPS UP when Resolve errors exist; checklist Done button no longer silently disabled — it pops up if any Resolve ERROR remains (ticking cannot clear an error) or any review item unticked. DEFERRED: GitHub fetch-settings-on-load + Load-latest button (steps in Readme tab; needs repo hosted first)."
-      },
-      {
-        "v": "260720-14",
-        "note": "v10.1 PATCH: Dump option label 'Dump only (no route)' + truck dropdown fixed (was empty); Hand Service add-route option (trucks VE-02/EQ-12/EQ-13, driver list adds rail-capable helpers); Standby now has a truck dropdown; double-book/duplicate flags unified ALL-CAPS with subject prefix (ROUTE/EQ/DRIVER/HELPER DOUBLE-BOOKED) + consistent red-bubble style (removed yellow bg); README added as its own in-app TAB (renders _readme incl GitHub step-by-step); base-pass expiring wording 'confirm renewed <base> pass is ready (expires YYMMDD)'; VCC {base} variable everywhere (add-on + pickups no longer hardcode Camp Blaz/NBG), de-duplicated versions, 'Base for {base}' label -> 'Base'; switch-note no longer collapses on subject/action change (a._noteOpen persists <details>); 'HELPER TO' subject only offered when a helper is assigned; VE-02 in switch target only for rail-capable helpers; helper+DUMP -> VE-02 only, no Yard; PER-ROW lock restored (expired/missing required ticked pass locks only THAT row's non-override fields, popup on attempt; other routes stay editable); Generate shows 'cannot finalize until Resolve fixed' and checklist Done stays blocked until all ticked; START TIME now hour + minute(00/15/30/45) + AM/PM dials (stored HH:MM; no free-minute entry); one-off notes guideline corrected (Cardboard/Hand Service belong in Add-a-route, not notes). DEFERRED: GitHub fetch-settings-on-load + 'Load latest' button (needs repo hosted; steps documented in Readme tab)."
-      },
-      {
-        "v": "260720-13",
-        "note": "v9.1 PATCH: row-LOCK removed (expired/missing pass flags in Review only, never disables other fields, no popup); switch/dump target logic — VE-02 shown for all drivers (Please/Driver), Helper subject shows VE-02 only for rail-capable helpers (Ron/Joseph, editable via helper.canDrive), Yard hidden when subject Driver/Please or action DUMP, Helper+DUMP => VE-02 only; VCC 'Bring {base} pass' removed (checkbox job), {base} variable throughout, base dropdown default BLANK; Dump-truck route option (no + prefix, empty truck, base-pass block hidden); Standby route added to add-route list; break options full 3AM-6PM range + custom field only shows when Other; Sat/Sun need no helper (H03 suppressed weekends); EQUIPMENT double-booking flagged on row (bold red) like workers; double-booked pill made bold/red; base-pass 'expiring' wording => 'Confirm if X's <base> renewed pass is ready (expires YYMMDD)'; checklist sorted most->least substantive within Resolve/Review, scheduled start-times listed under Review (anti-autopilot), rollover/redistribution timing question added under Routine, base-pass renewal items dynamic; disposalSites + baseRequirements + dumpTime spec added; suggest-OFF fixed (sandbox-safe, no confirm(); inline confirm note). REQUIREMENTS ALWAYS ENFORCED: ALL checkboxes 16px uniform (CSS input[type=checkbox]); capitalization preserved for EQ-##/NBG/AAFB/VCC/Camp Blaz/GDOL/DBIDS in Kakao (smartLower). DEFERRED (need dedicated turns): (1) start time as separate hour+minute(quarter)+AM/PM dials; (2) GitHub Pages fetch lagu_settings.json on load + version stamp + 'Load latest' button. ANSWERS: autoload-vs-button => keep BUTTON (autoload silently wipes rows on date change); allow Generate with unresolved Resolve item => NO (Done stays blocked until every item ticked; Resolve = hard errors)."
-      },
-      {
-        "v": "260720-10",
-        "note": "v7.0: per-base bring-pass, Kakao opener, ability, dup-flag, custom routes."
-      },
-      {
-        "v": "260720-12",
-        "note": "v8.1 PATCH: lightweight spell/format checks (double/trailing space, unmatched *, common typos) flag custom inputs; ALL checkboxes forced 16px consistent (CSS input[type=checkbox]); capitalization preserved for EQ-##/NBG/AAFB/VCC/Camp Blaz/GDOL/DBIDS in Kakao via smartLower; checklist codes replaced with plain-language tags + legend, override reasons shown, ‘Common checks’→‘Routine checks’, Done blocks with popup if unticked; Graymar EQ-18 Unfamiliar; Yard shows ‘— none —’ driver; base-change-without-reason moved to RESOLVE (error); Dump-truck route option added; double-booked worker flagged instantly on row (red) + in review. FINDING: one-off operational notes historically went in a SEPARATE ‘Reminders – please:’ companion post (247×), essentially never inline in the schedule reminder (1×) — so the one-off field is for the rare inline case; routine one-offs belong in a separate reminders post. Checklist is dynamic (drops cardboard item with no cardboard route; weekend item only on weekends; base-pass renewal list only names with expiring/expired). Worker pool linked: renewal banner + OFF suggest use current-driver set. Prefill start pros: matches near-identical week pattern, fewer keystrokes/typos, consistency; cons: cruise-control risk (mitigated by editable dropdown + cardboard-fullness review item)."
-      },
-      {
-        "v": "260720-11",
-        "note": "v8.0: all-3-base checkboxes w/ default+reason-on-change, horizontal; uniform checkbox size; ability (Allan/Graymar all-but-15/16, Miarfy fork, Bong unfamiliar 18); Yard no-driver default; Kakao EQ- caps; VCC {base} variable; composable switch builder (subject/action/target/timing) hiding Unable+flagging Unfamiliar, Yard target; suggest-OFF working w/ confirm; quarter-hour dropdown; lock row on expired required pass; immediate dup/double-book flag; checklist 3 sections + close-without-posting; Friday 2:30; renewDays centralized; wording inventory."
+        "v": "v21.35-21.39",
+        "feat": "Trainee PER route/day via an add-picker (no free text); trainee shows as a helper option but never counts as a guide; base-pass updates (Abeth/Miarfy Camp Blaz 270411; Bong AAFB 270604; Celso NBG 270126); README design-principles + cfgVersion explainer; this version-history trail.",
+        "note": "Ongoing friction to avoid next time: (a) sandbox resets between chats — always work from the latest uploaded HTML, never rebuild from a screenshot; (b) attach the current file WITH each instruction; (c) versionLog note edits repeatedly broke JSON by dropping the comma before the next entry — validate syntax after every changelog edit. STILL OPEN: familiarity-pairing per-day precision in the daily checklist; individual-constraint settings tab (Ramdhel no weekends, Bong ≥6a.m.); dump-time flag wired live once rolling actuals arrive; wire helperNeededByRouteDay verification against the source table."
       }
     ]
   }
