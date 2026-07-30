@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Lagu Manpower Schedule Generator</title>
+<title>Lagu Manpower Planner</title>
 <style>
   :root{--bg:#f4f6f8;--card:#fff;--ink:#1f2d3d;--muted:#6b7a8d;--line:#dfe4ea;
         --brand:#0b6b3a;--brand2:#0e7c46;--warn:#b8860b;--err:#c0392b;--ok:#1e7d34;--down:#a23b2c;}
@@ -100,10 +100,10 @@
 </head>
 <body>
 <header>
-  <h1>🗑️ Lagu Manpower Schedule Generator</h1><span class="ver" id="verLabel"></span> <button class="ghost" id="btnLoadLatest" style="padding:3px 8px;font-size:12px;margin-left:8px">⟳ Load latest config</button>
+  <h1>🗑️ Lagu Manpower Planner</h1><span class="ver" id="verLabel"></span> <button class="ghost" id="btnLoadLatest" style="padding:3px 8px;font-size:12px;margin-left:8px">⟳ Load latest config</button>
   <nav>
-    <button data-tab="make" class="active">Generate</button>
-    <button data-tab="week">Week View</button>
+    <button data-tab="make" class="active">Daily View</button>
+    <button data-tab="week">Weekly View</button>
     <button data-tab="equip">Equipment</button>
     <button data-tab="drivers">Drivers</button>
     <button data-tab="helpers">Helpers</button>
@@ -112,14 +112,13 @@
     <button data-tab="wording">Wording &amp; Notes</button>
     <button data-tab="backup">Backup</button>
     <button data-tab="readme">Readme</button>
-    <button data-tab="help">Help</button>
   </nav>
 </header>
 <main>
 <section class="tab active" id="tab-make">
   <div class="card">
-    <h2>1 · Service Date</h2>
-    <p class="hint">Pick the day the schedule is FOR. A <b>Saturday</b> makes the combined <b>Sat + Sun</b> weekend format.</p>
+    <h2>Daily Schedule</h2>
+    <p class="hint">Choose the day this schedule is for. A <b>Saturday</b> makes the combined <b>Sat + Sun</b> weekend format.</p>
     <div class="row" style="align-items:flex-start">
       <div class="fld"><label>Service date</label><input type="date" id="svcDate"></div>
       <div class="fld"><label>Mode</label><span id="modeLbl" class="pill" style="margin-left:0">—</span></div>
@@ -154,7 +153,7 @@
 </section>
 
 <section class="tab" id="tab-week"><div class="card">
-  <h2>Week Labor Projection <span class="pill" id="weekRange">—</span></h2>
+  <h2>Weekly Projection <span class="pill" id="weekRange">—</span></h2>
   <p class="hint">Running weekly hours = <b>hours-to-date</b> (actuals entered so far this week) + <b>projected</b> planned hours from each day's saved assignments (route/day estimate). Cells fill as you build &amp; save each day on the Generate tab. Total turns red past the <b>40h</b> OT line. Persists until you change a day.</p>
   <div class="tools"><button class="ghost" id="btnWeekMode">⇄ View: Worker rows</button><button class="ghost" id="btnWeekPrev">◀ Prev week</button><button class="ghost" id="btnWeekThis">This week</button><button class="ghost" id="btnWeekNext">Next week ▶</button><button class="ghost" id="btnWeekSave">💾 Save week</button><label class="small" style="display:inline-flex;gap:4px;align-items:center;margin-left:4px" title="Within a day, whose hours came FIRST for the reg-rate budget. Default = affiliate first; tick if the Lagu hours were worked earlier that day."><input type="checkbox" id="chkLaguFirst">Lagu hours first each day</label><button class="ghost" id="btnWeekClearHtd" title="Reverts every hour cell you TYPED IN back to its projected estimate. Does NOT touch driver/helper assignments, affiliate hours, or the saved week.">Clear typed-in hours</button></div>
   <div id="weekGrid" style="overflow-x:auto"></div>
@@ -222,7 +221,7 @@
 <section class="tab" id="tab-backup">
   <div class="card"><h2>Save / Share All Settings</h2>
     <p class="hint">Saved in this browser week to week. Export = one <code>.json</code> = portable single source of truth. If source data lives on a SharePoint Excel, export it to CSV and re-Import here when it changes (no login/backend needed).</p>
-    <div class="tools"><button class="act" id="btnExport">⬇ Export settings (.json)</button><button class="ghost" id="btnImport">⬆ Import settings (.json)</button>
+    <div class="tools"><button class="act" id="btnBackupAll">⬇⬇ Back up everything (.json)</button><button class="act" id="btnExport">⬇ Export settings (.json)</button><button class="ghost" id="btnImport">⬆ Import settings (.json)</button><button class="ghost" id="btnRestoreAll">⬆ Restore backup (.json)</button><input type="file" id="backupFile" accept=".json" style="display:none">
       <input type="file" id="cfgFile" accept=".json" style="display:none"><button class="ghost" id="btnDefaults">Restore built-in defaults</button>
       <span class="small">Settings version <input id="cfgVer" style="width:120px"></span></div></div>
   <div class="card"><h2>Data Source Links</h2><table id="dsTbl"><thead><tr><th style="width:130px">Pool</th><th>Link</th><th style="width:180px">Format</th><th>Note</th></tr></thead><tbody></tbody></table></div>
@@ -230,7 +229,6 @@
 </section>
 
 <section class="tab" id="tab-readme"><div class="card" id="readmeBody"></div></section>
-<section class="tab" id="tab-help"><div class="card" id="helpBody"></div></section>
 </main>
 
 <div class="modalbg" id="checklistModal"><div class="modal">
@@ -260,7 +258,7 @@
 function showDialog(msg){var bg=document.getElementById("dlgBg");if(!bg){try{window.showDialog(msg);}catch(e){}return;}document.getElementById("dlgMsg").textContent=msg;bg.style.display="flex";}
 function hideDialog(){var bg=document.getElementById("dlgBg");if(bg)bg.style.display="none";}
 function showConfirm(msg,onYes){var bg=document.getElementById("cfmBg");if(!bg){if(onYes)onYes();return;}document.getElementById("cfmMsg").textContent=msg;bg.style.display="flex";var yes=document.getElementById("cfmYes"),no=document.getElementById("cfmNo");yes.onclick=function(){bg.style.display="none";if(onYes)onYes();};no.onclick=function(){bg.style.display="none";};}
-const APP_VERSION="21.46";
+const APP_VERSION="21.49";
 const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 const DOWfull=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -398,7 +396,7 @@ function defaultConfig(){
    note:"Future: finish = route start + (actualHoursByRouteDay[route][day] x driverSpeedMultiplier[driver]); compare to disposalSites cutoff; flag 'won't reach tipping in time'. <1 faster, >1 slower.",
    actualHoursByRouteDay:{ "Northern":{Mon:12,Tue:12,Thu:12,Fri:12,Sun:2}, "N+S Combined":{Wed:8,Sat:8}, "Central":{Tue:10}, "Southern":{Mon:12,Tue:12,Thu:12,Fri:12}, "Cardboard":{Mon:8,Tue:8,Wed:8,Thu:8,Fri:8}, "Roll-Off":{Mon:10,Tue:10,Wed:10,Thu:10,Fri:10,Sat:10}, "Fork Service":{Mon:4,Tue:6,Wed:4,Thu:7,Fri:1} }, driverSpeedMultiplier:{}, helperHoursByRouteDay:{}, _helperNote:"Helper baseline = driver baseline; a helper who washes the truck adds +2h via the assignment toggle.", _estNote:"ESTIMATES from Timesheets Summary avg hours (per route/day). Replace with Power-Automate rolling actuals when available." },
  _readme:{
-   tool:"Lagu Manpower Schedule Generator (single-file HTML)",
+   tool:"Lagu Manpower Planner (single-file HTML)",
    persistence:"Config persists in this browser. If the browser changes, settings are lost unless you Export the JSON. Source of truth = the settings JSON; if base data lives on SharePoint Excel, export to CSV and re-Import on change (no login/backend).",
    githubVsHtml:"HTML = the tool (the machine). GitHub = optional shelf/hosting + version history so everyone opens one URL. GitHub Pages fetching a JSON in the SAME public repo needs no login; a SharePoint file always needs sign-in, so it can't be auto-read without a backend.",
    soonParam:"'Expiring soon' = renewDays (default 30) on the Base Passes tab — centralized.",
@@ -901,7 +899,7 @@ function saveWeekAll(){ save("lg_week",WEEK); weekDays().forEach(iso=>saveWeekTo
 function wireTabs(){document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>{
   document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
   b.classList.add("active");el("tab-"+b.dataset.tab).classList.add("active");
-  ({equip:renderEquip,drivers:renderDrivers,helpers:renderHelpers,routes:renderRoutes,passes:renderPasses,wording:renderWording,backup:renderBackup,help:renderHelp,readme:renderReadme,week:renderWeek,make:renderMake}[b.dataset.tab]||(()=>{}))();
+  ({equip:renderEquip,drivers:renderDrivers,helpers:renderHelpers,routes:renderRoutes,passes:renderPasses,wording:renderWording,backup:renderBackup,readme:renderReadme,week:renderWeek,make:renderMake}[b.dataset.tab]||(()=>{}))();
 }));}
 
 /* ================= GENERATE UI ================= */
@@ -1238,6 +1236,7 @@ function renderReadme(){const r=CFG._readme||{};let h=`<h2>README — v${APP_VER
   if(r.cfgVersionExplained){h+=`<h4>What “cfg ${CFG.cfgVersion}” means</h4><p class="small">${r.cfgVersionExplained}</p>`;}
   if(r.designPrinciples){h+=`<h4>Design principles</h4><ul class="small">`+r.designPrinciples.filter(x=>!/^Our design principles/i.test(x)).map(x=>`<li>${x}</li>`).join("")+`</ul>`;}
   if(r.versionLog){h+=`<h4>Build history &amp; design notes (internal)</h4><ul class="small">`+r.versionLog.map(v=>`<li><b>${v.v}:</b> ${v.feat||""}${v.note?`<br><span style="color:#6b7a8d"><i>${v.note}</i></span>`:""}</li>`).join("")+`</ul>`;}
+  h+=`<h4>Prefilled start times — why</h4><p class="small">Start times are pre-filled per route per day to match the near-identical weekly pattern (fewer keystrokes, fewer typos, consistent across staff). Trade-off: risk of “cruise control” — staff may not re-check whether today matches the usual (e.g. a fuller cardboard truck needs an earlier start). Mitigation: the review popup asks about cardboard-truck fullness, and every start is a visible editable dropdown.</p>`;
   h+=`<h4>GitHub “latest for everyone” — step by step</h4><ol class="small">`+
     `<li>Create a free GitHub account; click <b>New repository</b> → name it e.g. <code>lagu-schedule</code> → <b>Public</b> → Create.</li>`+
     `<li><b>Add file → Upload files</b>: upload <code>index.html</code> (this tool renamed) and <code>lagu_settings.json</code> (your exported settings). Commit.</li>`+
@@ -1316,6 +1315,9 @@ function boot(){installLockGuard();document.addEventListener("click",()=>{docume
   el("btnAddRoute").addEventListener("click",()=>{CFG.routes.push({name:"New",waLabel:"NEW",kinds:["FrontLoader"],noTruck:false,days:["Mon","Tue","Wed","Thu","Fri"],startByDay:{},needsHelper:false,basePass:"never",dayBases:{},bases:[]});persist();renderRoutes();});
   el("btnAddVcc").addEventListener("click",()=>{CFG.vccVersions.push({when:"New",wa:"PLEASE GET {base} PASS AT VCC",kk:"to collect renewed {base} base pass"});persist();renderWording();});
   el("btnExport").addEventListener("click",()=>download(`lagu_settings_${CFG.cfgVersion}.json`,JSON.stringify(CFG,null,2)));
+  el("btnBackupAll").addEventListener("click",()=>{const bundle={_backup:"lagu-manpower-planner",_app:APP_VERSION,_exportedAt:new Date().toISOString(),cfg:CFG,week:WEEK,day:DAY,log:LOG};download(`lagu_FULL_backup_${CFG.cfgVersion}_${todayYYMMDD()}.json`,JSON.stringify(bundle,null,2));flash("Full backup downloaded (settings + week + day + log).");});
+  el("btnRestoreAll").addEventListener("click",()=>el("backupFile").click());
+  el("backupFile").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const b=JSON.parse(r.result);if(!b||b._backup!=="lagu-manpower-planner"){showDialog("That file isn't a full backup. Use ‘Import settings’ for a settings-only .json, or pick a file made by ‘Back up everything’.");return;}showConfirm("Restore EVERYTHING from this backup? This replaces your current settings, week assignments/hours, day plan, and history in this browser.",()=>{if(b.cfg){CFG=b.cfg;save("lg_cfg",CFG);}if(b.week){WEEK=b.week;save("lg_week",WEEK);}if(b.day){DAY=b.day;save("lg_day",DAY);}if(b.log){LOG=b.log;save("lg_log",LOG);}el("verLabel").textContent="v"+APP_VERSION+" · cfg "+CFG.cfgVersion;renderBackup();renderMake();flash("Full backup restored.");});}catch(err){showDialog("Bad file: "+err.message);}};r.readAsText(f);});
   el("btnImport").addEventListener("click",()=>el("cfgFile").click());
   el("cfgFile").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{CFG=JSON.parse(r.result);persist();renderBackup();flash("Imported.");}catch(err){showDialog("Bad file: "+err.message);}};r.readAsText(f);});
   el("btnDefaults").addEventListener("click",()=>{showConfirm("Replace ALL settings with built-in defaults?",()=>{CFG=defaultConfig();persist();renderBackup();});});
