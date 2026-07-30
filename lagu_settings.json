@@ -1295,7 +1295,7 @@
     "_estNote": "ESTIMATES from Timesheets Summary avg hours (per route/day). Replace with Power-Automate rolling actuals when available."
   },
   "_readme": {
-    "tool": "Lagu Manpower Schedule Generator (single-file HTML)",
+    "tool": "Lagu Manpower Planner (single-file HTML)",
     "persistence": "Config persists in this browser. If the browser changes, settings are lost unless you Export the JSON. Source of truth = the settings JSON; if base data lives on SharePoint Excel, export to CSV and re-Import on change (no login/backend).",
     "githubVsHtml": "HTML = the tool (the machine). GitHub = optional shelf/hosting + version history so everyone opens one URL. GitHub Pages fetching a JSON in the SAME public repo needs no login; a SharePoint file always needs sign-in, so it can't be auto-read without a backend.",
     "soonParam": "'Expiring soon' = renewDays (default 30) on the Base Passes tab — centralized.",
