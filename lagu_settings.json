@@ -1,5 +1,5 @@
 {
-  "cfgVersion": "260729-93",
+  "cfgVersion": "260729-94",
   "renewDays": 30,
   "trucks": [
     {
@@ -902,52 +902,40 @@
     "defaultRate": 9.25,
     "rates": {
       "Abeth": {
-        "reg": 22,
-        "ot": 33
+        "reg": 22
       },
       "Allan": {
-        "reg": 18.97,
-        "ot": 28.46
+        "reg": 18.97
       },
       "Bong": {
-        "reg": 21,
-        "ot": 31.5
+        "reg": 21
       },
       "Celso": {
-        "reg": 18.97,
-        "ot": 28.46
+        "reg": 18.97
       },
       "Graymar": {
-        "reg": 18.97,
-        "ot": 28.46
+        "reg": 18.97
       },
       "Miarfy": {
-        "reg": 15.5,
-        "ot": 23.25
+        "reg": 15.5
       },
       "Racel": {
-        "reg": 18.97,
-        "ot": 28.46
+        "reg": 18.97
       },
       "Robert": {
-        "reg": 13,
-        "ot": 19.5
+        "reg": 13
       },
       "Davis": {
-        "reg": 9.25,
-        "ot": 13.88
+        "reg": 9.25
       },
       "Joseph": {
-        "reg": 10.25,
-        "ot": 15.38
+        "reg": 10.25
       },
       "Ramdhel": {
-        "reg": 10.25,
-        "ot": 15.38
+        "reg": 10.25
       },
       "Ron": {
-        "reg": 10.25,
-        "ot": 15.38
+        "reg": 10.25
       }
     },
     "_ratesNote": "Per-worker reg + OT $/hr — edit here (centralized). Affiliate hours count toward the 40h OT threshold but are NOT charged to us.",
@@ -1492,6 +1480,11 @@
         "v": "v21.62",
         "feat": "(1) CONSISTENCY: the leftover '— none —' placeholders are now uniformly BLANK on empty dropdowns — the Action and VCC selects and the Helper field's no-need fallback — matching the already-blank Subject/Target/Timing/Base/Truck/Driver controls. (2) The Yard row's non-applicable Truck and Driver now read 'None' (capitalized) instead of '— none —'. (3) DATA: Monday route-hour estimates changed — Northern 12→9h, Southern 12→11h (cfg 260729-92→260729-93).",
         "note": "Blank vs None: dropdown EMPTY OPTIONS are blank (nothing chosen yet); the Yard truck/driver are a fixed NOT-APPLICABLE state, so a word reads clearer than a blank — 'None' capitalized matches the checklist's existing 'None' (no errors/warnings). Consistency flag: the base-pass badge still uses lowercase 'none' and the week grid uses 'N/A' for non-running routes — those are left as-is (different contexts), so 'None' is consistent with the checklist convention but the app does carry three none/N-A forms across contexts. Est change edits defaultConfig only; a browser with saved settings must Reset the day, Import the new JSON, or edit the Route Hour Estimates tab to pick it up."
+      },
+      {
+        "v": "v21.63",
+        "feat": "(1) OVERTIME RATE is now DERIVED, not stored: rateFor() returns ot = reg * otMultiplier (default 1.5), so editing a worker's reg rate auto-updates their OT and there are no stale/rounded OT pairs. A per-worker rates[name].otOverride can still force a non-1.5 OT on the rare exception. The stored per-worker ot values were removed from the defaults (now derived); the read-only Drivers/Helpers rate column shows reg / derived-OT. (2) cfgVersion 260729-93 -> 260729-94 so 'Load latest config' actually triggers a reload (the loader compares version STRINGS, so a same-numbered file with different contents would not reload).",
+        "note": "WHY THE 12h PERSISTED: loadLatestConfig does CFG=repo (full replace), and the app showed cfg 93 with 12h => the uploaded lagu_settings.json contained 12h (it was exported from a browser whose localStorage still had 12h). Re-uploading a 9/11 file ALSO numbered 93 would NOT reload because rv===cur. Fixed by bumping to 94. Derived OT: only rateFor() computes ot now; laborCostChrono and the rate column both read through rateFor, so no direct .ot reads remain in cost math. Legacy JSONs with .ot are harmless (ignored)."
       }
     ]
   }
