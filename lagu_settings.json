@@ -1259,7 +1259,7 @@
     "note": "Future: finish = route start + (actualHoursByRouteDay[route][day] x driverSpeedMultiplier[driver]); compare to disposalSites cutoff; flag 'won't reach tipping in time'. <1 faster, >1 slower.",
     "actualHoursByRouteDay": {
       "Northern": {
-        "Mon": 12,
+        "Mon": 9,
         "Tue": 12,
         "Thu": 12,
         "Fri": 12,
@@ -1273,7 +1273,7 @@
         "Tue": 10
       },
       "Southern": {
-        "Mon": 12,
+        "Mon": 11,
         "Tue": 12,
         "Thu": 12,
         "Fri": 12
@@ -1467,6 +1467,31 @@
         "v": "v21.57",
         "feat": "The Daily View DRIVER field now shows BLANK when no driver is chosen (matching the empty Truck dropdown), instead of the grey '— pick —' placeholder.",
         "note": "Only the empty-state label of the driver .cdd widget changed (cdd-name span left empty); an on-leave selected driver still shows the amber OUT pill, and the panel's first option is still the explicit '— none —' to clear a pick."
+      },
+      {
+        "v": "v21.58",
+        "feat": "LEAVE dates (Out from / Out until) on the Drivers & Helpers tabs now accept BOTH manual yymmdd typing AND a calendar picker: each date has a small 📅 button that opens the native date picker and writes the chosen date back into the field in yymmdd. Storage stays yymmdd, so the onLeave() range logic and everything else is unchanged. The date-picker helpers and calendar buttons are removed from the Tab sequence, so Tab still flows name → from → until → reason.",
+        "note": "Kept yymmdd as the stored format (most resilient — no migration, no change to onLeave/isOut string compares). Each Out cell is a .calwrap containing the yymmdd text input + a hidden native <input type=date> + a 📅 button; the button seeds the date input from the current yymmdd, calls showPicker(), and on change converts YYYY-MM-DD back to yymmdd and dispatches the text input's change event so the normal save path runs. Driver/Helper row wiring was converted from positional ins[] indices to CLASS selectors (.dn/.hn/.ofd/.oud/.rsn/.cdr/.knw/button.del) so the added date inputs don't shift indices; the hidden date inputs and 📅 buttons are tabindex=-1 to preserve the fixed tab order."
+      },
+      {
+        "v": "v21.59",
+        "feat": "(1) LEAVE from/until are now native date fields (like the Daily View service-date box) — the calendar icon sits INSIDE each field, opens on click, and a manually keyed date shows as selected in the picker. Storage stays yymmdd (converted on read/write), so onLeave() is unchanged. Replaces the separate 📅 button that would not open on the Drivers tab. (2) The Daily View DRIVER dropdown first option is now a blank clickable row (to clear) instead of '— none —'. Out columns widened to fit the two date fields.",
+        "note": "outCellHtml emits <input type=date> with value converted yymmdd->YYYY-MM-DD; wireOutCell converts back on change. Removed the hidden-date+calbtn approach whose showPicker sometimes no-opped on the Drivers tab. Native date inputs are keyboard AND calendar editable and auto-populate the picker from a typed value. Driver clear-row uses &nbsp;+min-height so it stays clickable while blank, matching the Truck select empty option."
+      },
+      {
+        "v": "v21.60",
+        "feat": "(1) A no-truck route with nobody assigned (e.g. an empty Yard row left on the day) is no longer printed in the WhatsApp or Kakao draft — empty no-truck rows are filtered before the time header, so no orphaned blank YARD: line. A Yard row with a helper still prints. (2) NO WHACK-A-MOLE: a blank running route (e.g. Roll-Off left empty) now flags BOTH the missing truck AND the missing driver as ERRORS in Resolve at once (the empty-row branch's soft WARN became an ERROR 'a driver is required').",
+        "note": "Applied onto v21.59 (v21.60 upload was a stub). Draft: added .filter(a=>routeSpecOf(a).noTruck?(a.driver||a.helper):true) to the per-start slots in BOTH renderWA and renderKK, before if(!slots.length)return so the time header is skipped when the only row was an empty Yard. Validation: WARN D00 -> ERROR D00 so T00+D00 land together."
+      },
+      {
+        "v": "v21.61",
+        "feat": "(1) WORKER VIEW: the Total cell now shows a compact affiliate line ('+X aff → ΣY') under the billed total whenever a worker has affiliate hours, so the combined figure that TRIGGERS overtime is visible (billed cost is still Lagu-only). (2) DAILY DRAFTS: multiple no-truck workers (e.g. several Yard helpers) at the SAME start time now print as a single comma-separated list ('Yard: Ron, Davis, Joseph') in both WhatsApp and Kakao, instead of one line each. Different start times stay on separate lines.",
+        "note": "Affiliate line uses affiliateHrs(nm) + lc.combined (already computed by laborCostChrono); shown only when >0 so normal rows are unchanged. Comma-merge groups no-truck rows by waLabel (WA) / routeLabelOf (KK) within each start slot; truck routes are untouched. Empty no-truck rows were already dropped by the v21.60 filter, so only staffed Yard names merge."
+      },
+      {
+        "v": "v21.62",
+        "feat": "(1) CONSISTENCY: the leftover '— none —' placeholders are now uniformly BLANK on empty dropdowns — the Action and VCC selects and the Helper field's no-need fallback — matching the already-blank Subject/Target/Timing/Base/Truck/Driver controls. (2) The Yard row's non-applicable Truck and Driver now read 'None' (capitalized) instead of '— none —'. (3) DATA: Monday route-hour estimates changed — Northern 12→9h, Southern 12→11h (cfg 260729-92→260729-93).",
+        "note": "Blank vs None: dropdown EMPTY OPTIONS are blank (nothing chosen yet); the Yard truck/driver are a fixed NOT-APPLICABLE state, so a word reads clearer than a blank — 'None' capitalized matches the checklist's existing 'None' (no errors/warnings). Consistency flag: the base-pass badge still uses lowercase 'none' and the week grid uses 'N/A' for non-running routes — those are left as-is (different contexts), so 'None' is consistent with the checklist convention but the app does carry three none/N-A forms across contexts. Est change edits defaultConfig only; a browser with saved settings must Reset the day, Import the new JSON, or edit the Route Hour Estimates tab to pick it up."
       }
     ]
   }
