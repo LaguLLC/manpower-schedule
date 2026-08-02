@@ -1,5 +1,5 @@
 {
-  "cfgVersion": "260729-92",
+  "cfgVersion": "260729-93",
   "renewDays": 30,
   "trucks": [
     {
@@ -130,7 +130,8 @@
       "needsGuide": [
         "Southern",
         "Cardboard"
-      ]
+      ],
+      "outFrom": ""
     },
     {
       "name": "Allan",
@@ -165,7 +166,8 @@
         "N+S Combined",
         "Cardboard",
         "Fork Service"
-      ]
+      ],
+      "outFrom": ""
     },
     {
       "name": "Bong",
@@ -190,7 +192,8 @@
         "Southern",
         "N+S Combined",
         "Fork Service"
-      ]
+      ],
+      "outFrom": ""
     },
     {
       "name": "Celso",
@@ -216,7 +219,8 @@
         "Southern",
         "N+S Combined",
         "Cardboard"
-      ]
+      ],
+      "outFrom": ""
     },
     {
       "name": "Graymar",
@@ -251,7 +255,8 @@
         "N+S Combined",
         "Cardboard",
         "Fork Service"
-      ]
+      ],
+      "outFrom": ""
     },
     {
       "name": "Miarfy",
@@ -277,7 +282,8 @@
       "canGuide": [],
       "needsGuide": [
         "Fork Service"
-      ]
+      ],
+      "outFrom": ""
     },
     {
       "name": "Racel",
@@ -302,7 +308,8 @@
         "Northern",
         "Southern",
         "N+S Combined"
-      ]
+      ],
+      "outFrom": ""
     },
     {
       "name": "Robert",
@@ -329,7 +336,8 @@
         "EQ-18": "unable"
       },
       "canGuide": [],
-      "needsGuide": []
+      "needsGuide": [],
+      "outFrom": ""
     }
   ],
   "helpers": [
@@ -347,7 +355,8 @@
         "Cardboard",
         "Fork Service",
         "Roll-Off"
-      ]
+      ],
+      "outFrom": ""
     },
     {
       "name": "Ramdhel",
@@ -361,7 +370,8 @@
         "Cardboard",
         "Fork Service",
         "Roll-Off"
-      ]
+      ],
+      "outFrom": ""
     },
     {
       "name": "Ron",
@@ -377,7 +387,8 @@
         "Cardboard",
         "Fork Service",
         "Roll-Off"
-      ]
+      ],
+      "outFrom": ""
     },
     {
       "name": "Davis",
@@ -393,7 +404,8 @@
         "Southern",
         "Central",
         "Cardboard"
-      ]
+      ],
+      "outFrom": ""
     }
   ],
   "basePasses": {
@@ -1425,6 +1437,36 @@
         "v": "v21.46",
         "feat": "WEEK VIEW multi-assignment cells are now split into clickable UPPER (primary) and LOWER (secondary) zones: on a cell holding two assignments (e.g. Roll-Off 1 and Roll-Off 2), clicking the TOP part opens the FIRST assignment's editor and clicking the LOWER part opens the SECOND. Each zone highlights on hover and shows a small 'edit ▲/▼' hint. Single-assignment cells are unchanged (the whole cell stays clickable). Also generated the GitHub upload package (index.html + lagu_settings.json + README.md + .nojekyll).",
         "note": "Replaced the v21.45 dual per-row 'edit' link with zone divs. The primary zone is a plain wrapper (no handler) so its click bubbles to the existing td[data-cell] handler and opens the first editor; each extra zone keeps data-editextra + the stopPropagation handler so it opens only its own assignment. Zones are added ONLY when extras.length>0; a lone assignment keeps full-cell click, so nothing changed for the common case. Moved the extra row's inline border/padding into .wk-extrazone and added .wk-zone hover so the two targets are visually distinct."
+      },
+      {
+        "v": "v21.50",
+        "feat": "(1) WEEK VIEW multi-assignment cells: the 'edit' hint now sits INLINE on the same line as the 'Xh route' hours (e.g. '10.0h route · edit ▲') instead of on its own line, so a two-run cell is shorter. (2) A SECONDARY run of the same route no longer inherits the primary route/day helper-needed badge — with no helper of its own it shows a neutral dash, since a second run has no route-default need of its own (assign a helper and the name shows as normal). (3) DAILY VIEW driver↔truck link is now BIDIRECTIONAL: previously choosing a truck filtered the driver list; now choosing a driver first also filters the truck menu to trucks that driver can operate (unfamiliar trucks stay, marked ⚠️; the currently-selected truck is always kept so a pre-existing pick is never hidden).",
+        "note": "Inline hint = CSS .wk-edithint display:block→inline plus folding the hint into the hours .small span with a · separator; primInner (non-multi) is unchanged so single cells show no hint. Secondary-badge suppression = new isExtra param on helperLineHtml(); primary still infers the badge, extras return a grey em-dash when empty. Bidirectional link = filter legalTrucks by abilityFor(driver,truck)!=='unable' but keep x.id===a.truck so the current selection persists; unfamiliar flagged in the option label. The driver list already filtered by truck, so the two now mutually narrow without clearing each other."
+      },
+      {
+        "v": "v21.53",
+        "feat": "(1) OUT display fixed: the amber OUT tag no longer overflows into the Trainee column — instead the WHOLE ROW tints light amber when a worker has an Out-until date, with a compact OUT chip beside the dates. (2) DRIVERS & HELPERS: the Out-from and Out-until fields now sit together under ONE header, 'Out (from → until)', as two small date inputs in a single cell. (3) TRAINEE route/days picker gains two quick-add buttons for the selected driver — 'All front-loader routes' (every run-day of every FrontLoader route) and 'All routes' (every run-day of every truck route except Standby) — which union into the existing per-route/day trainee map.",
+        "note": "The old OUT pill was appended into the Name cell with white-space:nowrap, so on a narrow column it spilled right into the Trainee cell; replaced with tr.style.background tint (the row-yellow the user expected) plus an in-cell chip. Combining the two Out dates into one <td> keeps the querySelectorAll('input') order identical (name,outFrom,outUntil,reason[,canDrive,knows]) so no wiring re-index was needed. Quick-adds reuse the same runDaysFor()+Northern/N+S split as the manual Add so N+S Wed/Sat land under the 'N+S' key, not 'Northern'."
+      },
+      {
+        "v": "v21.54",
+        "feat": "(1) OUT workers now STAY in the Daily View driver/helper dropdowns, tagged '(OUT)', instead of being hidden — a scheduler can still assign them (leave may be tentative), and D06/H06 still flag it. The OFF-list and 'not scheduled' logic keep excluding on-leave workers as before. (2) DRIVERS/HELPERS tab: removed the redundant OUT chip next to the until-date (the row already tints amber) and narrowed the 'Out (from → until)' column. (3) TRAINEE picker: the 'All front-loader' / 'All routes' quick-add buttons now sit on the SAME line as Driver/Route/Days/Add. (4) LOAD USUAL ROUTES now drops carried EMPTY rows that aren't usual for the new weekday (e.g. Central/Southern left over after Tue→Wed) — reproducing the old Reset-then-Load result WITHOUT deleting a deliberately-filled rollover (which is kept and still warns).",
+        "note": "drv/hlp in assignmentRow switched from availDrivers()/availHelpers() to the full CFG lists with an onLeave() '(OUT)' tag; autoFillOff/suggestOff/validate still call availDrivers()/availHelpers() so OFF math is unchanged. Load-Usual prune filters bl.assignments to keep a row only if its route is usual OR it has any driver/helper/truck, run right after names is computed and after normalizeDayRoutes(); genuine filled rollovers survive."
+      },
+      {
+        "v": "v21.55",
+        "feat": "(1) FIX: switching the date away and back (e.g. Tue→Wed→Tue) no longer drops Central to the bottom of the Daily View — routes are now re-sorted N→Yard AFTER the week-plan is pulled back in (the pull was re-appending carried routes past the earlier sort). (2) On-leave workers in the Daily View HELPER dropdown now show a real amber 'OUT' pill on a tinted row (instead of a plain '(OUT)'). (3) On-leave DRIVER options are tinted amber (native <select> can't render a pill, so the row is highlighted and still labelled OUT). The Drivers/Helpers-tab amber row tint is unchanged.",
+        "note": "Root cause of the Central-at-bottom bug: ensureDay() runs migrateDay() (which sorts) THEN pullWeekIntoDay(), and the pull pushes any WEEK.plans route not already present onto the end — so a re-added Central landed last; added sortDayRoutes() immediately after the pull. Helper dropdown is a custom .cdd list so it takes a styled .pill; the driver dropdown is a native <select> whose <option>s can only take background-color/color (Chrome), so OUT there is a tint, not a pill."
+      },
+      {
+        "v": "v21.56",
+        "feat": "(1) The Daily View DRIVER field is now the same custom list widget as the Helper field, so an on-leave driver shows a real amber OUT pill on a tinted row in the dropdown (matching the helper look) rather than a plain tint. (2) TAB-ORDER FIX on the Drivers/Helpers tabs: editing an Out-from/Out-until date no longer rebuilds the whole table on each change, so focus is kept and Tab moves correctly from-→until→reason (the row tint updates in place). Editing outFrom no longer forces a re-render at all.",
+        "note": "Driver widget mirrors the helper .cdd (data-d marker); its click handler allows selection only when the row isn't locked by ANOTHER row (self-locked row stays editable so a bad base-pass driver can be swapped), and the lock-grey pass now skips the driver widget on a self-locked row. Root cause of the 'Tab jumps to the left field' report: the outFrom/outUntil change handlers called renderDrivers()/renderHelpers(), which recreates every input, so the browser lost the focused element and the next Tab restarted from the row's first input; fixed by committing the value without a full re-render and updating tr.style.background inline."
+      },
+      {
+        "v": "v21.57",
+        "feat": "The Daily View DRIVER field now shows BLANK when no driver is chosen (matching the empty Truck dropdown), instead of the grey '— pick —' placeholder.",
+        "note": "Only the empty-state label of the driver .cdd widget changed (cdd-name span left empty); an on-leave selected driver still shows the amber OUT pill, and the panel's first option is still the explicit '— none —' to clear a pick."
       }
     ]
   }
