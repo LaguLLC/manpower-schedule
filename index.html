@@ -261,7 +261,7 @@
 function showDialog(msg){var bg=document.getElementById("dlgBg");if(!bg){try{window.showDialog(msg);}catch(e){}return;}document.getElementById("dlgMsg").textContent=msg;bg.style.display="flex";}
 function hideDialog(){var bg=document.getElementById("dlgBg");if(bg)bg.style.display="none";}
 function showConfirm(msg,onYes){var bg=document.getElementById("cfmBg");if(!bg){if(onYes)onYes();return;}document.getElementById("cfmMsg").textContent=msg;bg.style.display="flex";var yes=document.getElementById("cfmYes"),no=document.getElementById("cfmNo");yes.onclick=function(){bg.style.display="none";if(onYes)onYes();};no.onclick=function(){bg.style.display="none";};}
-const APP_VERSION="21.71";
+const APP_VERSION="21.73";
 const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 const DOWfull=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -460,7 +460,9 @@ function defaultConfig(){
      {v:"v21.68",feat:"WEEK ROUTE VIEW cell editors (both the primary and the secondary/duplicate editor) are now the same custom list widget as the Daily view \u2014 so an on-leave driver/helper shows a real amber OUT pill (not just a tinted native option). The '\u2014 Driver \u2014' / '\u2014 Helper \u2014' placeholders and the bold 'Needs override' and '+ Drivers (as guide)' group headers are preserved; the yellow/grey helper-needed tint on the Helper field is preserved.",note:"Native <select> can't render a pill, so both editors now emit a hidden <input class=wd/wh> (so commit() still reads .wd/.wh .value unchanged) plus a .cdd.cdd-rt visual widget; wireCddIn() toggles the panel, and an option click writes the hidden input, updates the button display, and fires the same save path. optgroup labels became .cdd-grouplabel bold headers; each option carries data-nm/data-out so the button shows just the name + OUT pill. Reused esc()/onLeave()/driverIssue() so eligibility notes are unchanged."},
      {v:"v21.69",feat:"WEEK ROUTE VIEW cell-editor dropdowns: options are now LEFT-aligned and the grouped options under 'Needs override' / '+ Drivers (as guide)' are INDENTED (like a native optgroup), matching the v21.67 look. Previously the custom widget inherited the week cell's center alignment, so every option was centered and the group hierarchy was lost.",note:"Root cause: .cdd-panel had no text-align, so it inherited text-align:center from the week \<td\>. Added text-align:left to .cdd-panel and a .cdd-opt.indent (padding-left:22px); cddOptHtml() takes an indent flag set true for options in a labelled group. Daily-view widgets were unaffected (their fld isn't centered) so nothing changes there."},
      {v:"v21.70",feat:"(1) The green header (title + tab bar) is now STICKY \u2014 it stays pinned to the top while you scroll a long day, so you can switch tabs without scrolling back up. (2) FLAG CONSISTENCY: a row now shows an immediate red 'NO TRUCK' bubble when a driver is chosen but the required truck is still empty \u2014 mirroring the existing 'NO DRIVER' bubble (both are Resolve errors T00/D00).",note:"Header: position:sticky;top:0;z-index:500 (below the 9999 modals, above the z-index:2 week-grid sticky first column). NO TRUCK bubble: truckMissingBad=(a.driver && !a.truck && route needs a truck && not standby/dump); rendered in the Truck field flagwrap next to any EQ double-book bubble, matching helperOnlyBad/NO DRIVER. Both stay non-blocking on the row; the checklist still gates posting."},
-     {v:"v21.71",feat:"FLAG SYMMETRY (background): a row with a TRUCK but no driver no longer gets the red background tint \u2014 it shows the red 'NO DRIVER' bubble only, matching the driver-without-truck case (which shows a red 'NO TRUCK' bubble and no background). The red row tint is now reserved for a HELPER assigned with no driver (the genuinely invalid helper-only case).",note:"Changed the .helperonly class condition from (a.helper||a.truck) to just a.helper; the NO DRIVER bubble (helperOnlyBad) keeps (a.helper||a.truck) so it still fires for a truck-without-driver. So both no-driver and no-truck partial states now look the same: a red bubble, no red fill."}
+     {v:"v21.71",feat:"FLAG SYMMETRY (background): a row with a TRUCK but no driver no longer gets the red background tint \u2014 it shows the red 'NO DRIVER' bubble only, matching the driver-without-truck case (which shows a red 'NO TRUCK' bubble and no background). The red row tint is now reserved for a HELPER assigned with no driver (the genuinely invalid helper-only case).",note:"Changed the .helperonly class condition from (a.helper||a.truck) to just a.helper; the NO DRIVER bubble (helperOnlyBad) keeps (a.helper||a.truck) so it still fires for a truck-without-driver. So both no-driver and no-truck partial states now look the same: a red bubble, no red fill."},
+     {v:"v21.72",feat:"(1) DRAFT ROUTE ORDER: routes sharing a start time now print in the standard operational order (Northern \u2192 Central \u2192 Southern \u2192 Cardboard \u2026) in both the WhatsApp and Kakao drafts, instead of alphabetically (which put Central before Northern). (2) A draft is no longer produced while ERRORS remain: clicking Generate with unresolved Resolve items now shows a '\u26a0 N item(s) to resolve \u2014 the draft appears once the Resolve section is clear' placeholder in both output boxes, so a broken schedule can't be copied by clicking Generate and closing the popup. Warnings still let the draft through.",note:"Route order: replaced the per-start slot sort routeLabelOf.localeCompare with routeOrderIdx(x.route)-routeOrderIdx(y.route) (ROUTE_ORDER) + a localeCompare tiebreak, in renderWA and renderKK. Gate: btnGen now branches on errs.length \u2014 real renderWA/renderKK only when zero errors, else a placeholder string in both boxes; the Copy buttons therefore copy the placeholder, not a partial draft. This also strengthens the demo where Generate is shown blocked before OFF/EQ are filled."},
+     {v:"v21.73",feat:"(1) FIX: the Reassignment/switch-note TARGET dropdown now hides trucks the actor can't operate \u2014 consistent with the main Truck menu. The actor is the helper for 'HELPER TO', otherwise the driver, or the helper on a no-driver row (Yard), so e.g. Davis on a Yard dump no longer lists trucks/VE-02 he can't drive. (2) FIX: 'Reset Day' now clears the stale '\u2713 Added N usual route rows' subtitle. (3) FIX: when the form is locked by a base-pass issue, the red '\ud83d\udd12 override + reason to unlock' banner now appears ONLY on the offending row, not on every route row.",note:"Added canOperateTruck(name,truckId) that handles BOTH drivers (ability matrix) and helpers (helperCanDrive + canDrive kinds); switchTargetOptions filters by the actor. Reset handler clears loadUsualNote. lockTag switched from locked (anyLocked) to selfLock (rowLocked for THIS row) so only the trigger row shows the unlock banner; the whole-form grey-out is unchanged."}
    ]
  }
 };}
@@ -716,7 +718,7 @@ function validate(){const I=[];const add=(l,c,m,w)=>I.push({l,c,m,w});
 function crew(a,dow3){let lead=a.driver||"",second=a.helper||"";if(a.driver&&isTraineeOn(a.driver,a.route,dow3)){lead=a.helper||"";second=a.driver||"";}let s=lead;if(second)s+=(lead?" - ":"")+second;return s;}
 function renderWA(){const L=[];L.push(CFG.waTitle);
   DAY.blocks.forEach(bl=>{L.push(`*${bl.long}*`);L.push("");
-    uniqueStarts(bl).forEach(start=>{const slots=bl.assignments.filter(a=>a.start===start).filter(a=>{const rr=routeSpecOf(a);return rr.noTruck?(!!a.driver||!!a.helper):true;}).sort((x,y)=>routeLabelOf(x).localeCompare(routeLabelOf(y)));if(!slots.length)return;
+    uniqueStarts(bl).forEach(start=>{const slots=bl.assignments.filter(a=>a.start===start).filter(a=>{const rr=routeSpecOf(a);return rr.noTruck?(!!a.driver||!!a.helper):true;}).sort((x,y)=>{const d=routeOrderIdx(x.route)-routeOrderIdx(y.route);return d!==0?d:routeLabelOf(x).localeCompare(routeLabelOf(y));});if(!slots.length)return;
       const lbl=timeToLabel(start);const br=breakFor(bl,start);const noTruckShift=slots.every(s=>routeSpecOf(s).noTruck);
       const noBreak=(!br||/^no break$/i.test(br));
       L.push(noBreak?`*${lbl}*`:`*${lbl} TAKE 1 HOUR BREAK AT ${br}*`);L.push("");
@@ -735,7 +737,7 @@ function renderWA(){const L=[];L.push(CFG.waTitle);
 function renderKK(){const L=[];const showP=!!CFG.kkPlates;
   if(DAY.weekend){const sat=DAY.blocks[0],sun=DAY.blocks[1];L.push(CFG.kkOpenWe.replace("{satdate}",sat.slashed).replace("{sundate}",sun?sun.slashed:""));L.push("");}
   DAY.blocks.forEach(bl=>{if(DAY.weekend)L.push(`${bl.long}:`);else L.push(CFG.kkOpen.replace("{weekday}",bl.full).replace("{date}",bl.slashed));L.push("");
-    uniqueStarts(bl).forEach(start=>{const slots=bl.assignments.filter(a=>a.start===start).filter(a=>{const rr=routeSpecOf(a);return rr.noTruck?(!!a.driver||!!a.helper):true;}).sort((x,y)=>routeLabelOf(x).localeCompare(routeLabelOf(y)));if(!slots.length)return;L.push(timeToLabel(start));
+    uniqueStarts(bl).forEach(start=>{const slots=bl.assignments.filter(a=>a.start===start).filter(a=>{const rr=routeSpecOf(a);return rr.noTruck?(!!a.driver||!!a.helper):true;}).sort((x,y)=>{const d=routeOrderIdx(x.route)-routeOrderIdx(y.route);return d!==0?d:routeLabelOf(x).localeCompare(routeLabelOf(y));});if(!slots.length)return;L.push(timeToLabel(start));
       const _ntK={};const _seqK=[];
       slots.forEach(a=>{const r=routeSpecOf(a);if(r.noTruck){const k=routeLabelOf(a);if(!_ntK[k]){_ntK[k]={label:k,people:[]};_seqK.push(_ntK[k]);}const who=a.driver||a.helper||"";if(who)_ntK[k].people.push(who);}else _seqK.push(a);});
       _seqK.forEach(a=>{if(a.people){L.push(`${a.label}: ${a.people.slice().sort((x,y)=>x.localeCompare(y)).join(", ")}`);return;}const r=routeSpecOf(a);const t=truckById(a.truck);const tt=showP?`${a.truck} ${t?t.plate:""}`.trim():a.truck;let ln=`${routeLabelOf(a)}: ${a.driver||""} (${tt})`;if(a.helper)ln+=` - ${a.helper}`;L.push(ln);
@@ -964,18 +966,16 @@ function renderDayBlocks(){const host=el("dayBlocks");host.innerHTML="";
     bov.appendChild(bt);card.appendChild(bov);host.appendChild(card);});autoFillOff();markPreviewStale();}
 function reasonSelect(ov){const cur=ov.reason||"";return `<select class="rs"><option value=""></option>${(CFG.reasonOptions||[]).map(o=>opt(o,cur)).join("")}</select><input class="ro" placeholder="reason" value="${esc(ov.rother)}" style="margin-top:3px;${cur==="Other"?"":"display:none"}">`;}
 function wireReason(scope,ov){const sel=scope.querySelector("select.rs"),inp=scope.querySelector("input.ro");if(sel)sel.addEventListener("change",()=>{ov.reason=sel.value;saveDay();renderDayBlocks();});if(inp)inp.addEventListener("change",()=>{ov.rother=inp.value;saveDay();renderDayBlocks();});}
+function canOperateTruck(name,truckId){const t=truckById(truckId);if(!t)return false;if(driverByName(name))return abilityFor(name,truckId)!=="unable";const h=helperByName(name);if(h)return !!t.helperCanDrive&&(h.canDrive||[]).includes(t.kind);return false;}
 function switchTargetOptions(a){
   const subj=a.sw.subject||"", act=a.sw.action||"", isHelper=(subj==="HELPER TO");
+  // the person who will operate the target truck: the helper for HELPER TO, otherwise the driver, or (no-driver rows like Yard) the helper
+  const actor=isHelper?a.helper:(a.driver||a.helper||"");
   let html="";
   activeTrucks().forEach(x=>{
-    if(x.id==="VE-02"){
-      if(isHelper){ if(act==="DUMP"){const h=helperByName(a.helper); if(h&&(h.canDrive||[]).includes("Rail")) html+=opt(x.id,a.sw.target,x.id+" "+x.plate);} else { html+=opt(x.id,a.sw.target,x.id+" "+x.plate);} }
-      else { html+=opt(x.id,a.sw.target,x.id+" "+x.plate); }
-      return;
-    }
-    if(isHelper&&act==="DUMP") return;            // helper+dump: only VE-02
-    if(a.driver&&abilityFor(a.driver,x.id)==="unable") return; // hide Unable
-    const ab=a.driver?abilityFor(a.driver,x.id):"";
+    if(actor){ if(!canOperateTruck(actor,x.id)) return; } // hide any truck the actor can't operate (consistent narrowing)
+    else if(a.driver&&abilityFor(a.driver,x.id)==="unable") return; // no actor yet: fall back to the old driver-unable hide
+    const ab=(actor&&driverByName(actor))?abilityFor(actor,x.id):(a.driver?abilityFor(a.driver,x.id):"");
     html+=opt(x.id,a.sw.target,x.id+" "+x.plate+(ab==="unfamiliar"?" ⚠️":""));
   });
   // Yard: only for HELPER TO and action != DUMP
@@ -1029,7 +1029,7 @@ function assignmentRow(bl,a,ai,routeCount,CFL){CFL=CFL||{D:{},H:{},T:{}};
   const _primary=_drvGuideOpen?('<div class="small" style="padding:2px 10px;color:#0b6b3a">Trainee driver — pick a qualified driver-guide:</div>'+_drows):_hrows;
   const _collapsible=_drvGuideOpen?_hrows:_drows;
   const helperWidget=`<div class="cdd" data-h="1" data-morenoun="${_moreNoun}"><div class="cdd-btn" style="${_hbg}">${_hdisp}</div><div class="cdd-panel"><div class="cdd-opt" data-v="" style="min-height:20px;color:#9aa5b1">${_hplace||"&nbsp;"}</div>${_primary}<div class="cdd-more">\u2795 Show ${_moreNoun}</div><div class="cdd-drivers" style="display:none">${_collapsible}</div></div></div>`;
-  const lockTag=locked?`<span class="pill down">🔒 base pass expired/missing — override + reason to unlock</span>`:"";
+  const lockTag=selfLock?`<span class="pill down">🔒 base pass expired/missing — override + reason to unlock</span>`:""; /* only the trigger row shows the unlock banner, not every row */
   const dis=locked?"disabled":"";
   const _dOut=a.driver&&driverByName(a.driver)&&onLeave(driverByName(a.driver),bl.yymmdd);const _dDisp=a.driver?('<span class="cdd-name">'+a.driver+(_dOut?' <span class="pill warn" style="margin-left:4px">OUT</span>':'')+'</span>'):'<span class="cdd-name"></span>';const _dOpts='<div class="cdd-opt" data-v="" style="min-height:20px">&nbsp;</div>'+dlist.map(function(d){var lab=(d.label||"").replace(/ \(OUT\)$/,"");return '<div class="cdd-opt" data-v="'+esc(d.name)+'"'+(d.out?' style="background:#fdf8ec"':'')+'>'+lab+(d.out?' <span class="pill warn" style="margin-left:4px">OUT</span>':'')+'</div>';}).join("");const driverWidget='<div class="cdd" data-d="1"><div class="cdd-btn">'+_dDisp+'</div><div class="cdd-panel">'+_dOpts+'</div></div>';
   const top=document.createElement("div");top.className="asgtop"+((bRoute||bTruck||bDriver||bHelper)?" hasflags":"");
@@ -1334,7 +1334,7 @@ function boot(){installLockGuard();document.addEventListener("click",()=>{docume
   el("btnLoadLatest").addEventListener("click",()=>loadLatestConfig(true));
   loadLatestConfig(false); // auto-check on load (no overwrite without confirm)
   el("svcDate").addEventListener("change",renderMake);
-  el("btnReset").addEventListener("click",()=>{const iso=el("svcDate").value;showConfirm("Reset this day? Clears its assignments here AND in the Week View plan for "+iso+".",()=>{DAY=buildDay(iso);if(WEEK&&WEEK.plans)delete WEEK.plans[iso];save("lg_week",WEEK);saveDay();renderMake();});});
+  el("btnReset").addEventListener("click",()=>{const iso=el("svcDate").value;showConfirm("Reset this day? Clears its assignments here AND in the Week View plan for "+iso+".",()=>{DAY=buildDay(iso);if(WEEK&&WEEK.plans)delete WEEK.plans[iso];save("lg_week",WEEK);saveDay();const _ln=el("loadUsualNote");if(_ln)_ln.textContent="";renderMake();});});
   el("btnLoadUsual").addEventListener("click",doLoadUsual);
   el("btnWeekPrev").addEventListener("click",()=>{WEEK_START=addDaysISO(WEEK_START||mondayOf(el("svcDate").value||new Date().toISOString().slice(0,10)),-7);renderWeek();});
   el("btnWeekNext").addEventListener("click",()=>{WEEK_START=addDaysISO(WEEK_START||mondayOf(el("svcDate").value||new Date().toISOString().slice(0,10)),7);renderWeek();});
@@ -1354,8 +1354,8 @@ function boot(){installLockGuard();document.addEventListener("click",()=>{docume
     const iss=validate();const errs=iss.filter(i=>i.l==="ERROR").sort((x,y)=>rankOf(y.c)-rankOf(x.c)),warns=iss.filter(i=>i.l==="WARN").sort((x,y)=>rankOf(y.c)-rankOf(x.c));
     const vp=el("valPanel");vp.innerHTML="";const head=document.createElement("div");head.className="panel "+(errs.length?"err":warns.length?"warn":"ok");
     head.innerHTML=`<b>${errs.length?"✗ "+errs.length+" to resolve":"✓ Looks good"}</b> — ${errs.length} error, ${warns.length} warning. <span class="small">(Review popup opened.)</span>`;vp.appendChild(head);
-    el("outWA").textContent=renderWA();el("outKK").textContent=renderKK();
-    if(errs.length){head.innerHTML+=` <b style="color:var(--err)">— cannot finalize until Resolve items are fixed.</b>`;}
+    if(errs.length){const _blk="\u26a0 "+errs.length+" item(s) to resolve \u2014 the draft appears once the Resolve section is clear.";el("outWA").textContent=_blk;el("outKK").textContent=_blk;head.innerHTML+=` <b style="color:var(--err)">— cannot finalize until Resolve items are fixed.</b>`;}
+    else{el("outWA").textContent=renderWA();el("outKK").textContent=renderKK();}
     const ov=[];DAY.blocks.forEach(bl=>bl.assignments.forEach(a=>{Object.entries(a.baseOver||{}).forEach(([b,o])=>{if(o.override)ov.push(`${bl.dow3}/${routeLabelOf(a)}/${b}(${o.reason==="Other"?o.rother:o.reason||"no reason"})`);});}));
     LOG.unshift({ts:new Date().toISOString(),day:DAY.blocks.map(b=>b.yymmdd).join("+"),mode:DAY.mode,cfg:CFG.cfgVersion,errors:errs.length,warns:warns.length,overrides:ov.join(" | ")});LOG=LOG.slice(0,300);save("lg_log",LOG);
     if(errs.length)showDialog("⚠️ "+errs.length+" item(s) need to be resolved before posting. See the Resolve section.");
